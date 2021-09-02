@@ -7,8 +7,11 @@ Collaborative Code Learning Environment using MERN stack
 ✅ **Initial API**
 
 ❌ **React Signin/Signup**
+
 ❌ **Generating Users List**
+
 ❌ **Making Chatroom**
+
 ❌ **...more list to come**
 
 ## How to use (First time use only)
