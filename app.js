@@ -12,6 +12,8 @@ const userRoute = require('./routes/userRoutes');
 
 const app = express();
 
+app.set('view engine');
+
 // Set Http headers
 app.use(helmet());
 

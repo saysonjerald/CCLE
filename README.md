@@ -16,7 +16,7 @@ Collaborative Code Learning Environment using MERN stack
 
 ❌ **...more list to come**
 
-## How to use (First time use only)
+## Fress Installation (First time use only)
 
 1. Open command line and and paste this code below, then hit enter.
 
@@ -47,3 +47,10 @@ This will install all the nessesary packages for initial installation, that migh
     C:\Program Files\MongoDB\Server\4.4\bin\mongod.exe
     ````
 
+## How to start
+1. Go to VS Code terminal (ctrl + ~ )
+
+2. Execute this code to run the server and the React client
+    ````console 
+    npm run dev
+    ````
