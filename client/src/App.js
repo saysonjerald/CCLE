@@ -1,8 +1,15 @@
+import React from 'react';
+import Home from './pages/Home';
+import GlobalStyle from './components/GlobalStyle';
+
 function App() {
   return (
-    <div className="App">
-      <h1>Hello from React APP</h1>
-    </div>
+    <>
+      <GlobalStyle />
+      <h1>CCLE</h1>
+      <hr />
+      <Home />
+    </>
   );
 }
 
