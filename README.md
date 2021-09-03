@@ -1,6 +1,6 @@
 # CCLE Thesis Project 💻🖥
 
-![CCLE Thumbnail](https://1.bp.blogspot.com/-AYr9JklA2XM/YTDp4AfJK5I/AAAAAAAACtE/3y6ZIvCAEW4T4EHkZr5x8wCAAAbStgOAACLcBGAsYHQ/s16000/thumbnail.png)
+![CCLE Thumbnail](/thumbnail.png)
 
 Collaborative Code Learning Environment using MERN stack
 
