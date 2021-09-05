@@ -4,7 +4,7 @@ import Register from '../components/Register';
 import styled from 'styled-components';
 import { useState } from 'react';
 
-const Home = () => {
+class Home () {
   const [isHide, setIsHide] = useState('true');
   return (
     <Wrapper>
