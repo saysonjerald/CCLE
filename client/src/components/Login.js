@@ -10,7 +10,7 @@ const LoginSection = ({ isHide, setIsHide }) => {
     }
   };
 
-  render(return (
+  return (
     <Form isHide={isHide} setIsHide={setIsHide} action="POST">
       <h3 className="headerName">Sign In</h3>
       <label htmlFor="email">Email</label>
@@ -21,7 +21,7 @@ const LoginSection = ({ isHide, setIsHide }) => {
       <button type="submit">Submit</button>
       <p onClick={hideHandler}>Register</p>
     </Form>
-  );)
+  );
 };
 
 const Form = styled.form`

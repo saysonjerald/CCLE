@@ -48,31 +48,22 @@ import styled from 'styled-components';
 // `;
 //#endregion
 
-class RegisterSection extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      username: '',
-      password: ''
-  };
-
-  render(){
-    return(
-      <Form isHide={isHide} setIsHide={setIsHide} action="POST">
-       <h3>Sign Up</h3>
-       <label htmlFor="name">Name</label>
-       <input type="text" name="name" id="name" />
-       <label htmlFor="email">Email</label>
-       <input type="email" name="email" id="email" />
-       <label htmlFor="password">Password</label>
-       <input type="password" name="password" id="password" />
-       <label htmlFor="passwordConfirm">Password Confirm</label>
-       <input type="password" name="passwordConfirm" id="passwordConfirm" />
-       <button type="submit">Submit</button>
-       <p onClick={hideHandler}>Login</p>
-     </Form>
-    );
-  }
-}
+const RegisterSection = ({ isHide, setIsHide }) => {
+  return (
+    <Form isHide={isHide} setIsHide={setIsHide} action="POST">
+      <h3>Sign Up</h3>
+      <label htmlFor="name">Name</label>
+      <input type="text" name="name" id="name" />
+      <label htmlFor="email">Email</label>
+      <input type="email" name="email" id="email" />
+      <label htmlFor="password">Password</label>
+      <input type="password" name="password" id="password" />
+      <label htmlFor="passwordConfirm">Password Confirm</label>
+      <input type="password" name="passwordConfirm" id="passwordConfirm" />
+      <button type="submit">Submit</button>
+      <p onClick={hideHandler}>Login</p>
+    </Form>
+  );
+};
 
 export default RegisterSection;
