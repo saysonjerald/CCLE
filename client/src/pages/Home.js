@@ -6,6 +6,7 @@ import { useState } from 'react';
 
 const Home = () => {
   const [isHide, setIsHide] = useState('true');
+
   return (
     <Wrapper>
       <FormWrapper>
