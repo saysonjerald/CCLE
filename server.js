@@ -21,6 +21,7 @@ mongoose
 
 const server = app.listen(process.env.PORT || 3000, () => {
   console.log(`Server is running on ${process.env.NODE_ENV} mode`);
+  console.log(`under port ${process.env.PORT}`);
 });
 
 process.on('unhandledRejection', (err) => {
