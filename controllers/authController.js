@@ -209,3 +209,28 @@ exports.updatePassword = catchAsync(async (req, res, next) => {
   // 4) Log user in, sent JWT
   createSendToken(user, 200, res);
 });
+
+exports.verifyUser = catchAsync(async (req, res, next) => {
+  if (req.cookies.jwt) {
+    // 1) Verify Token
+    const decoded = await promisify(jwt.verify)(
+      req.cookies.jwt,
+      process.env.JWT_SECRET
+    );
+
+    // 2) Check if user still exists
+    let currentUser = await User.findById(decoded.id);
+    if (!currentUser) {
+      currentUser = null;
+    }
+
+    // 3_ Check if user changed password after the token was issued
+    if (currentUser.changesPasswordAfter(decoded.iat)) {
+      currentUser = null;
+    }
+    //There is a logged in user
+
+    res.status(200).send({ currentUser });
+  }
+  next();
+});
