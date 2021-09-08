@@ -11,7 +11,7 @@ const cookieParser = require('cookie-parser');
 const AppError = require('./utils/appError');
 const globalErrorHandler = require('./controllers/errorController');
 const userRoute = require('./routes/userRoutes');
-const viewRoute = require('./routes/viewRouter');
+const viewRoute = require('./routes/viewRoutes');
 
 const app = express();
 
@@ -59,11 +59,6 @@ app.use(
     ],
   })
 );
-
-app.use((req, res, next) => {
-  console.log(req.cookies);
-  next();
-});
 
 app.use(express.static(`${__dirname}/public`));
 

@@ -210,7 +210,7 @@ exports.updatePassword = catchAsync(async (req, res, next) => {
   createSendToken(user, 200, res);
 });
 
-exports.verifyUser = catchAsync(async (req, res, next) => {
+exports.isLoggedIn = catchAsync(async (req, res, next) => {
   if (req.cookies.jwt) {
     // 1) Verify Token
     const decoded = await promisify(jwt.verify)(

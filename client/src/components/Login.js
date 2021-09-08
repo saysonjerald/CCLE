@@ -1,14 +1,15 @@
 import React, { useState, useContext } from 'react';
 import styled from 'styled-components';
 import axios from 'axios';
-import UserContext from '../context/UserContext';
+import { UserContext } from '../contexts/UserContext';
 
 const LoginSection = ({ isHide, setIsHide }) => {
+  const { user, setUser, isLoading } = useContext(UserContext);
+  console.log(user);
   const [value, setValue] = useState({
     email: '',
     password: '',
   });
-  const { user, setUser } = useContext(UserContext);
 
   const onChangeEmailHandler = (e) => {
     setValue({ ...value, email: e.target.value });
@@ -18,25 +19,24 @@ const LoginSection = ({ isHide, setIsHide }) => {
   };
 
   const login = async (email, password) => {
-    const auth = await axios
-      .create({
-        baseURL: 'http://localhost:3001/',
-        withCredentials: true,
-      })
-      .post('/api/v1/users/login', {
-        email,
-        password,
-      })
-      .then(async () => {
-        await axios.get('/verifyUser').then((res) => {
-          setUser(res.data.currentUser);
+    const auth = axios.create({
+      baseURL: 'http://localhost:3001/',
+      withCredentials: true, //I read around that you need this for cookies to be sent?
+    });
+    try {
+      await auth
+        .post('/api/v1/users/login', {
+          email,
+          password,
+        })
+        .then(async () => {
+          await axios.get('/verifyUser').then((res) => {
+            setUser(res.data.currentUser);
+          });
         });
-      });
-  };
-
-  const onSubmitData = (e) => {
-    e.preventDefault();
-    login(value.email, value.password);
+    } catch (err) {
+      console.log(err);
+    }
   };
 
   const hideHandler = () => {
@@ -48,8 +48,8 @@ const LoginSection = ({ isHide, setIsHide }) => {
   };
 
   return (
-    <Form isHide={isHide} setIsHide={setIsHide} onSubmit={onSubmitData}>
-      <h3 className="headerName">Sign In</h3>
+    <Form isHide={isHide} setIsHide={setIsHide} action="POST">
+      <h3 className="headerName">{user ? `${user.data.name}` : 'Sign In'}</h3>
       <label htmlFor="email">Email</label>
       <input
         type="email"
