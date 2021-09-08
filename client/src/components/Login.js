@@ -1,8 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import styled from 'styled-components';
 import axios from 'axios';
+import { UserContext } from '../contexts/UserContext';
 
 const LoginSection = ({ isHide, setIsHide }) => {
+  const { user, setUser, isLoading } = useContext(UserContext);
+  console.log(user);
   const [value, setValue] = useState({
     email: '',
     password: '',
@@ -26,11 +29,10 @@ const LoginSection = ({ isHide, setIsHide }) => {
       withCredentials: true, //I read around that you need this for cookies to be sent?
     });
     try {
-      const res = await auth.post('/api/v1/users/login', {
+      await auth.post('/api/v1/users/login', {
         email,
         password,
       });
-      console.log(res);
     } catch (err) {
       console.log(err);
     }
@@ -46,7 +48,7 @@ const LoginSection = ({ isHide, setIsHide }) => {
 
   return (
     <Form isHide={isHide} setIsHide={setIsHide} action="POST">
-      <h3 className="headerName">Sign In</h3>
+      <h3 className="headerName">{user ? `${user.data.name}` : 'Sign In'}</h3>
       <label htmlFor="email">Email</label>
       <input
         type="email"

@@ -1,8 +1,8 @@
-import React from 'react';
+import React, { useState } from 'react';
 import LoginSection from '../components/Login';
-import Register from '../components/Register';
+import RegisterSection from '../components/Register';
 import styled from 'styled-components';
-import { useState } from 'react';
+import UserContextProvider from '../contexts/UserContext';
 
 const Home = () => {
   const [isHide, setIsHide] = useState('true');
@@ -10,8 +10,10 @@ const Home = () => {
   return (
     <Wrapper>
       <FormWrapper>
-        <LoginSection isHide={isHide} setIsHide={setIsHide} />
-        <Register isHide={isHide} setIsHide={setIsHide} />
+        <UserContextProvider>
+          <LoginSection isHide={isHide} setIsHide={setIsHide} />
+          <RegisterSection isHide={isHide} setIsHide={setIsHide} />
+        </UserContextProvider>
       </FormWrapper>
     </Wrapper>
   );
