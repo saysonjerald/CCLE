@@ -12,11 +12,13 @@ Collaborative Code Learning Environment using MERN stack
 
 ❌ **Generating Users List**
 
+❌ **Protected Routes**
+
 ❌ **Making Chatroom**
 
 ❌ **...more list to come**
 
-## Fress Installation (First time use only)
+## Fresh Installation (First time use only)
 
 1. Open command line and and paste this code below, then hit enter.
 

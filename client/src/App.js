@@ -1,14 +1,23 @@
 import React from 'react';
+import { Switch, Route } from 'react-router-dom';
+import Nav from './components/Nav';
 import Home from './pages/Home';
+import FindTutors from './pages/FindTutors';
 import GlobalStyle from './components/GlobalStyle';
 
 function App() {
   return (
     <>
       <GlobalStyle />
-      <h1>CCLE</h1>
-      <hr />
-      <Home />
+      <Nav />
+      <Switch>
+        <Route path="/" exact>
+          <Home />
+        </Route>
+        <Route path="/find-tutors">
+          <FindTutors />
+        </Route>
+      </Switch>
     </>
   );
 }
