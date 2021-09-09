@@ -8,7 +8,7 @@ Collaborative Code Learning Environment using MERN stack
 
 ✅ **Initial API**
 
-❌ **React Signin/Signup**
+✅ **React Signin/Signup**
 
 ❌ **Generating Users List**
 

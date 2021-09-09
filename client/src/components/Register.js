@@ -1,8 +1,19 @@
-import React from 'react';
+import React, { useContext, useState } from 'react';
 import styled from 'styled-components';
+import axios from 'axios';
+import { UserContext } from '../contexts/UserContext';
 
 //#region Testing
 const RegisterSection = ({ isHide, setIsHide }) => {
+  const { user, setUser, isLoading } = useContext(UserContext);
+
+  const [value, setValue] = useState({
+    name: '',
+    email: '',
+    password: '',
+    passwordConfirm: '',
+  });
+
   const hideHandler = () => {
     if (isHide) {
       setIsHide(!isHide);
@@ -11,18 +22,71 @@ const RegisterSection = ({ isHide, setIsHide }) => {
     }
   };
 
+  const onSubmitHandler = (e) => {
+    e.preventDefault();
+    register(value.name, value.email, value.password, value.passwordConfirm);
+  };
+
+  const onChangeNameHandler = (e) => {
+    setValue({ ...value, name: e.target.value });
+  };
+
+  const onChangeEmailHandler = (e) => {
+    setValue({ ...value, email: e.target.value });
+  };
+
+  const onChangePasswordHandler = (e) => {
+    setValue({ ...value, password: e.target.value });
+  };
+
+  const onChangePasswordConfirmHandler = (e) => {
+    setValue({ ...value, passwordConfirm: e.target.value });
+  };
+
+  const register = async (name, email, password, passwordConfirm) => {
+    const auth = axios.create({
+      baseURL: 'http://localhost:3001/',
+      withCredentials: true, //I read around that you need this for cookies to be sent?
+    });
+    try {
+      await auth.post('/api/v1/users/signup', {
+        name,
+        email,
+        password,
+        passwordConfirm,
+      });
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
   return (
-    <Form isHide={isHide} setIsHide={setIsHide}>
+    <Form isHide={isHide} setIsHide={setIsHide} onSubmit={onSubmitHandler}>
       <h3>Sign Up</h3>
       <label htmlFor="name">Name</label>
-      <input type="text" name="name" id="name" />
+      <input type="text" name="name" id="name" onChange={onChangeNameHandler} />
       <label htmlFor="email">Email</label>
-      <input type="email" name="email" id="email" />
+      <input
+        type="email"
+        name="email"
+        id="email"
+        onChange={onChangeEmailHandler}
+      />
       <label htmlFor="password">Password</label>
-      <input type="password" name="password" id="password" />
+      <input
+        type="password"
+        name="password"
+        id="password"
+        onChange={onChangePasswordHandler}
+      />
       <label htmlFor="passwordConfirm">Password Confirm</label>
-      <input type="password" name="passwordConfirm" id="passwordConfirm" />
-      <button type="submit">Submit</button>
+      <input
+        type="password"
+        name="passwordConfirm"
+        id="passwordConfirm"
+        onChange={onChangePasswordConfirmHandler}
+      />
+      <input type="submit" value="Submit" />
       <p onClick={hideHandler}>Login</p>
     </Form>
   );
