@@ -5,7 +5,6 @@ import { UserContext } from '../contexts/UserContext';
 
 const LoginSection = ({ isHide, setIsHide }) => {
   const { user, setUser, isLoading } = useContext(UserContext);
-  console.log(user);
   const [value, setValue] = useState({
     email: '',
     password: '',
@@ -30,8 +29,8 @@ const LoginSection = ({ isHide, setIsHide }) => {
           password,
         })
         .then(async () => {
-          await axios.get('/verifyUser').then((res) => {
-            setUser(res.data.currentUser);
+          await auth.get('/isLoggedIn').then((currentUser) => {
+            setUser(currentUser);
           });
         });
     } catch (err) {
@@ -47,8 +46,13 @@ const LoginSection = ({ isHide, setIsHide }) => {
     }
   };
 
+  const onSubmitHandler = async (e) => {
+    e.preventDefault();
+    await login(value.email, value.password);
+  };
+
   return (
-    <Form isHide={isHide} setIsHide={setIsHide} action="POST">
+    <Form isHide={isHide} setIsHide={setIsHide} onSubmit={onSubmitHandler}>
       <h3 className="headerName">{user ? `${user.data.name}` : 'Sign In'}</h3>
       <label htmlFor="email">Email</label>
       <input
@@ -67,7 +71,7 @@ const LoginSection = ({ isHide, setIsHide }) => {
         onChange={onChangePasswordHandler}
       />
       <a href="/">Forgot password?</a>
-      <input type="button" value="Submit" />
+      <input type="submit" value="Submit" />
       <p onClick={hideHandler}>Register</p>
       <p>{value.email}</p>
       <p>{value.password}</p>

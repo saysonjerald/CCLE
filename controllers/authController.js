@@ -230,7 +230,9 @@ exports.isLoggedIn = catchAsync(async (req, res, next) => {
     }
     //There is a logged in user
 
-    res.status(200).send({ currentUser });
+    //There is a logged in user
+
+    return res.status(200).send(currentUser);
   }
-  next();
+  next(new AppError('User is not logged in.', 401));
 });

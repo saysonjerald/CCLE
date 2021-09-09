@@ -21,11 +21,13 @@ export default function useFindUser() {
       }
     }
 
+    console.log('Hello');
     findUser();
   }, []);
 
   return {
     user,
+    setUser,
     isLoading,
   };
 }
