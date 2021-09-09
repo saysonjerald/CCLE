@@ -5,7 +5,6 @@ import { UserContext } from '../contexts/UserContext';
 
 const LoginSection = ({ isHide, setIsHide }) => {
   const { user, setUser, isLoading } = useContext(UserContext);
-  console.log(user);
   const [value, setValue] = useState({
     email: '',
     password: '',
@@ -18,21 +17,22 @@ const LoginSection = ({ isHide, setIsHide }) => {
     setValue({ ...value, password: e.target.value });
   };
 
-  const onSubmitData = (e) => {
-    e.preventDefault();
-    login(value.email, value.password);
-  };
-
   const login = async (email, password) => {
     const auth = axios.create({
       baseURL: 'http://localhost:3001/',
       withCredentials: true, //I read around that you need this for cookies to be sent?
     });
     try {
-      await auth.post('/api/v1/users/login', {
-        email,
-        password,
-      });
+      await auth
+        .post('/api/v1/users/login', {
+          email,
+          password,
+        })
+        .then(async () => {
+          await auth.get('/isLoggedIn').then((currentUser) => {
+            setUser(currentUser);
+          });
+        });
     } catch (err) {
       console.log(err);
     }
@@ -46,8 +46,13 @@ const LoginSection = ({ isHide, setIsHide }) => {
     }
   };
 
+  const onSubmitHandler = async (e) => {
+    e.preventDefault();
+    await login(value.email, value.password);
+  };
+
   return (
-    <Form isHide={isHide} setIsHide={setIsHide} action="POST">
+    <Form isHide={isHide} setIsHide={setIsHide} onSubmit={onSubmitHandler}>
       <h3 className="headerName">{user ? `${user.data.name}` : 'Sign In'}</h3>
       <label htmlFor="email">Email</label>
       <input
@@ -66,7 +71,7 @@ const LoginSection = ({ isHide, setIsHide }) => {
         onChange={onChangePasswordHandler}
       />
       <a href="/">Forgot password?</a>
-      <input type="button" value="Submit" onClick={onSubmitData} />
+      <input type="submit" value="Submit" />
       <p onClick={hideHandler}>Register</p>
       <p>{value.email}</p>
       <p>{value.password}</p>
@@ -74,7 +79,7 @@ const LoginSection = ({ isHide, setIsHide }) => {
   );
 };
 
-const Form = styled.div`
+const Form = styled.form`
   display: ${(props) => (props.isHide ? 'flex' : 'none')};
   flex-direction: column;
 

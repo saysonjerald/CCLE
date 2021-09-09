@@ -72,8 +72,6 @@ exports.protect = catchAsync(async (req, res, next) => {
     req.headers.authorization.startsWith('Bearer')
   ) {
     token = req.headers.authorization.split(' ')[1];
-  } else if (req.cookies.jwt) {
-    token = req.cookies.jwt;
   }
 
   // 1) Getting token and check if it's there
@@ -212,9 +210,9 @@ exports.updatePassword = catchAsync(async (req, res, next) => {
   createSendToken(user, 200, res);
 });
 
-exports.isLoggedIn = catchAsync(async (req, res) => {
+exports.isLoggedIn = catchAsync(async (req, res, next) => {
   if (req.cookies.jwt) {
-    // 1) verify token
+    // 1) Verify Token
     const decoded = await promisify(jwt.verify)(
       req.cookies.jwt,
       process.env.JWT_SECRET
@@ -226,12 +224,14 @@ exports.isLoggedIn = catchAsync(async (req, res) => {
       currentUser = null;
     }
 
-    // 3) Check if user changed password after the token was issued
+    // 3_ Check if user changed password after the token was issued
     if (currentUser.changesPasswordAfter(decoded.iat)) {
       currentUser = null;
     }
 
-    // THERE IS A LOGGED USER
-    res.status(200).send(currentUser);
+    //There is a logged in user
+
+    return res.status(200).send(currentUser);
   }
+  next(new AppError('User is not logged in.', 401));
 });

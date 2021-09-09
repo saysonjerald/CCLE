@@ -6,7 +6,6 @@ import UserContextProvider from '../contexts/UserContext';
 
 const Home = () => {
   const [isHide, setIsHide] = useState('true');
-
   return (
     <Wrapper>
       <FormWrapper>
