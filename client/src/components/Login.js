@@ -1,10 +1,8 @@
-import React, { useState, useContext } from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 import axios from 'axios';
-import { UserContext } from '../contexts/UserContext';
 
-const LoginSection = ({ isHide, setIsHide }) => {
-  const { user, setUser, isLoading } = useContext(UserContext);
+const LoginSection = ({ isHide, setIsHide, user, setUser }) => {
   const [value, setValue] = useState({
     email: '',
     password: '',
@@ -54,19 +52,19 @@ const LoginSection = ({ isHide, setIsHide }) => {
   return (
     <Form isHide={isHide} setIsHide={setIsHide} onSubmit={onSubmitHandler}>
       <h3 className="headerName">{user ? `${user.data.name}` : 'Sign In'}</h3>
-      <label htmlFor="email">Email</label>
+      <label htmlFor="emailLogin">Email</label>
       <input
         type="email"
         name="email"
-        id="email"
+        id="emailLogin"
         value={value.email}
         onChange={onChangeEmailHandler}
       />
-      <label htmlFor="password">Password</label>
+      <label htmlFor="passwordLogin">Password</label>
       <input
         type="password"
         name="password"
-        id="password"
+        id="passwordLogin"
         value={value.password}
         onChange={onChangePasswordHandler}
       />

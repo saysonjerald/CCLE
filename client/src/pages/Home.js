@@ -1,18 +1,23 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import LoginSection from '../components/Login';
 import RegisterSection from '../components/Register';
 import styled from 'styled-components';
-import UserContextProvider from '../contexts/UserContext';
+import { UserContext } from '../contexts/UserContext';
 
 const Home = () => {
   const [isHide, setIsHide] = useState('true');
+
+  const { user, setUser } = useContext(UserContext);
   return (
     <Wrapper>
       <FormWrapper>
-        <UserContextProvider>
-          <LoginSection isHide={isHide} setIsHide={setIsHide} />
-          <RegisterSection isHide={isHide} setIsHide={setIsHide} />
-        </UserContextProvider>
+        <LoginSection
+          isHide={isHide}
+          setIsHide={setIsHide}
+          user={user}
+          setUser={setUser}
+        />
+        <RegisterSection isHide={isHide} setIsHide={setIsHide} />
       </FormWrapper>
     </Wrapper>
   );

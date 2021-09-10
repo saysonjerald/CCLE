@@ -1,12 +1,9 @@
-import React, { useContext, useState } from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 import axios from 'axios';
-import { UserContext } from '../contexts/UserContext';
 
 //#region Testing
 const RegisterSection = ({ isHide, setIsHide }) => {
-  const { user, setUser, isLoading } = useContext(UserContext);
-
   const [value, setValue] = useState({
     name: '',
     email: '',
