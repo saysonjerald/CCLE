@@ -6,13 +6,13 @@ Collaborative Code Learning Environment using MERN stack
 
 ## Goals
 
-✅ **Initial API**
+✅ **Initial API (September 2, 2021)**
 
-✅ **React Signin/Signup**
+✅ **React Signin/Signup (September 9, 2021)**
 
-✅ **Generating Users List**
+✅ **Generating Users List (September 11, 2021)**
 
-✅ **Protected Routes**
+✅ **Protected Routes (September 12, 2021)**
 
 ❌ **User Profile**
 
