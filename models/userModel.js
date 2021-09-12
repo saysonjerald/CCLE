@@ -15,12 +15,6 @@ const userSchema = new mongoose.Schema({
     lowercase: true,
     validate: [validator.isEmail, 'Please provide a valid email'],
   },
-  photo: String,
-  role: {
-    type: String,
-    enum: ['user', 'guide', 'lead-guide', 'admin'],
-    default: 'user',
-  },
   password: {
     type: String,
     required: [true, 'Please provide your password'],
@@ -36,6 +30,32 @@ const userSchema = new mongoose.Schema({
         return el === this.password;
       },
     },
+  },
+  profilePic: {
+    type: String,
+    default: 'default.jpg',
+  },
+  bio: {
+    type: String,
+  },
+  address: {
+    type: String,
+  },
+  programmingLanguage: {
+    type: [String],
+  },
+  spokenLanguage: {
+    type: [String],
+  },
+  prices: {
+    type: [Number],
+  },
+  priceStarting: {
+    type: Number,
+  },
+  isTeacher: {
+    type: Boolean,
+    default: false,
   },
   passwordChangedAt: Date,
   passwordResetToken: String,

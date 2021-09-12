@@ -12,7 +12,7 @@ Collaborative Code Learning Environment using MERN stack
 
 ❌ **Generating Users List**
 
-❌ **Protected Routes**
+✅ **Protected Routes**
 
 ❌ **Making Chatroom**
 

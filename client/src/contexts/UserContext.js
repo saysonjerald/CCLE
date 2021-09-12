@@ -5,27 +5,28 @@ export const UserContext = createContext();
 
 const UserContextProvider = (props) => {
   const [user, setUser] = useState();
+  const [stopper, setStopper] = useState(0);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    async function findUser() {
+  async function findUser() {
+    try {
       const auth = await axios.create({
         baseURL: 'http://localhost:3001/',
         withCredentials: true, //I read around that you need this for cookies to be sent?
       });
-
-      try {
-        await auth.get('/isLoggedIn').then((currentUser) => {
-          setUser(currentUser);
-          setLoading(false);
-        });
-      } catch (err) {
-        console.log(err);
+      await auth.get('/isLoggedIn').then((currentUser) => {
+        setUser(currentUser);
         setLoading(false);
-      }
+      });
+    } catch (err) {
+      console.log(err);
+      setLoading(false);
     }
+  }
+
+  useEffect(() => {
     findUser();
-  }, []);
+  }, [stopper]);
 
   return (
     <UserContext.Provider value={{ user, setUser, loading }}>
