@@ -1,8 +1,9 @@
 import React, { useState, useContext, useEffect } from 'react';
 import UserContext from '../contexts/UserContext';
+import TutorCards from '../components/TutorCards';
 import axios from 'axios';
 
-const FindUser = () => {
+const FindTutors = () => {
   const [users, setUsers] = useState([]);
   const [stopper, setStopper] = useState(0);
 
@@ -14,8 +15,8 @@ const FindUser = () => {
           withCredentials: true, //I read around that you need this for cookies to be sent?
         })
         .get('/find-tutors')
-        .then((data) => {
-          resolve(setUsers(data));
+        .then((user) => {
+          resolve(setUsers(user.data));
         })
         .catch((err) => {
           reject('There was an error');
@@ -25,20 +26,19 @@ const FindUser = () => {
 
   useEffect(() => {
     getUsers();
-    console.log('From Useeffect Find tutors');
   }, [stopper]);
 
-  console.log('From Find Tutors');
-
-  return (
+  return users.length ? (
     <>
-      <div className="user">
-        <div className="user__name">Jerald Sayson</div>
-        <div className="user__email">saysonjerald@gmail.com</div>
-        <div className="user__age">27</div>
-      </div>
+      {users.map((user) => {
+        return <TutorCards user={user} key={user._id} />;
+      })}
+    </>
+  ) : (
+    <>
+      <h1>There are no users</h1>
     </>
   );
 };
 
-export default FindUser;
+export default FindTutors;
