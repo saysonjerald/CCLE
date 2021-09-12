@@ -10,9 +10,15 @@ Collaborative Code Learning Environment using MERN stack
 
 ✅ **React Signin/Signup**
 
-❌ **Generating Users List**
+✅ **Generating Users List**
 
 ✅ **Protected Routes**
+
+❌ **User Profile**
+
+❌ **Updating User Profile**
+
+❌ **Ratings**
 
 ❌ **Making Chatroom**
 
