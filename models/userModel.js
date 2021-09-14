@@ -53,6 +53,7 @@ const userSchema = new mongoose.Schema(
     },
     priceStarting: {
       type: Number,
+      default: 1,
     },
     isTeacher: {
       type: Boolean,
@@ -65,6 +66,17 @@ const userSchema = new mongoose.Schema(
     passwordChangedAt: Date,
     passwordResetToken: String,
     passwordResetExpires: Date,
+    ratingsAverage: {
+      type: Number,
+      default: 4.5,
+      min: [1, 'Rating must be above 1.0'],
+      max: [5, 'Rating must be below 5.0'],
+      set: (val) => Math.round(val * 10) / 10, // 4.666666, 46.6666, 47, 4.7
+    },
+    ratingsQuantity: {
+      type: Number,
+      default: 0,
+    },
   },
   {
     toJSON: { virtuals: true },
