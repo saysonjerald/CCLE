@@ -51,7 +51,9 @@ const LoginSection = ({ isHide, setIsHide, user, setUser }) => {
 
   return (
     <Form isHide={isHide} setIsHide={setIsHide} onSubmit={onSubmitHandler}>
-      <h3 className="headerName">{user ? `${user.data.name}` : 'Sign In'}</h3>
+      <h3 className="headerName">
+        {user ? `${user.data.firstname}` : 'Sign In'}
+      </h3>
       <label htmlFor="emailLogin">Email</label>
       <input
         type="email"

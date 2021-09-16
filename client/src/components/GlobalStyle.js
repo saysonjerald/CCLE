@@ -11,8 +11,8 @@ const GlobalStyle = createGlobalStyle`
 html,
 body {
     box-sizing: border-box;
-    background: #222;
-    color: #eee;
+    background: #efe;
+    color: #111;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     width: 100%;
     height: 100%;

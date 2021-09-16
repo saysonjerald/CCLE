@@ -6,6 +6,6 @@ const router = express.Router();
 
 router.get('/isLoggedIn', authController.isLoggedIn);
 
-router.get('/find-tutors', veiwController.findTutors);
+router.get('/getUser/:slug', veiwController.getUser);
 
 module.exports = router;

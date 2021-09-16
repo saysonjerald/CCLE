@@ -57,6 +57,7 @@ reviewSchema.statics.calcAverageRatings = async function (userId) {
       },
     },
   ]);
+  console.log(stats);
 
   if (stats.length > 0) {
     await User.findByIdAndUpdate(userId, {
@@ -65,7 +66,7 @@ reviewSchema.statics.calcAverageRatings = async function (userId) {
     });
   } else {
     await User.findByIdAndUpdate(userId, {
-      ratingQuantity: 0,
+      ratingsQuantity: 0,
       ratingsAverage: 4.5,
     });
   }

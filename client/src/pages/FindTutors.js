@@ -1,6 +1,6 @@
-import React, { useState, useContext, useEffect } from 'react';
-import UserContext from '../contexts/UserContext';
+import React, { useState, useEffect } from 'react';
 import TutorCards from '../components/TutorCards';
+import styled from 'styled-components';
 import axios from 'axios';
 
 const FindTutors = () => {
@@ -11,12 +11,13 @@ const FindTutors = () => {
     return new Promise(async (resolve, reject) => {
       await axios
         .create({
-          baseURL: 'http://localhost:3001/',
+          baseURL: 'http://localhost:3001/api/v1/',
           withCredentials: true, //I read around that you need this for cookies to be sent?
         })
-        .get('/find-tutors')
+        .get('/users')
         .then((user) => {
-          resolve(setUsers(user.data));
+          console.log(user);
+          resolve(setUsers(user.data.users));
         })
         .catch((err) => {
           reject('There was an error');
@@ -29,16 +30,42 @@ const FindTutors = () => {
   }, [stopper]);
 
   return users.length ? (
-    <>
-      {users.map((user) => {
-        return <TutorCards user={user} key={user._id} />;
-      })}
-    </>
+    <Wrapper>
+      <Filter></Filter>
+      <Teachers>
+        <h1>Available Teachers</h1>
+        {users.map((user) => {
+          return <TutorCards user={user} key={user._id} />;
+        })}
+      </Teachers>
+    </Wrapper>
   ) : (
     <>
       <h1>There are no users</h1>
     </>
   );
 };
+
+const Wrapper = styled.div`
+  display: flex;
+`;
+
+const Teachers = styled.div`
+  display: flex;
+  width: 80%;
+  flex-direction: column;
+
+  h1 {
+    align-self: start;
+    margin: 20px 0;
+  }
+`;
+
+const Filter = styled.div`
+  width: 20%;
+  height: 200px;
+  background-color: #222;
+  margin: 83px 10px 0 10px;
+`;
 
 export default FindTutors;

@@ -2,12 +2,18 @@ const crypto = require('crypto');
 const mongoose = require('mongoose');
 const validator = require('validator');
 const bcrypt = require('bcryptjs');
+const slugify = require('slugify');
+const { v4: uuidv4 } = require('uuid');
 
 const userSchema = new mongoose.Schema(
   {
-    name: {
+    firstname: {
       type: String,
-      required: [true, 'Please tell us your name'],
+      required: [true, 'Please tell us your first name'],
+    },
+    lastname: {
+      type: String,
+      required: [true, 'Please tell us your last name'],
     },
     email: {
       type: String,
@@ -32,6 +38,7 @@ const userSchema = new mongoose.Schema(
         },
       },
     },
+    slug: String,
     profilePic: {
       type: String,
       default: 'default.jpg',
@@ -106,6 +113,13 @@ userSchema.pre('save', function (next) {
   if (!this.isModified('password') || this.isNew) return next();
 
   this.passwordChangedAt = Date.now() - 1000;
+  next();
+});
+
+userSchema.pre('save', function (next) {
+  this.slug = slugify(`${this.firstname} ${this.lastname} ${uuidv4()}`, {
+    lower: true,
+  });
   next();
 });
 

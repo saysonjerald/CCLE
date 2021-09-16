@@ -5,7 +5,8 @@ import axios from 'axios';
 //#region Testing
 const RegisterSection = ({ isHide, setIsHide }) => {
   const [value, setValue] = useState({
-    name: '',
+    firstname: '',
+    lastname: '',
     email: '',
     password: '',
     passwordConfirm: '',
@@ -21,11 +22,21 @@ const RegisterSection = ({ isHide, setIsHide }) => {
 
   const onSubmitHandler = (e) => {
     e.preventDefault();
-    register(value.name, value.email, value.password, value.passwordConfirm);
+    register(
+      value.firstname,
+      value.lastname,
+      value.email,
+      value.password,
+      value.passwordConfirm
+    );
   };
 
-  const onChangeNameHandler = (e) => {
-    setValue({ ...value, name: e.target.value });
+  const onChangeFirstNameHandler = (e) => {
+    setValue({ ...value, firstname: e.target.value });
+  };
+
+  const onChangeLastNameHandler = (e) => {
+    setValue({ ...value, lastname: e.target.value });
   };
 
   const onChangeEmailHandler = (e) => {
@@ -40,14 +51,21 @@ const RegisterSection = ({ isHide, setIsHide }) => {
     setValue({ ...value, passwordConfirm: e.target.value });
   };
 
-  const register = async (name, email, password, passwordConfirm) => {
+  const register = async (
+    firstname,
+    lastname,
+    email,
+    password,
+    passwordConfirm
+  ) => {
     const auth = axios.create({
       baseURL: 'http://localhost:3001/',
       withCredentials: true, //I read around that you need this for cookies to be sent?
     });
     try {
       await auth.post('/api/v1/users/signup', {
-        name,
+        firstname,
+        lastname,
         email,
         password,
         passwordConfirm,
@@ -60,8 +78,20 @@ const RegisterSection = ({ isHide, setIsHide }) => {
   return (
     <Form isHide={isHide} setIsHide={setIsHide} onSubmit={onSubmitHandler}>
       <h3>Sign Up</h3>
-      <label htmlFor="name">Name</label>
-      <input type="text" name="name" id="name" onChange={onChangeNameHandler} />
+      <label htmlFor="firstname">First Name</label>
+      <input
+        type="text"
+        name="firstname"
+        id="firstname"
+        onChange={onChangeFirstNameHandler}
+      />
+      <label htmlFor="lastname">Last Name</label>
+      <input
+        type="text"
+        name="lastname"
+        id="lastname"
+        onChange={onChangeLastNameHandler}
+      />
       <label htmlFor="email">Email</label>
       <input
         type="email"
