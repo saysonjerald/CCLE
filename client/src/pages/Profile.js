@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import axios from 'axios';
 
+import Ratings from '../components/Ratings';
+
 const Profile = ({ match }) => {
   const [user, setUser] = useState({});
   const [reviewer, setReviewer] = useState([]);
@@ -48,8 +50,10 @@ const Profile = ({ match }) => {
       <p>{user.spokenLanguage}</p>
       <p>{user.prices}</p>
       <p>{user.priceStarting}</p>
-      <p>Rating Average: {user.ratingsAverage}</p>
-      <p>Rating Quantity: {user.ratingsQuantity}</p>
+      <Ratings
+        ratingsAverage={user.ratingsAverage}
+        ratingsQuantity={user.ratingsQuantity}
+      />
       {reviewer.length ? (
         reviewer.map((review) => {
           return (
