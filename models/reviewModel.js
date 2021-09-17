@@ -33,12 +33,12 @@ const reviewSchema = new mongoose.Schema(
   }
 );
 
-reviewSchema.index({ tour: 1, user: 1 }, { unique: true });
+reviewSchema.index({ user: 1, reviewee: 1 }, { unique: true });
 
 reviewSchema.pre(/^find/, function (next) {
   this.populate({
     path: 'user',
-    select: 'name profilePic',
+    select: 'firstname lastname profilePic',
   });
 
   next();
@@ -47,17 +47,17 @@ reviewSchema.pre(/^find/, function (next) {
 reviewSchema.statics.calcAverageRatings = async function (userId) {
   const stats = await this.aggregate([
     {
-      $match: { user: userId },
+      $match: { reviewee: userId },
     },
     {
       $group: {
-        _id: '$user',
+        _id: '$reviewee',
         nRating: { $sum: 1 },
         avgRating: { $avg: '$rating' },
       },
     },
   ]);
-  console.log(stats);
+  // console.log(stats);
 
   if (stats.length > 0) {
     await User.findByIdAndUpdate(userId, {
@@ -73,7 +73,7 @@ reviewSchema.statics.calcAverageRatings = async function (userId) {
 };
 
 reviewSchema.post('save', function () {
-  this.constructor.calcAverageRatings(this.user);
+  this.constructor.calcAverageRatings(this.reviewee);
 });
 
 // For findByIdAndUpdate and findByIdAndDelete
@@ -83,7 +83,7 @@ reviewSchema.pre(/^findOneAnd/, async function (next) {
 });
 
 reviewSchema.post(/^findOneAnd/, async function (next) {
-  await this.r.constructor.calcAverageRatings(this.r.user);
+  await this.r.constructor.calcAverageRatings(this.r.reviewee);
 });
 
 const Review = mongoose.model('Review', reviewSchema);

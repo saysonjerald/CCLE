@@ -14,7 +14,9 @@ const TutorCards = ({ user }) => {
       <p>{user.spokenLanguage}</p>
       <p>{user.prices}</p>
       <p>{user.priceStarting}</p>
-      <Link to={`/user/${user.slug}`}>
+      <p>{user.ratingsAverage}</p>
+      <p>{user.ratingsQuantity}</p>
+      <Link to={`/user/${user._id}`}>
         <button>View Profile</button>
       </Link>
     </User>

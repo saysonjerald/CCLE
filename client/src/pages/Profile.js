@@ -4,20 +4,29 @@ import axios from 'axios';
 
 const Profile = ({ match }) => {
   const [user, setUser] = useState({});
+  const [reviewer, setReviewer] = useState([]);
   const [stopper, setStopper] = useState(0);
 
   const getUser = () => {
     return new Promise(async (resolve, reject) => {
       await axios
-        .create({
-          baseURL: 'http://localhost:3001/',
-          withCredentials: true, //I read around that you need this for cookies to be sent?
-        })
-        .get(`/getUser/${match.params.id}`)
-        .then((user) => {
-          console.log(user);
-          resolve(setUser(user.data.user));
-        })
+        .all([
+          await axios
+            .get(`http://localhost:3001/api/v1/users/${match.params.id}`)
+            .then((user) => {
+              resolve(setUser(user.data.data.user));
+            }),
+          await axios
+            .create({
+              baseURL: 'http://localhost:3001/',
+              withCredentials: true, //I read around that you need this for cookies to be sent?
+            })
+            .get(`api/v1/users/${match.params.id}/reviews`)
+            .then((review) => {
+              setReviewer(review.data.data.reviews);
+              console.log(review);
+            }),
+        ])
         .catch((err) => {
           reject('There was an error');
         });
@@ -39,8 +48,21 @@ const Profile = ({ match }) => {
       <p>{user.spokenLanguage}</p>
       <p>{user.prices}</p>
       <p>{user.priceStarting}</p>
-      <p>{user.ratingsAverage}</p>
-      <p>{user.ratingsQuantity}</p>
+      <p>Rating Average: {user.ratingsAverage}</p>
+      <p>Rating Quantity: {user.ratingsQuantity}</p>
+      {reviewer.length ? (
+        reviewer.map((review) => {
+          return (
+            <p key={review.id}>
+              {review.user.firstname}: {review.review}
+            </p>
+          );
+        })
+      ) : (
+        <>
+          <p>There are no reviews</p>
+        </>
+      )}
     </User>
   );
 };
