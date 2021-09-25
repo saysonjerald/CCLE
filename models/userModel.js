@@ -46,6 +46,11 @@ const userSchema = new mongoose.Schema(
     bio: {
       type: String,
     },
+    gender: {
+      type: String,
+      enum: ['male', 'female'],
+      required: [true, 'Please provide your gender'],
+    },
     address: {
       type: String,
     },

@@ -1,11 +1,13 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import TutorCards from '../components/TutorCards';
+import { UserContext } from '../contexts/UserContext';
 import styled from 'styled-components';
 import axios from 'axios';
 
 const FindTutors = () => {
   const [users, setUsers] = useState([]);
   const [stopper, setStopper] = useState(0);
+  const { setNavValue } = useContext(UserContext);
 
   const getUsers = () => {
     return new Promise(async (resolve, reject) => {
@@ -18,6 +20,7 @@ const FindTutors = () => {
         .then((user) => {
           console.log(user);
           resolve(setUsers(user.data.users));
+          setNavValue('2');
         })
         .catch((err) => {
           reject('There was an error');

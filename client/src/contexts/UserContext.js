@@ -7,6 +7,7 @@ const UserContextProvider = (props) => {
   const [user, setUser] = useState();
   const [stopper, setStopper] = useState(0);
   const [loading, setLoading] = useState(true);
+  const [navValue, setNavValue] = useState('1');
 
   async function findUser() {
     try {
@@ -29,7 +30,9 @@ const UserContextProvider = (props) => {
   }, [stopper]);
 
   return (
-    <UserContext.Provider value={{ user, setUser, loading }}>
+    <UserContext.Provider
+      value={{ user, setUser, loading, navValue, setNavValue }}
+    >
       {props.children}
     </UserContext.Provider>
   );

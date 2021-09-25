@@ -6,7 +6,9 @@ import { UserContext } from '../contexts/UserContext';
 
 const Home = () => {
   const [isHide, setIsHide] = useState('true');
-  const { user, setUser } = useContext(UserContext);
+  const { user, setUser, setNavValue } = useContext(UserContext);
+
+  setNavValue('1');
 
   return (
     <Wrapper>

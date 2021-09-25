@@ -7,18 +7,24 @@ const Ratings = ({ ratingsAverage, ratingsQuantity }) => {
   const stars = () => {
     const round = Math.ceil(ratingsAverage);
     let content = [
-      <FontAwesomeIcon icon={emptyStar} color="orange" />,
-      <FontAwesomeIcon icon={emptyStar} color="orange" />,
-      <FontAwesomeIcon icon={emptyStar} color="orange" />,
-      <FontAwesomeIcon icon={emptyStar} color="orange" />,
-      <FontAwesomeIcon icon={emptyStar} color="orange" />,
+      <FontAwesomeIcon key="0" icon={emptyStar} color="orange" />,
+      <FontAwesomeIcon key="1" icon={emptyStar} color="orange" />,
+      <FontAwesomeIcon key="2" icon={emptyStar} color="orange" />,
+      <FontAwesomeIcon key="3" icon={emptyStar} color="orange" />,
+      <FontAwesomeIcon key="4" icon={emptyStar} color="orange" />,
     ];
 
     for (let i = 0; i < round; i++) {
       ratingsAverage > 1
-        ? (content[i] = <FontAwesomeIcon icon={faStar} color="orange" />)
+        ? (content[i] = (
+            <FontAwesomeIcon key={i.toString()} icon={faStar} color="orange" />
+          ))
         : (content[i] = (
-            <FontAwesomeIcon icon={faStarHalfAlt} color="orange" />
+            <FontAwesomeIcon
+              key={i.toString()}
+              icon={faStarHalfAlt}
+              color="orange"
+            />
           ));
       ratingsAverage--;
     }

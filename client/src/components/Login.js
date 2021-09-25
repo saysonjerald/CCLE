@@ -1,19 +1,22 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import axios from 'axios';
+import { TextField, Button, Typography } from '@mui/material';
+import { makeStyles } from '@mui/styles';
+import ArrowForwardIosOutlinedIcon from '@mui/icons-material/ArrowForwardIosOutlined';
 
 const LoginSection = ({ isHide, setIsHide, user, setUser }) => {
-  const [value, setValue] = useState({
-    email: '',
-    password: '',
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+
+  const useStyles = makeStyles({
+    button: {
+      marginTop: '5px',
+      marginBottom: '5px',
+    },
   });
 
-  const onChangeEmailHandler = (e) => {
-    setValue({ ...value, email: e.target.value });
-  };
-  const onChangePasswordHandler = (e) => {
-    setValue({ ...value, password: e.target.value });
-  };
+  const classes = useStyles();
 
   const login = async (email, password) => {
     const auth = axios.create({
@@ -36,45 +39,54 @@ const LoginSection = ({ isHide, setIsHide, user, setUser }) => {
     }
   };
 
-  const hideHandler = () => {
-    if (isHide) {
-      setIsHide(!isHide);
-    } else {
-      setIsHide(!isHide);
-    }
-  };
-
   const onSubmitHandler = async (e) => {
     e.preventDefault();
-    await login(value.email, value.password);
+    await login(email, password);
   };
 
   return (
-    <Form isHide={isHide} setIsHide={setIsHide} onSubmit={onSubmitHandler}>
-      <h3 className="headerName">
-        {user ? `${user.data.firstname}` : 'Sign In'}
-      </h3>
-      <label htmlFor="emailLogin">Email</label>
-      <input
+    <Form
+      isHide={isHide}
+      setIsHide={setIsHide}
+      onSubmit={onSubmitHandler}
+      autoComplete="off"
+    >
+      <Typography component="h4" variant="h5" align="center" gutterBottom>
+        Sign In
+      </Typography>
+      <TextField
+        label="Email"
         type="email"
-        name="email"
-        id="emailLogin"
-        value={value.email}
-        onChange={onChangeEmailHandler}
+        required
+        onChange={(e) => setEmail(e.target.value)}
       />
-      <label htmlFor="passwordLogin">Password</label>
-      <input
+      <TextField
+        label="Password"
         type="password"
-        name="password"
-        id="passwordLogin"
-        value={value.password}
-        onChange={onChangePasswordHandler}
+        margin="normal"
+        required
+        onChange={(e) => setPassword(e.target.value)}
       />
-      <a href="/">Forgot password?</a>
-      <input type="submit" value="Submit" />
-      <p onClick={hideHandler}>Register</p>
-      <p>{value.email}</p>
-      <p>{value.password}</p>
+      <Button
+        className={classes.button}
+        type="submit"
+        variant="contained"
+        color="secondary"
+        endIcon={<ArrowForwardIosOutlinedIcon fontSize="small" />}
+      >
+        Sign In
+      </Button>
+      <Button
+        className={classes.button}
+        variant="outline"
+        color="secondary"
+        onClick={() => {
+          setIsHide(false);
+        }}
+        endIcon={<ArrowForwardIosOutlinedIcon fontSize="small" />}
+      >
+        Register Now
+      </Button>
     </Form>
   );
 };
@@ -82,20 +94,6 @@ const LoginSection = ({ isHide, setIsHide, user, setUser }) => {
 const Form = styled.form`
   display: ${(props) => (props.isHide ? 'flex' : 'none')};
   flex-direction: column;
-
-  & .headerName {
-    margin-bottom: 14px;
-  }
-
-  & input {
-    margin-bottom: 12px;
-  }
-
-  & p {
-    margin-top: 20px;
-    align-self: center;
-    cursor: pointer;
-  }
 `;
 
 export default LoginSection;

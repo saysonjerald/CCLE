@@ -1,13 +1,17 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import styled from 'styled-components';
 import axios from 'axios';
 
+import { UserContext } from '../contexts/UserContext';
 import Ratings from '../components/Ratings';
 
 const Profile = ({ match }) => {
   const [user, setUser] = useState({});
   const [reviewer, setReviewer] = useState([]);
   const [stopper, setStopper] = useState(0);
+  const { setNavValue } = useContext(UserContext);
+
+  setNavValue('3');
 
   const getUser = () => {
     return new Promise(async (resolve, reject) => {
@@ -73,6 +77,8 @@ const Profile = ({ match }) => {
 
 const User = styled.div`
   background-color: #555;
+  color: #efe;
+  padding: 40px 50px;
 `;
 
 export default Profile;

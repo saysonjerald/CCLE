@@ -2,12 +2,13 @@ import { createGlobalStyle } from 'styled-components';
 
 const GlobalStyle = createGlobalStyle`
 
-* {
+
+/* * {
     margin: 0;
     padding: 0;
     box-sizing: inherit;
-}
-
+} */
+/* 
 html,
 body {
     box-sizing: border-box;
@@ -23,6 +24,6 @@ a:visited {
     color: #eee;
     text-decoration: none;
     font-size: 12px;
-}
+} */
 `;
 export default GlobalStyle;

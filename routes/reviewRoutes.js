@@ -9,6 +9,6 @@ router
   .get(reviewController.getAllReviews)
   .post(authController.protect, reviewController.createReview);
 
-router.route(':id/').get(reviewController.getReviews);
+router.route('/:id').get(reviewController.getReviews);
 
 module.exports = router;
