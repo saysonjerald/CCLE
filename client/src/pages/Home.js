@@ -1,14 +1,24 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useState, useEffect } from 'react';
 import LoginSection from '../components/Login';
 import RegisterSection from '../components/Register';
 import styled from 'styled-components';
 import { UserContext } from '../contexts/UserContext';
 
 const Home = () => {
-  const [isHide, setIsHide] = useState('true');
   const { user, setUser, setNavValue } = useContext(UserContext);
+  const [isHide, setIsHide] = useState('true');
 
-  setNavValue('1');
+  useEffect(() => {
+    let unmounted = false;
+
+    if (unmounted) {
+      setNavValue(false);
+    }
+
+    return () => {
+      unmounted = true;
+    };
+  }, []);
 
   return (
     <Wrapper>

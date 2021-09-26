@@ -12,7 +12,7 @@ const CheckBoxsesTags = () => {
   return (
     <Autocomplete
       multiple
-      id="checkboxes-tags-demo"
+      id="programmingLangugages"
       options={top100Films}
       disableCloseOnSelect
       getOptionLabel={(option) => option.title}
@@ -29,7 +29,11 @@ const CheckBoxsesTags = () => {
       )}
       style={{ width: 500 }}
       renderInput={(params) => (
-        <TextField {...params} label="Checkboxes" placeholder="Favorites" />
+        <TextField
+          {...params}
+          label="Programming Languages"
+          placeholder="Add Language"
+        />
       )}
     />
   );

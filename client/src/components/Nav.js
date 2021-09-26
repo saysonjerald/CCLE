@@ -1,46 +1,41 @@
 import React, { useState, useContext } from 'react';
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
-import { AppBar, Tab, Tabs, Toolbar, Typography } from '@mui/material';
-
+import {
+  AppBar,
+  Tab,
+  Tabs,
+  Toolbar,
+  Typography,
+  IconButton,
+  Menu,
+  MenuItem,
+  Avatar,
+} from '@mui/material';
+import AccountCircle from '@mui/icons-material/AccountCircle';
 import { UserContext } from '../contexts/UserContext';
+import { makeStyles } from '@mui/styles';
 
 const Nav = () => {
   const { user, loading, navValue, setNavValue } = useContext(UserContext);
 
-  const isLoggedIn = () => {
-    if (user) {
-      let content = [];
+  const useStyles = makeStyles({
+    navHide: {
+      padding: '0!important',
+      minWidth: '0!important',
+    },
+  });
 
-      for (let i = 0; i < 2; i++) {
-        if (i === 0) {
-          content[i] = (
-            <Tab
-              key={i + 10}
-              label="Profile"
-              component={Link}
-              to="/me"
-              value="3"
-              onClick={(e) => setNavValue('3')}
-            />
-          );
-        }
+  const classes = useStyles();
 
-        if (i === 1) {
-          content[i] = (
-            <Tab
-              key={i + 10}
-              label="Logout"
-              component={Link}
-              to="/logout"
-              value="4"
-              onClick={(e) => setNavValue('4')}
-            />
-          );
-        }
-      }
-      return content;
-    }
+  const [anchorEl, setAnchorEl] = React.useState(null);
+
+  const handleMenu = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleClose = () => {
+    setAnchorEl(null);
   };
 
   return (
@@ -65,31 +60,54 @@ const Nav = () => {
               value="2"
               onClick={(e) => setNavValue('2')}
             />
-            {isLoggedIn()}
+            <Tab
+              className={classes.navHide}
+              value="3"
+              onClick={(e) => setNavValue('3')}
+            />
           </Tabs>
+          {user && (
+            <div>
+              <IconButton
+                size="large"
+                aria-label="account of current user"
+                aria-controls="menu-appbar"
+                aria-haspopup="true"
+                onClick={handleMenu}
+                color="inherit"
+              >
+                <Avatar alt="Remy Sharp" src={'../img/users/default.jpg'} />
+              </IconButton>
+              <Menu
+                id="menu-appbar"
+                anchorEl={anchorEl}
+                anchorOrigin={{
+                  vertical: 'bottom',
+                  horizontal: 'center',
+                }}
+                transformOrigin={{
+                  vertical: 'top',
+                  horizontal: 'center',
+                }}
+                open={Boolean(anchorEl)}
+                onClose={handleClose}
+              >
+                <Link to="/profile">
+                  <MenuItem onClick={handleClose} href="/profile">
+                    Profile
+                  </MenuItem>
+                </Link>
+                <Link to="/me">
+                  <MenuItem onClick={handleClose}>My account</MenuItem>
+                </Link>
+                <MenuItem onClick={handleClose}>Logout</MenuItem>
+              </Menu>
+            </div>
+          )}
         </Toolbar>
       </AppBar>
     </>
   );
 };
-
-const NavStyle = styled.nav`
-  width: 100%;
-  height: 30px;
-  background-color: #111;
-  display: flex;
-  justify-content: end;
-  align-items: center;
-
-  & .nav__wrapper {
-    width: 35%;
-    display: flex;
-    justify-content: space-around;
-  }
-
-  & .link {
-    font-size: 16px;
-  }
-`;
 
 export default Nav;

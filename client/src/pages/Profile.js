@@ -11,8 +11,6 @@ const Profile = ({ match }) => {
   const [stopper, setStopper] = useState(0);
   const { setNavValue } = useContext(UserContext);
 
-  setNavValue('3');
-
   const getUser = () => {
     return new Promise(async (resolve, reject) => {
       await axios

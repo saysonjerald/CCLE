@@ -1,72 +1,119 @@
 import React, { useState, useContext, useEffect } from 'react';
 import styled from 'styled-components';
 import axios from 'axios';
-import { TextField, Box } from '@mui/material';
-import { makeStyles } from '@mui/material/styles';
+import {
+  TextField,
+  Box,
+  Grid,
+  Typography,
+  FormControl,
+  FormLabel,
+  RadioGroup,
+  FormControlLabel,
+  Radio,
+} from '@mui/material';
+import { makeStyles } from '@mui/styles';
 
 import Ratings from '../components/Ratings';
-import CheckboxesTags from '../components/SelectProgLanguage';
+import SpokenLanguages from '../components/SpokenLanguages';
 import { UserContext } from '../contexts/UserContext';
 
 const Me = ({ match }) => {
-  const { user } = useContext(UserContext);
+  const { user, setNavValue } = useContext(UserContext);
   const [reviewer, setReviewer] = useState([]);
   const [stopper, setStopper] = useState(0);
 
-  const getMe = () => {
-    return new Promise(async (resolve, reject) => {
-      await axios
-        .create({
-          baseURL: 'http://localhost:3001/',
-          withCredentials: true, //I read around that you need this for cookies to be sent?
-        })
-        .get(`api/v1/users/${user.data._id}/reviews`)
-        .then((review) => {
-          setReviewer(review.data.data.reviews);
-        })
-        .catch((err) => {
-          reject('There was an error');
-        });
-    });
-  };
+  const useStyles = makeStyles({
+    form: {
+      display: 'flex',
+    },
+    margin: {
+      margin: '5px',
+    },
+  });
+
+  const classes = useStyles();
+
+  const [gender, setGender] = useState('male');
 
   useEffect(() => {
-    getMe();
-  }, [stopper]);
+    let unmounted = false;
+
+    if (!unmounted) {
+      setNavValue('3');
+    }
+
+    return () => {
+      unmounted = true;
+    };
+  }, []);
 
   return (
     <User>
-      <img src={`./img/users/${user.data.profilePic}`} alt="" />
-      <h3>
-        {user.data.firstname} {user.data.lastname}
-      </h3>
-      <p>{user.data.bio}</p>
-      <p>{user.data.address}</p>
-      <p>{user.data.programmingLanguage}</p>
-      <p>{user.data.spokenLanguage}</p>
-      <p>{user.data.prices}</p>
-      <p>{user.data.priceStarting}</p>
-      <Ratings
-        ratingsAverage={user.data.ratingsAverage}
-        ratingsQuantity={user.data.ratingsQuantity}
-      />
-      {reviewer.length ? (
-        reviewer.map((review) => {
-          return <p key={review.id}>{review.review}</p>;
-        })
-      ) : (
-        <>
-          <p>There are no reviews</p>
-        </>
-      )}
-      <br />
-      <hr />
-      <h2>Account Settings</h2>
-      <Box component="form" noValidate autoComplete="off">
-        <TextField label="First Name" type="text" variant="outlined" />
-        <TextField label="Last Name" type="text" variant="outlined" />
-        <CheckboxesTags />
-      </Box>
+      <Typography component="h1" variant="h5">
+        Account Setting
+      </Typography>
+      <Grid container spacing={2}>
+        <Grid item xs={4}>
+          <img src={`./img/users/${user.data.profilePic}`} alt="" />
+        </Grid>
+        <Grid item xs={8}>
+          <Grid container spacing={2}>
+            <Box component="form" noValidate autoComplete="off">
+              <FormControl component="fieldset" className={classes.margin}>
+                <FormLabel component="legend">Gender</FormLabel>
+                <RadioGroup
+                  row
+                  aria-label="gender"
+                  name="row-radio-buttons-group"
+                  value={gender}
+                  onChange={(e) => setGender(e.target.value)}
+                >
+                  <FormControlLabel
+                    value="male"
+                    control={<Radio />}
+                    label="Male"
+                  />
+                  <FormControlLabel
+                    value="female"
+                    control={<Radio />}
+                    label="Female"
+                  />
+                </RadioGroup>
+              </FormControl>
+              <div className={classes.form}>
+                <TextField
+                  label="First Name"
+                  type="text"
+                  variant="outlined"
+                  fullWidth
+                  margin="normal"
+                  className={classes.margin}
+                />
+                <TextField
+                  label="Last Name"
+                  type="text"
+                  variant="outlined"
+                  fullWidth
+                  margin="normal"
+                  className={classes.margin}
+                />
+              </div>
+              <TextField
+                label="Bio"
+                variant="outlined"
+                multiline
+                rows={4}
+                fullWidth
+                className={classes.margin}
+              />
+              <div className={classes.margin}>
+                <SpokenLanguages />
+              </div>
+            </Box>
+          </Grid>
+        </Grid>
+      </Grid>
     </User>
   );
 };
