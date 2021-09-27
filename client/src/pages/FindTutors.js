@@ -18,7 +18,6 @@ const FindTutors = () => {
         })
         .get('/users')
         .then((user) => {
-          console.log(user);
           resolve(setUsers(user.data.users));
           setNavValue('2');
         })

@@ -16,7 +16,7 @@ const UserContextProvider = (props) => {
         withCredentials: true, //I read around that you need this for cookies to be sent?
       });
       await auth.get('/isLoggedIn').then((currentUser) => {
-        setUser(currentUser);
+        setUser(currentUser.data);
         setLoading(false);
       });
     } catch (err) {

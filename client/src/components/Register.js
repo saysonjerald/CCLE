@@ -1,5 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
+import { useHistory } from 'react-router-dom';
 import styled from 'styled-components';
+import { UserContext } from '../contexts/UserContext';
 import axios from 'axios';
 import {
   TextField,
@@ -17,12 +19,16 @@ import { makeStyles } from '@mui/styles';
 
 //#region Testing
 const RegisterSection = ({ isHide, setIsHide }) => {
+  const { setUser } = useContext(UserContext);
+
   const [firstname, setFirstname] = useState();
   const [lastname, setLastname] = useState();
   const [email, setEmail] = useState();
   const [gender, setGender] = useState('male');
   const [password, setPassword] = useState();
   const [passwordConfirm, setPasswordConfirm] = useState();
+
+  const history = useHistory();
 
   const useStyles = makeStyles({
     button: {
@@ -55,14 +61,44 @@ const RegisterSection = ({ isHide, setIsHide }) => {
       withCredentials: true, //I read around that you need this for cookies to be sent?
     });
     try {
-      await auth.post('/api/v1/users/signup', {
-        firstname,
-        lastname,
-        gender,
-        email,
-        password,
-        passwordConfirm,
-      });
+      await auth
+        .post('/api/v1/users/signup', {
+          firstname,
+          lastname,
+          gender,
+          email,
+          password,
+          passwordConfirm,
+        })
+        .then(() => {
+          login(email, password);
+        });
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const login = async (email, password) => {
+    const auth = axios.create({
+      baseURL: 'http://localhost:3001/',
+      withCredentials: true, //I read around that you need this for cookies to be sent?
+    });
+    try {
+      await auth
+        .post('/api/v1/users/login', {
+          email,
+          password,
+        })
+        .then(async () => {
+          await auth
+            .get('/isLoggedIn')
+            .then((currentUser) => {
+              setUser(currentUser.data);
+            })
+            .then(() => {
+              history.push('/me');
+            });
+        });
     } catch (err) {
       console.log(err);
     }

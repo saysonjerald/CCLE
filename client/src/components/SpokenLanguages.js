@@ -8,23 +8,130 @@ import CheckBoxIcon from '@mui/icons-material/CheckBox';
 const icon = <CheckBoxOutlineBlankIcon fontSize="small" />;
 const checkedIcon = <CheckBoxIcon fontSize="small" />;
 
+const spokenLanguages = [
+  { language: 'Arabic' },
+  { language: 'Armenian' },
+  { language: 'Azerbaijani' },
+  { language: 'Basque' },
+  { language: 'Belarusian' },
+  { language: 'Bengali' },
+  { language: 'Bosnian' },
+  { language: 'Bulgarian' },
+  { language: 'Catalan' },
+  { language: 'Cebuano' },
+  { language: 'Chichewa' },
+  { language: 'Chinese' },
+  { language: 'Corsican' },
+  { language: 'Croatian' },
+  { language: 'Czech' },
+  { language: 'Danish' },
+  { language: 'Dutch' },
+  { language: 'English' },
+  { language: 'Esperanto' },
+  { language: 'Estonian' },
+  { language: 'Filipino' },
+  { language: 'Finnish' },
+  { language: 'French' },
+  { language: 'Frisian' },
+  { language: 'Galician' },
+  { language: 'Georgian' },
+  { language: 'German' },
+  { language: 'Greek' },
+  { language: 'Gujarati' },
+  { language: 'Haitian Creole' },
+  { language: 'Hausa' },
+  { language: 'Hawaiian' },
+  { language: 'Hebrew' },
+  { language: 'Hindi' },
+  { language: 'Hmong' },
+  { language: 'Hungarian' },
+  { language: 'Icelandic' },
+  { language: 'Igbo' },
+  { language: 'Indonesian' },
+  { language: 'Irish' },
+  { language: 'Italian' },
+  { language: 'Japanese' },
+  { language: 'Javanese' },
+  { language: 'Kannada' },
+  { language: 'Kazakh' },
+  { language: 'Khmer' },
+  { language: 'Kinyarwanda' },
+  { language: 'Korean' },
+  { language: 'Kurdish (Kurmanji)' },
+  { language: 'Kyrgyz' },
+  { language: 'Lao' },
+  { language: 'Latin' },
+  { language: 'Latvian' },
+  { language: 'Lithuanian' },
+  { language: 'Luxembourgish' },
+  { language: 'Macedonian' },
+  { language: 'Malagasy' },
+  { language: 'Malay' },
+  { language: 'Malayalam' },
+  { language: 'Maltese' },
+  { language: 'Maori' },
+  { language: 'Marathi' },
+  { language: 'Mongolian' },
+  { language: 'Myanmar (Burmese)' },
+  { language: 'Nepali' },
+  { language: 'Norwegian' },
+  { language: 'Odia (Oriya)' },
+  { language: 'Pashto' },
+  { language: 'Persian' },
+  { language: 'Polish' },
+  { language: 'Portuguese' },
+  { language: 'Punjabi' },
+  { language: 'Romanian' },
+  { language: 'Samoan' },
+  { language: 'Scots Gaelic' },
+  { language: 'Serbian' },
+  { language: 'Sesotho' },
+  { language: 'Shona' },
+  { language: 'Sindhi' },
+  { language: 'Sinhala' },
+  { language: 'Slovak' },
+  { language: 'Slovenian' },
+  { language: 'Somali' },
+  { language: 'Spanish' },
+  { language: 'Sundanese' },
+  { language: 'Swahili' },
+  { language: 'Swedish' },
+  { language: 'Tajik' },
+  { language: 'Tamil' },
+  { language: 'Tatar' },
+  { language: 'Telugu' },
+  { language: 'Thai' },
+  { language: 'Turkish' },
+  { language: 'Turkmen' },
+  { language: 'Ukrainian' },
+  { language: 'Urdu' },
+  { language: 'Uyghur' },
+  { language: 'Uzbek' },
+  { language: 'Vietnamese' },
+  { language: 'Welsh' },
+  { language: 'Xhosa' },
+  { language: 'Yiddish' },
+  { language: 'Yoruba' },
+  { language: 'Zulu' },
+];
+
 const CheckBoxsesTags = () => {
   return (
     <Autocomplete
       multiple
       id="spokenLanguages"
-      options={top100Films}
+      options={spokenLanguages}
       disableCloseOnSelect
-      getOptionLabel={(option) => option.title}
+      getOptionLabel={(option) => option.language}
       renderOption={(props, option, { selected }) => (
         <li {...props}>
           <Checkbox
             icon={icon}
             checkedIcon={checkedIcon}
-            style={{ marginRight: 8, backgroundColor: 'white' }}
+            style={{ marginRight: 8, backgroundColor: '#333' }}
             checked={selected}
           />
-          {option.title}
+          {option.language}
         </li>
       )}
       style={{ width: 500 }}
@@ -38,56 +145,5 @@ const CheckBoxsesTags = () => {
     />
   );
 };
-
-// Top 100 films as rated by IMDb users. http://www.imdb.com/chart/top
-const top100Films = [
-  { title: 'The Shawshank Redemption', year: 1994 },
-  { title: 'The Godfather', year: 1972 },
-  { title: 'The Godfather: Part II', year: 1974 },
-  { title: 'The Dark Knight', year: 2008 },
-  { title: '12 Angry Men', year: 1957 },
-  { title: "Schindler's List", year: 1993 },
-  { title: 'Pulp Fiction', year: 1994 },
-  {
-    title: 'The Lord of the Rings: The Return of the King',
-    year: 2003,
-  },
-  { title: 'The Good, the Bad and the Ugly', year: 1966 },
-  { title: 'Fight Club', year: 1999 },
-  {
-    title: 'The Lord of the Rings: The Fellowship of the Ring',
-    year: 2001,
-  },
-  {
-    title: 'Star Wars: Episode V - The Empire Strikes Back',
-    year: 1980,
-  },
-  { title: 'Forrest Gump', year: 1994 },
-  { title: 'Inception', year: 2010 },
-  {
-    title: 'The Lord of the Rings: The Two Towers',
-    year: 2002,
-  },
-  { title: "One Flew Over the Cuckoo's Nest", year: 1975 },
-  { title: 'Goodfellas', year: 1990 },
-  { title: 'The Matrix', year: 1999 },
-  { title: 'Seven Samurai', year: 1954 },
-  {
-    title: 'Star Wars: Episode IV - A New Hope',
-    year: 1977,
-  },
-  { title: 'City of God', year: 2002 },
-  { title: 'Se7en', year: 1995 },
-  { title: 'The Silence of the Lambs', year: 1991 },
-  { title: "It's a Wonderful Life", year: 1946 },
-  { title: 'Life Is Beautiful', year: 1997 },
-  { title: 'The Usual Suspects', year: 1995 },
-  { title: 'Léon: The Professional', year: 1994 },
-  { title: 'Spirited Away', year: 2001 },
-  { title: 'Saving Private Ryan', year: 1998 },
-  { title: 'Once Upon a Time in the West', year: 1968 },
-  { title: 'American History X', year: 1998 },
-  { title: 'Interstellar', year: 2014 },
-];
 
 export default CheckBoxsesTags;

@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useHistory } from 'react-router-dom';
 import styled from 'styled-components';
 import axios from 'axios';
 import { TextField, Button, Typography } from '@mui/material';
@@ -8,6 +9,8 @@ import ArrowForwardIosOutlinedIcon from '@mui/icons-material/ArrowForwardIosOutl
 const LoginSection = ({ isHide, setIsHide, user, setUser }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+
+  const history = useHistory();
 
   const useStyles = makeStyles({
     button: {
@@ -30,9 +33,16 @@ const LoginSection = ({ isHide, setIsHide, user, setUser }) => {
           password,
         })
         .then(async () => {
-          await auth.get('/isLoggedIn').then((currentUser) => {
-            setUser(currentUser);
+          const user = await auth.get('/isLoggedIn').then((currentUser) => {
+            setUser(currentUser.data);
+            return currentUser.data;
           });
+          return user;
+        })
+        .then((user) => {
+          if (user) {
+            history.push(`/user/${user._id}`);
+          }
         });
     } catch (err) {
       console.log(err);

@@ -11,6 +11,18 @@ const Profile = ({ match }) => {
   const [stopper, setStopper] = useState(0);
   const { setNavValue } = useContext(UserContext);
 
+  useEffect(() => {
+    let unmounted = false;
+
+    if (!unmounted) {
+      setNavValue('3');
+    }
+
+    return () => {
+      unmounted = true;
+    };
+  }, []);
+
   const getUser = () => {
     return new Promise(async (resolve, reject) => {
       await axios

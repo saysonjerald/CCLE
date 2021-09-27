@@ -1,5 +1,4 @@
-import React, { useState, useContext } from 'react';
-import styled from 'styled-components';
+import React, { useContext } from 'react';
 import { Link } from 'react-router-dom';
 import {
   AppBar,
@@ -12,12 +11,11 @@ import {
   MenuItem,
   Avatar,
 } from '@mui/material';
-import AccountCircle from '@mui/icons-material/AccountCircle';
 import { UserContext } from '../contexts/UserContext';
 import { makeStyles } from '@mui/styles';
 
 const Nav = () => {
-  const { user, loading, navValue, setNavValue } = useContext(UserContext);
+  const { user, navValue, setNavValue } = useContext(UserContext);
 
   const useStyles = makeStyles({
     navHide: {
@@ -76,7 +74,10 @@ const Nav = () => {
                 onClick={handleMenu}
                 color="inherit"
               >
-                <Avatar alt="Remy Sharp" src={'../img/users/default.jpg'} />
+                <Avatar
+                  alt="Remy Sharp"
+                  src={`../img/users/${user.profilePic}`}
+                />
               </IconButton>
               <Menu
                 id="menu-appbar"
@@ -92,10 +93,8 @@ const Nav = () => {
                 open={Boolean(anchorEl)}
                 onClose={handleClose}
               >
-                <Link to="/profile">
-                  <MenuItem onClick={handleClose} href="/profile">
-                    Profile
-                  </MenuItem>
+                <Link to={`/user/${user._id}`}>
+                  <MenuItem onClick={handleClose}>Profile</MenuItem>
                 </Link>
                 <Link to="/me">
                   <MenuItem onClick={handleClose}>My account</MenuItem>
