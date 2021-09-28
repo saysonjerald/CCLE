@@ -32,12 +32,9 @@ const LoginSection = ({ isHide, setIsHide, user, setUser }) => {
           email,
           password,
         })
-        .then(async () => {
-          const user = await auth.get('/isLoggedIn').then((currentUser) => {
-            setUser(currentUser.data);
-            return currentUser.data;
-          });
-          return user;
+        .then((currentUser) => {
+          setUser(currentUser.data.user);
+          return currentUser.data.user;
         })
         .then((user) => {
           if (user) {

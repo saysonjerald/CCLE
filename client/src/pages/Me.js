@@ -20,10 +20,11 @@ import SpokenLanguages from '../components/SpokenLanguages';
 import { UserContext } from '../contexts/UserContext';
 
 const Me = ({ match }) => {
-  const { user, setNavValue } = useContext(UserContext);
+  const { user, setUser, setNavValue, urlAPI } = useContext(UserContext);
   const [firstname, setFirstname] = useState(user.firstname);
   const [lastname, setLastname] = useState(user.lastname);
   const [gender, setGender] = useState(user.gender);
+  let photoUploaded;
 
   const useStyles = makeStyles({
     form: {
@@ -43,9 +44,15 @@ const Me = ({ match }) => {
   const profilePic = {
     title: 'Upload Photo',
     width: '100%',
-    url: `./img/users/${user.profilePic}`,
+    url: `${urlAPI}img/users/${user.profilePic}`,
   };
 
+  const authAxios = axios.create({
+    baseURL: urlAPI,
+    withCredentials: true, //I read around that you need this for cookies to be sent?
+  });
+
+  //#region CSS STYLED COMPONENT
   const ImageButton = styled(ButtonBase)(({ theme }) => ({
     position: 'relative',
     height: 350,
@@ -109,6 +116,62 @@ const Me = ({ match }) => {
     left: 'calc(50% - 9px)',
     transition: theme.transitions.create('opacity'),
   }));
+  //#endregion
+
+  //#region  Functions
+  // Create a reference to the hidden file input element
+  const hiddenFileInput = useRef(null);
+
+  // Programatically click the hidden file input element
+  // when the Button component is clicked
+  const handleClick = (event) => {
+    hiddenFileInput.current.click();
+  };
+  // Call a function (passed as a prop from the parent component)
+  // to handle the user-selected file
+  const handleChange = (event) => {
+    photoUploaded = event.target.files[0];
+    const form = new FormData();
+
+    form.append('profilePic', photoUploaded);
+    updateSettings(form, 'data').then((data) => {
+      setUser({ ...user, profilePic: `${data.data.user.profilePic}` });
+    });
+  };
+
+  const updateSettings = async (data, type) => {
+    try {
+      const url =
+        type === 'password'
+          ? `${urlAPI}api/v1/users/updateMyPassword`
+          : `${urlAPI}api/v1/users/updateMe`;
+
+      const res = await authAxios({
+        method: 'PATCH',
+        url,
+        data,
+      });
+
+      if (res.data.status === 'success') {
+        console.log('success', `${type.toUpperCase()} updated successfully!`);
+        return res;
+      }
+    } catch (err) {
+      console.log('error', err.response.data.message);
+    }
+  };
+
+  const updateData = (e) => {
+    e.preventDefault();
+
+    const form = new FormData();
+    form.append('firstname', firstname);
+    form.append('lastname', lastname);
+    form.append('gender', gender);
+
+    updateSettings(form, 'data');
+  };
+  //#endregion
 
   useEffect(() => {
     let unmounted = false;
@@ -121,21 +184,6 @@ const Me = ({ match }) => {
       unmounted = true;
     };
   }, []);
-
-  // Create a reference to the hidden file input element
-  const hiddenFileInput = useRef(null);
-
-  // Programatically click the hidden file input element
-  // when the Button component is clicked
-  const handleClick = (event) => {
-    hiddenFileInput.current.click();
-  };
-  // Call a function (passed as a prop from the parent component)
-  // to handle the user-selected file
-  const handleChange = (event) => {
-    const fileUploaded = event.target.files[0];
-    // props.handleFile(fileUploaded);
-  };
 
   return (
     <div className={classes.wrapper}>
@@ -159,6 +207,8 @@ const Me = ({ match }) => {
                 onChange={handleChange}
                 style={{ display: 'none' }}
                 accept="image/jpeg, image/jpg,image/png"
+                id="profilePic"
+                name="profilePic"
               />
               <ImageButton
                 onClick={handleClick}
@@ -254,6 +304,7 @@ const Me = ({ match }) => {
                   className={classes.margin}
                   type="submit"
                   variant="contained"
+                  onClick={updateData}
                 >
                   Update Account
                 </Button>

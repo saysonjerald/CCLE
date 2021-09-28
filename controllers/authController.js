@@ -29,9 +29,7 @@ const createSendToken = (user, statusCode, res) => {
   res.status(statusCode).json({
     status: 'success',
     token,
-    data: {
-      user,
-    },
+    user,
   });
 };
 
@@ -73,13 +71,14 @@ exports.login = catchAsync(async (req, res, next) => {
 });
 
 exports.protect = catchAsync(async (req, res, next) => {
-  // 1) Getting token and check of it's
   let token;
   if (
     req.headers.authorization &&
     req.headers.authorization.startsWith('Bearer')
   ) {
     token = req.headers.authorization.split(' ')[1];
+  } else if (req.cookies.jwt) {
+    token = req.cookies.jwt;
   }
 
   // 1) Getting token and check if it's there
@@ -109,6 +108,7 @@ exports.protect = catchAsync(async (req, res, next) => {
   }
   // GRANT ACCESS TO PROTECTED ROUTE
   req.user = currentUser;
+  res.locals.user = currentUser;
   next();
 });
 

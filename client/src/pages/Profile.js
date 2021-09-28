@@ -30,7 +30,7 @@ const Profile = ({ match }) => {
           await axios
             .get(`http://localhost:3001/api/v1/users/${match.params.id}`)
             .then((user) => {
-              resolve(setUser(user.data.data.user));
+              resolve(setUser(user.data.user));
             }),
           await axios
             .create({
@@ -39,7 +39,7 @@ const Profile = ({ match }) => {
             })
             .get(`api/v1/users/${match.params.id}/reviews`)
             .then((review) => {
-              setReviewer(review.data.data.reviews);
+              setReviewer(review.data.reviews);
               console.log(review);
             }),
         ])

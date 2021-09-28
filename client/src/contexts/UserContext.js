@@ -8,6 +8,7 @@ const UserContextProvider = (props) => {
   const [stopper, setStopper] = useState(0);
   const [loading, setLoading] = useState(true);
   const [navValue, setNavValue] = useState('1');
+  const [urlAPI, seturlAPI] = useState('http://localhost:3001/');
 
   async function findUser() {
     try {
@@ -27,11 +28,19 @@ const UserContextProvider = (props) => {
 
   useEffect(() => {
     findUser();
-  }, [stopper]);
+  }, []);
 
   return (
     <UserContext.Provider
-      value={{ user, setUser, loading, navValue, setNavValue }}
+      value={{
+        user,
+        setUser,
+        loading,
+        navValue,
+        setNavValue,
+        urlAPI,
+        findUser,
+      }}
     >
       {props.children}
     </UserContext.Provider>

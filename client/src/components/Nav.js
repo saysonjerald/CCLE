@@ -15,7 +15,7 @@ import { UserContext } from '../contexts/UserContext';
 import { makeStyles } from '@mui/styles';
 
 const Nav = () => {
-  const { user, navValue, setNavValue } = useContext(UserContext);
+  const { user, navValue, setNavValue, urlAPI } = useContext(UserContext);
 
   const useStyles = makeStyles({
     navHide: {
@@ -75,8 +75,8 @@ const Nav = () => {
                 color="inherit"
               >
                 <Avatar
-                  alt="Remy Sharp"
-                  src={`../img/users/${user.profilePic}`}
+                  alt={`${user.firstname}`}
+                  src={`${urlAPI}/img/users/${user.profilePic}`}
                 />
               </IconButton>
               <Menu
