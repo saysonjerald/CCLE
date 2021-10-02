@@ -80,7 +80,9 @@ exports.updateMe = catchAsync(async (req, res, next) => {
     'firstname',
     'lastname',
     'gender',
-    'bio'
+    'bio',
+    'spokenLanguage',
+    'address'
   );
   if (req.file) filteredBody.profilePic = req.file.filename;
 

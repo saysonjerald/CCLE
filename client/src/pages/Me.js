@@ -12,11 +12,13 @@ import {
   Radio,
   ButtonBase,
   Button,
+  Divider,
 } from '@mui/material';
 import { makeStyles } from '@mui/styles';
 import { styled } from '@mui/material';
 
 import SpokenLanguages from '../components/SpokenLanguages';
+import Address from '../components/Address';
 import { UserContext } from '../contexts/UserContext';
 
 const Me = ({ match }) => {
@@ -24,6 +26,12 @@ const Me = ({ match }) => {
   const [firstname, setFirstname] = useState(user.firstname);
   const [lastname, setLastname] = useState(user.lastname);
   const [gender, setGender] = useState(user.gender);
+  const [bio, setBio] = useState(user.bio);
+  const [spokenLanguage, setSpokenLanguage] = useState(user.spokenLanguage);
+  const [address, setAddress] = useState(user.address);
+  const [currentPassword, setCurrentPassword] = useState('');
+  const [newPassword, setNewPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
   let photoUploaded;
 
   const useStyles = makeStyles({
@@ -38,7 +46,6 @@ const Me = ({ match }) => {
       margin: '50px auto',
     },
   });
-
   const classes = useStyles();
 
   const profilePic = {
@@ -133,10 +140,12 @@ const Me = ({ match }) => {
     photoUploaded = event.target.files[0];
     const form = new FormData();
 
-    form.append('profilePic', photoUploaded);
-    updateSettings(form, 'data').then((data) => {
-      setUser({ ...user, profilePic: `${data.data.user.profilePic}` });
-    });
+    if (form) {
+      form.append('profilePic', photoUploaded);
+      updateSettings(form, 'data').then((data) => {
+        setUser({ ...user, profilePic: `${data.data.user.profilePic}` });
+      });
+    }
   };
 
   const updateSettings = async (data, type) => {
@@ -160,7 +169,6 @@ const Me = ({ match }) => {
       console.log('error', err.response.data.message);
     }
   };
-
   const updateData = (e) => {
     e.preventDefault();
 
@@ -168,6 +176,13 @@ const Me = ({ match }) => {
     form.append('firstname', firstname);
     form.append('lastname', lastname);
     form.append('gender', gender);
+    form.append('bio', bio);
+
+    for (var i = 0; i < spokenLanguage.length; i++) {
+      form.append('spokenLanguage', spokenLanguage[i]);
+    }
+
+    form.append('address', address);
 
     updateSettings(form, 'data');
   };
@@ -252,7 +267,7 @@ const Me = ({ match }) => {
                     row
                     aria-label="gender"
                     name="row-radio-buttons-group"
-                    value={gender}
+                    value={gender ? gender : ''}
                     onClick={(e) => setGender(e.target.value)}
                   >
                     <FormControlLabel
@@ -269,6 +284,7 @@ const Me = ({ match }) => {
                 </FormControl>
                 <div className={classes.form}>
                   <TextField
+                    inputProps={{ style: { textTransform: 'capitalize' } }}
                     label="First Name"
                     type="text"
                     variant="outlined"
@@ -279,6 +295,7 @@ const Me = ({ match }) => {
                     onChange={(e) => setFirstname(e.target.value)}
                   />
                   <TextField
+                    inputProps={{ style: { textTransform: 'capitalize' } }}
                     label="Last Name"
                     type="text"
                     variant="outlined"
@@ -296,9 +313,17 @@ const Me = ({ match }) => {
                   rows={4}
                   fullWidth
                   className={classes.margin}
+                  value={bio}
+                  onChange={(e) => setBio(e.target.value)}
                 />
                 <div className={classes.margin}>
-                  <SpokenLanguages />
+                  <SpokenLanguages
+                    spokenLanguage={spokenLanguage}
+                    setSpokenLanguage={setSpokenLanguage}
+                  />
+                </div>
+                <div className={classes.margin}>
+                  <Address address={address} setAddress={setAddress} />
                 </div>
                 <Button
                   className={classes.margin}
@@ -310,6 +335,51 @@ const Me = ({ match }) => {
                 </Button>
               </Box>
             </Grid>
+            <hr style={{ margin: '40px' }} />
+            <Typography component="h2" variant="h6">
+              Password Change
+            </Typography>
+            <TextField
+              inputProps={{ style: { textTransform: 'capitalize' } }}
+              label="Current Password"
+              type="password"
+              variant="outlined"
+              fullWidth
+              margin="normal"
+              className={classes.margin}
+              value={currentPassword}
+              onChange={(e) => setCurrentPassword(e.target.value)}
+            />
+            <TextField
+              inputProps={{ style: { textTransform: 'capitalize' } }}
+              label="New Password"
+              type="password"
+              variant="outlined"
+              fullWidth
+              margin="normal"
+              className={classes.margin}
+              value={newPassword}
+              onChange={(e) => setNewPassword(e.target.value)}
+            />
+            <TextField
+              inputProps={{ style: { textTransform: 'capitalize' } }}
+              label="Confirm Password"
+              type="password"
+              variant="outlined"
+              fullWidth
+              margin="normal"
+              className={classes.margin}
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
+            />
+            <Button
+              className={classes.margin}
+              type="submit"
+              variant="contained"
+              onClick={updateData}
+            >
+              Update Password
+            </Button>
           </Grid>
         </Grid>
       </div>
