@@ -10,7 +10,7 @@ const icon = <CheckBoxOutlineBlankIcon fontSize="small" />;
 const checkedIcon = <CheckBoxIcon fontSize="small" />;
 
 const Address = ({ address, setAddress }) => {
-  let add = address.split(',');
+  let add = address ? address.split(',') : ['', ''];
   const countryList = getAddress.getCountries();
   const [country, setCountry] = useState(add[0]);
   const [city, setCity] = useState(add[1]);

@@ -12,7 +12,6 @@ import {
   Radio,
   ButtonBase,
   Button,
-  Divider,
 } from '@mui/material';
 import { makeStyles } from '@mui/styles';
 import { styled } from '@mui/material';
@@ -159,6 +158,7 @@ const Me = ({ match }) => {
         method: 'PATCH',
         url,
         data,
+        headers: { 'content-type': 'application/x-www-form-urlencoded' },
       });
 
       if (res.data.status === 'success') {
@@ -169,7 +169,31 @@ const Me = ({ match }) => {
       console.log('error', err.response.data.message);
     }
   };
-  const updateData = (e) => {
+
+  const updatePassword = async (e) => {
+    e.preventDefault();
+    try {
+      const res = await axios
+        .create({
+          baseURL: urlAPI,
+          withCredentials: true, //I read around that you need this for cookies to be sent?
+        })
+        .patch(`${urlAPI}api/v1/users/updateMyPassword`, {
+          passwordCurrent: currentPassword,
+          password: newPassword,
+          passwordConfirm: confirmPassword,
+        });
+
+      if (res.data.status === 'success') {
+        console.log('success updated successfully!');
+        return res;
+      }
+    } catch (err) {
+      console.log('error', err.response.data.message);
+    }
+  };
+
+  const updateData = async (e) => {
     e.preventDefault();
 
     const form = new FormData();
@@ -184,7 +208,7 @@ const Me = ({ match }) => {
 
     form.append('address', address);
 
-    updateSettings(form, 'data');
+    await updateSettings(form, 'data');
   };
   //#endregion
 
@@ -333,53 +357,50 @@ const Me = ({ match }) => {
                 >
                   Update Account
                 </Button>
+                <hr style={{ margin: '40px' }} />
+                <Typography component="h2" variant="h6">
+                  Password Change
+                </Typography>
+                <TextField
+                  label="Current Password"
+                  type="password"
+                  variant="outlined"
+                  fullWidth
+                  margin="normal"
+                  className={classes.margin}
+                  value={currentPassword}
+                  onChange={(e) => setCurrentPassword(e.target.value)}
+                />
+                <TextField
+                  label="New Password"
+                  type="password"
+                  variant="outlined"
+                  fullWidth
+                  margin="normal"
+                  className={classes.margin}
+                  value={newPassword}
+                  onChange={(e) => setNewPassword(e.target.value)}
+                />
+                <TextField
+                  label="Confirm Password"
+                  type="password"
+                  variant="outlined"
+                  fullWidth
+                  margin="normal"
+                  className={classes.margin}
+                  value={confirmPassword}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
+                />
+                <Button
+                  className={classes.margin}
+                  type="submit"
+                  variant="contained"
+                  onClick={updatePassword}
+                >
+                  Update Password
+                </Button>
               </Box>
             </Grid>
-            <hr style={{ margin: '40px' }} />
-            <Typography component="h2" variant="h6">
-              Password Change
-            </Typography>
-            <TextField
-              inputProps={{ style: { textTransform: 'capitalize' } }}
-              label="Current Password"
-              type="password"
-              variant="outlined"
-              fullWidth
-              margin="normal"
-              className={classes.margin}
-              value={currentPassword}
-              onChange={(e) => setCurrentPassword(e.target.value)}
-            />
-            <TextField
-              inputProps={{ style: { textTransform: 'capitalize' } }}
-              label="New Password"
-              type="password"
-              variant="outlined"
-              fullWidth
-              margin="normal"
-              className={classes.margin}
-              value={newPassword}
-              onChange={(e) => setNewPassword(e.target.value)}
-            />
-            <TextField
-              inputProps={{ style: { textTransform: 'capitalize' } }}
-              label="Confirm Password"
-              type="password"
-              variant="outlined"
-              fullWidth
-              margin="normal"
-              className={classes.margin}
-              value={confirmPassword}
-              onChange={(e) => setConfirmPassword(e.target.value)}
-            />
-            <Button
-              className={classes.margin}
-              type="submit"
-              variant="contained"
-              onClick={updateData}
-            >
-              Update Password
-            </Button>
           </Grid>
         </Grid>
       </div>
