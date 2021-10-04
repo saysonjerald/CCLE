@@ -209,6 +209,12 @@ userSchema.virtual('reviews', {
   localField: '_id',
 });
 
+userSchema.virtual('programmingLanguages', {
+  ref: 'ProgrammingLanguage',
+  foreignField: 'user',
+  localField: '_id',
+});
+
 userSchema.pre('save', async function (next) {
   //Only runthis function if password was actually modified
   if (!this.isModified('password')) return next();

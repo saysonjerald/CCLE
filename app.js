@@ -13,6 +13,7 @@ const globalErrorHandler = require('./controllers/errorController');
 const userRoute = require('./routes/userRoutes');
 const viewRoute = require('./routes/viewRoutes');
 const reviewRoute = require('./routes/reviewRoutes');
+const programmingLanguageRoutes = require('./routes/programmingLanguageRoutes');
 
 const app = express();
 
@@ -68,6 +69,7 @@ app.use(express.static(`${__dirname}/public`));
 app.use('/', viewRoute);
 app.use('/api/v1/users', userRoute);
 app.use('/api/v1/reviews', reviewRoute);
+app.use('/api/v1/programmingLanguage', programmingLanguageRoutes);
 
 app.all('*', (req, res, next) => {
   next(new AppError(`Can't find ${req.originalUrl} on this server`, 404));
