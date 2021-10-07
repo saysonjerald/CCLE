@@ -28,7 +28,7 @@ const UserContextProvider = (props) => {
 
   useEffect(() => {
     findUser();
-  }, []);
+  }, [stopper]);
 
   return (
     <UserContext.Provider

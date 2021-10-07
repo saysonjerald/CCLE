@@ -41,7 +41,7 @@ function App() {
           <Switch>
             <Route exact path="/" component={Home} />
             <PrivateRoute exact path="/find-tutors" component={FindTutors} />
-            <Route path="/user/:id" component={Profile} />
+            <PrivateRoute path="/user/:id" component={Profile} />
             <PrivateRoute exact path="/me" component={Me} />
           </Switch>
         </UserContextProvider>

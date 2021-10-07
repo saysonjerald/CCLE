@@ -1,33 +1,44 @@
 import React, { useState, useContext } from 'react';
-import axios from 'axios';
 import {
   Typography,
   Button,
+  Card,
+  CardMedia,
+  CardContent,
+  CardActions,
+  Chip,
   Dialog,
   DialogTitle,
   DialogContent,
-  TextField,
-  DialogActions,
   Autocomplete,
   Checkbox,
+  TextField,
+  DialogActions,
 } from '@mui/material';
-
+import axios from 'axios';
+import { v4 as uuidv4 } from 'uuid';
 import CheckBoxOutlineBlankIcon from '@mui/icons-material/CheckBoxOutlineBlank';
 import CheckBoxIcon from '@mui/icons-material/CheckBox';
+import { UserContext } from '../contexts/UserContext';
 
 import { makeStyles } from '@mui/styles';
-import { UserContext } from '../contexts/UserContext';
+import { stringToColour } from '../utils/stringToColor';
 
 const icon = <CheckBoxOutlineBlankIcon fontSize="small" />;
 const checkedIcon = <CheckBoxIcon fontSize="small" />;
 
-const ProgrammingLanguages = ({ match }) => {
+const ProgrammingCard = ({
+  id,
+  language,
+  choosenTopic,
+  choosenDescription,
+}) => {
   const { user, urlAPI } = useContext(UserContext);
   const [open, setOpen] = useState(false);
 
-  const [programmingLanguage, setProgrammingLanguage] = useState('');
-  const [topic, setTopic] = useState([]);
-  const [description, setDescription] = useState('');
+  const [programmingLanguage, setProgrammingLanguage] = useState(language);
+  const [topic, setTopic] = useState(choosenTopic);
+  const [description, setDescription] = useState(choosenDescription);
 
   const useStyles = makeStyles({
     form: {
@@ -40,8 +51,16 @@ const ProgrammingLanguages = ({ match }) => {
       width: '1200px',
       margin: '50px auto',
     },
+    card: {
+      display: 'flex',
+      margin: '5px',
+      flexDirection: 'column',
+      justifyContent: 'space-between',
+    },
   });
   const classes = useStyles();
+  const color = stringToColour(language);
+  const img_url = `https://singlecolorimage.com/get/${color}/400x140`;
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -51,7 +70,7 @@ const ProgrammingLanguages = ({ match }) => {
     setOpen(false);
   };
 
-  const addProgrammingLanguage = async (e) => {
+  const updateProgrammingLanguage = async (e) => {
     e.preventDefault();
     try {
       const res = await axios
@@ -59,7 +78,7 @@ const ProgrammingLanguages = ({ match }) => {
           baseURL: urlAPI,
           withCredentials: true, //I read around that you need this for cookies to be sent?
         })
-        .post(`${urlAPI}api/v1/users/${user.id}/programmingLanguage`, {
+        .patch(`${urlAPI}api/v1/users/${user.id}/programmingLanguage/${id}`, {
           language: programmingLanguage,
           topic,
           description,
@@ -77,14 +96,59 @@ const ProgrammingLanguages = ({ match }) => {
     }
   };
 
+  const deleteProgrammingLanguage = async (e) => {
+    e.preventDefault();
+    try {
+      const res = await axios
+        .create({
+          baseURL: urlAPI,
+          withCredentials: true, //I read around that you need this for cookies to be sent?
+        })
+        .delete(`${urlAPI}api/v1/users/${user.id}/programmingLanguage/${id}`);
+
+      if (res.data.status === 'success') {
+        console.log('success: Deleted successfully!');
+        setProgrammingLanguage('');
+        setTopic([]);
+        setDescription('');
+        return res;
+      }
+    } catch (err) {
+      console.log('error', err.response.data.message);
+    }
+  };
+
   return (
     <>
-      <Typography component="h2" variant="h6">
-        Programming Languages
-      </Typography>
-      <Button variant="contained" onClick={handleClickOpen}>
-        Add Language
-      </Button>
+      <Card sx={{ maxWidth: 345 }} className={classes.card}>
+        <CardMedia
+          component="img"
+          alt={`${language}`}
+          height="140"
+          image={`https://textoverimage.moesif.com/image?image_url=${img_url}&overlay_color=2c2c2c68&text=${language}&text_size=32&margin=0&y_align=middle&x_align=center`}
+        />
+        <CardContent>
+          {topic.length ? (
+            topic.map((name) => {
+              return <Chip label={name} size="small" key={uuidv4()} />;
+            })
+          ) : (
+            <>No topics available</>
+          )}
+          <Typography variant="body2" color="text.secondary">
+            {description}
+          </Typography>
+        </CardContent>
+        <CardActions>
+          <Button size="small" onClick={deleteProgrammingLanguage}>
+            Delete
+          </Button>
+          <Button size="small" onClick={handleClickOpen}>
+            Update
+          </Button>
+        </CardActions>
+      </Card>
+
       <Dialog open={open} onClose={handleClose}>
         <DialogTitle>What's your programming language?</DialogTitle>
         <DialogContent>
@@ -137,7 +201,6 @@ const ProgrammingLanguages = ({ match }) => {
                   icon={icon}
                   checkedIcon={checkedIcon}
                   style={{ marginRight: 8, backgroundColor: '#333' }}
-                  checked={selected}
                 />
                 {option}
               </li>
@@ -167,14 +230,14 @@ const ProgrammingLanguages = ({ match }) => {
           <Button onClick={handleClose}>Cancel</Button>
           <Button
             onClick={async (e) => {
-              await addProgrammingLanguage(e)
+              await updateProgrammingLanguage(e)
                 .then(() => {
                   handleClose();
                 })
                 .catch((err) => handleClose());
             }}
           >
-            Add Language
+            Update Language
           </Button>
         </DialogActions>
       </Dialog>
@@ -331,4 +394,4 @@ const topicList = [
   'Others',
 ];
 
-export default ProgrammingLanguages;
+export default ProgrammingCard;

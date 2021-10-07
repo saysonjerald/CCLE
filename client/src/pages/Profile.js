@@ -2,26 +2,20 @@ import React, { useState, useEffect, useContext } from 'react';
 import styled from 'styled-components';
 import axios from 'axios';
 
+import { Grid } from '@mui/material';
+
 import { UserContext } from '../contexts/UserContext';
 import Ratings from '../components/Ratings';
+import ProgrammingLanguages from '../components/ProgrammingLanguages';
+import ProgrammingCard from '../components/ProgrammingCard';
+import { makeStyles } from '@mui/styles';
 
 const Profile = ({ match }) => {
-  const [user, setUser] = useState({});
+  const { user, setNavValue } = useContext(UserContext);
+  const [userProfile, setUserProfile] = useState({});
   const [reviewer, setReviewer] = useState([]);
+  const [programmingLanguage, setProgrammingLanguage] = useState([]);
   const [stopper, setStopper] = useState(0);
-  const { setNavValue } = useContext(UserContext);
-
-  useEffect(() => {
-    let unmounted = false;
-
-    if (!unmounted) {
-      setNavValue('3');
-    }
-
-    return () => {
-      unmounted = true;
-    };
-  }, []);
 
   const getUser = () => {
     return new Promise(async (resolve, reject) => {
@@ -30,7 +24,7 @@ const Profile = ({ match }) => {
           await axios
             .get(`http://localhost:3001/api/v1/users/${match.params.id}`)
             .then((user) => {
-              resolve(setUser(user.data.user));
+              resolve(setUserProfile(user.data.user));
             }),
           await axios
             .create({
@@ -40,7 +34,16 @@ const Profile = ({ match }) => {
             .get(`api/v1/users/${match.params.id}/reviews`)
             .then((review) => {
               setReviewer(review.data.reviews);
-              console.log(review);
+            }),
+          await axios
+            .create({
+              baseURL: 'http://localhost:3001/',
+              withCredentials: true, //I read around that you need this for cookies to be sent?
+            })
+            .get(`api/v1/users/${match.params.id}/programmingLanguage`)
+            .then((programmingLang) => {
+              setProgrammingLanguage(programmingLang.data.programmingLang);
+              console.log(programmingLang.data.programmingLang);
             }),
         ])
         .catch((err) => {
@@ -50,23 +53,75 @@ const Profile = ({ match }) => {
   };
 
   useEffect(() => {
-    getUser();
-  }, [stopper]);
+    let unmounted = false;
+    if (!unmounted) {
+      setNavValue('3');
+      getUser();
+    }
+
+    return () => {
+      unmounted = true;
+    };
+  }, [match.params.id]);
+
+  const useStyles = makeStyles({
+    form: {
+      display: 'flex',
+    },
+    margin: {
+      margin: '5px',
+    },
+    wrapper: {
+      width: '1200px',
+      margin: '50px auto',
+    },
+  });
+  const classes = useStyles();
 
   return (
     <User>
       <h3>
-        {user.firstname} {user.lastname}
+        {userProfile.firstname} {userProfile.lastname}
       </h3>
-      <p>{user.bio}</p>
-      <p>{user.address}</p>
-      <p>{user.programmingLanguage}</p>
-      <p>{user.spokenLanguage}</p>
-      <p>{user.prices}</p>
-      <p>{user.priceStarting}</p>
+      <p>{userProfile.bio}</p>
+      <p>{userProfile.address}</p>
+      <p>{userProfile.programmingLanguage}</p>
+      <p>{userProfile.spokenLanguage}</p>
+      <p>{userProfile.prices}</p>
+      <p>{userProfile.priceStarting}</p>
+      {match.params.id === user.id ? (
+        <>
+          <hr style={{ margin: '40px' }} />
+          <ProgrammingLanguages />
+        </>
+      ) : (
+        <>
+          <p></p>
+        </>
+      )}
+      <Grid className={classes.form}>
+        {programmingLanguage.length ? (
+          programmingLanguage.map((programmingLang) => {
+            return (
+              <ProgrammingCard
+                key={programmingLang.id}
+                id={programmingLang.id}
+                language={programmingLang.language}
+                choosenTopic={programmingLang.topic}
+                choosenDescription={programmingLang.description}
+              />
+            );
+          })
+        ) : (
+          <>
+            <p>Empty programming language</p>
+          </>
+        )}
+      </Grid>
+      <hr style={{ margin: '40px' }} />
       <Ratings
-        ratingsAverage={user.ratingsAverage}
-        ratingsQuantity={user.ratingsQuantity}
+        ratingsAverage={userProfile.ratingsAverage}
+        ratingsQuantity={userProfile.ratingsQuantity}
       />
       {reviewer.length ? (
         reviewer.map((review) => {
