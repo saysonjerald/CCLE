@@ -14,11 +14,11 @@ Collaborative Code Learning Environment using MERN stack
 
 ✅ **Protected Routes (September 12, 2021)**
 
-❌ **User Profile**
+✅ **User Profile (Octobery 9, 2021)**
 
-❌ **Updating User Profile**
+✅ **Updating User Profile  (Octobery 9, 2021)**
 
-❌ **Ratings**
+✅ **Ratings  (Octobery 9, 2021)**
 
 ❌ **Making Chatroom**
 
