@@ -20,7 +20,17 @@ Collaborative Code Learning Environment using MERN stack
 
 ✅ **Ratings  (Octobery 9, 2021)**
 
-❌ **Making Chatroom**
+❌ **Email Verification**
+
+❌ **Making Session**
+
+❌ **Making Code Colaboration**
+
+❌ **Making Video Chat**
+
+❌ **Making Message Chat**
+
+❌ **Making Admin Chat**
 
 ❌ **...more list to come**
 
