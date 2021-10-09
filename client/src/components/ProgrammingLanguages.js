@@ -14,20 +14,26 @@ import {
 
 import CheckBoxOutlineBlankIcon from '@mui/icons-material/CheckBoxOutlineBlank';
 import CheckBoxIcon from '@mui/icons-material/CheckBox';
-
 import { makeStyles } from '@mui/styles';
+
 import { UserContext } from '../contexts/UserContext';
 
 const icon = <CheckBoxOutlineBlankIcon fontSize="small" />;
 const checkedIcon = <CheckBoxIcon fontSize="small" />;
 
-const ProgrammingLanguages = ({ match }) => {
+const ProgrammingLanguages = ({
+  match,
+  language,
+  setLanguage,
+  topic,
+  setTopic,
+  description,
+  setDescription,
+  setProgrammingLanguageKnown,
+}) => {
   const { user, urlAPI } = useContext(UserContext);
-  const [open, setOpen] = useState(false);
 
-  const [programmingLanguage, setProgrammingLanguage] = useState('');
-  const [topic, setTopic] = useState([]);
-  const [description, setDescription] = useState('');
+  const [open, setOpen] = useState(false);
 
   const useStyles = makeStyles({
     form: {
@@ -51,6 +57,22 @@ const ProgrammingLanguages = ({ match }) => {
     setOpen(false);
   };
 
+  const getProgrammingLanguage = async () => {
+    try {
+      await axios
+        .create({
+          baseURL: urlAPI,
+          withCredentials: true, //I read around that you need this for cookies to be sent?
+        })
+        .get(`api/v1/users/${match}/programmingLanguage`)
+        .then((programmingLang) => {
+          setProgrammingLanguageKnown(programmingLang.data.programmingLang);
+        });
+    } catch (err) {
+      console.log('error', err.response.data.message);
+    }
+  };
+
   const addProgrammingLanguage = async (e) => {
     e.preventDefault();
     try {
@@ -60,16 +82,17 @@ const ProgrammingLanguages = ({ match }) => {
           withCredentials: true, //I read around that you need this for cookies to be sent?
         })
         .post(`${urlAPI}api/v1/users/${user.id}/programmingLanguage`, {
-          language: programmingLanguage,
+          language,
           topic,
           description,
         });
 
       if (res.data.status === 'success') {
         console.log('success updated successfully!');
-        setProgrammingLanguage('');
+        setLanguage('');
         setTopic([]);
         setDescription('');
+        await getProgrammingLanguage();
         return res;
       }
     } catch (err) {
@@ -93,12 +116,12 @@ const ProgrammingLanguages = ({ match }) => {
             id="programmingLanguages"
             options={programmingLanguageList}
             onChange={(event, value) => {
-              setProgrammingLanguage(value);
+              setLanguage(value);
             }}
             isOptionEqualToValue={(option, value) =>
               option.title === value.title
             }
-            value={programmingLanguage}
+            value={language}
             getOptionLabel={(option) => option}
             renderOption={(props, option, { selected }) => (
               <li {...props}>

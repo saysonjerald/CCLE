@@ -29,9 +29,11 @@ const checkedIcon = <CheckBoxIcon fontSize="small" />;
 
 const ProgrammingCard = ({
   id,
+  match,
   language,
   choosenTopic,
   choosenDescription,
+  setProgrammingLanguageKnown,
 }) => {
   const { user, urlAPI } = useContext(UserContext);
   const [open, setOpen] = useState(false);
@@ -70,6 +72,22 @@ const ProgrammingCard = ({
     setOpen(false);
   };
 
+  const getProgrammingLanguage = async () => {
+    try {
+      await axios
+        .create({
+          baseURL: urlAPI,
+          withCredentials: true, //I read around that you need this for cookies to be sent?
+        })
+        .get(`api/v1/users/${match}/programmingLanguage`)
+        .then((programmingLang) => {
+          setProgrammingLanguageKnown(programmingLang.data.programmingLang);
+        });
+    } catch (err) {
+      console.log('error', err.response.data.message);
+    }
+  };
+
   const updateProgrammingLanguage = async (e) => {
     e.preventDefault();
     try {
@@ -82,6 +100,9 @@ const ProgrammingCard = ({
           language: programmingLanguage,
           topic,
           description,
+        })
+        .then(async () => {
+          await getProgrammingLanguage();
         });
 
       if (res.data.status === 'success') {
@@ -89,6 +110,7 @@ const ProgrammingCard = ({
         setProgrammingLanguage('');
         setTopic([]);
         setDescription('');
+        await getProgrammingLanguage();
         return res;
       }
     } catch (err) {
@@ -99,20 +121,18 @@ const ProgrammingCard = ({
   const deleteProgrammingLanguage = async (e) => {
     e.preventDefault();
     try {
-      const res = await axios
+      await axios
         .create({
           baseURL: urlAPI,
           withCredentials: true, //I read around that you need this for cookies to be sent?
         })
-        .delete(`${urlAPI}api/v1/users/${user.id}/programmingLanguage/${id}`);
-
-      if (res.data.status === 'success') {
-        console.log('success: Deleted successfully!');
-        setProgrammingLanguage('');
-        setTopic([]);
-        setDescription('');
-        return res;
-      }
+        .delete(`${urlAPI}api/v1/users/${user.id}/programmingLanguage/${id}`)
+        .then(async () => {
+          await getProgrammingLanguage();
+          setProgrammingLanguage('');
+          setTopic([]);
+          setDescription('');
+        });
     } catch (err) {
       console.log('error', err.response.data.message);
     }
@@ -140,12 +160,20 @@ const ProgrammingCard = ({
           </Typography>
         </CardContent>
         <CardActions>
-          <Button size="small" onClick={deleteProgrammingLanguage}>
-            Delete
-          </Button>
-          <Button size="small" onClick={handleClickOpen}>
-            Update
-          </Button>
+          {user.id === match ? (
+            <>
+              <Button size="small" onClick={deleteProgrammingLanguage}>
+                Delete
+              </Button>
+              <Button size="small" onClick={handleClickOpen}>
+                Update
+              </Button>
+            </>
+          ) : (
+            <>
+              <p></p>
+            </>
+          )}
         </CardActions>
       </Card>
 
@@ -193,7 +221,7 @@ const ProgrammingCard = ({
               setTopic(value);
             }}
             disableCloseOnSelect
-            value={topic.map((value) => value)}
+            defaultValue={choosenTopic.map((value) => value)}
             getOptionLabel={(option) => option}
             renderOption={(props, option, { selected }) => (
               <li {...props}>
@@ -222,7 +250,7 @@ const ProgrammingCard = ({
             multiline
             rows={4}
             fullWidth
-            value={description}
+            defaultValue={choosenDescription}
             onChange={(e) => setDescription(e.target.value)}
           />
         </DialogContent>

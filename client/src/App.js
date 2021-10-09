@@ -5,7 +5,11 @@ import { createTheme, ThemeProvider } from '@mui/material/styles';
 
 import Nav from './components/Nav';
 import GlobalStyle from './components/GlobalStyle';
+
 import UserContextProvider from './contexts/UserContext';
+import ProgrammingLanguageProvider from './contexts/ProgrammingLanguageContext';
+import ReviewProvider from './contexts/ReviewContext';
+
 import PrivateRoute from './utils/PrivateRoute';
 
 import Home from './pages/Home';
@@ -35,15 +39,23 @@ function App() {
       <ThemeProvider theme={theme}>
         <GlobalStyle />
         <UserContextProvider>
-          <Toolbar>
-            <Nav />
-          </Toolbar>
-          <Switch>
-            <Route exact path="/" component={Home} />
-            <PrivateRoute exact path="/find-tutors" component={FindTutors} />
-            <PrivateRoute path="/user/:id" component={Profile} />
-            <PrivateRoute exact path="/me" component={Me} />
-          </Switch>
+          <ProgrammingLanguageProvider>
+            <ReviewProvider>
+              <Toolbar>
+                <Nav />
+              </Toolbar>
+              <Switch>
+                <Route exact path="/" component={Home} />
+                <PrivateRoute
+                  exact
+                  path="/find-tutors"
+                  component={FindTutors}
+                />
+                <PrivateRoute path="/user/:id" component={Profile} />
+                <PrivateRoute exact path="/me" component={Me} />
+              </Switch>
+            </ReviewProvider>
+          </ProgrammingLanguageProvider>
         </UserContextProvider>
         <CssBaseline />
       </ThemeProvider>

@@ -2,19 +2,33 @@ import React, { useState, useEffect, useContext } from 'react';
 import styled from 'styled-components';
 import axios from 'axios';
 
-import { Grid } from '@mui/material';
+import { Grid, Typography } from '@mui/material';
+import { makeStyles } from '@mui/styles';
 
 import { UserContext } from '../contexts/UserContext';
-import Ratings from '../components/Ratings';
+import { ProrammingLanguageContext } from '../contexts/ProgrammingLanguageContext';
+import { ReviewContext } from '../contexts/ReviewContext';
+
 import ProgrammingLanguages from '../components/ProgrammingLanguages';
 import ProgrammingCard from '../components/ProgrammingCard';
-import { makeStyles } from '@mui/styles';
+import ReviewCard from '../components/ReviewCard';
+import ReviewPost from '../components/ReviewPost';
 
 const Profile = ({ match }) => {
   const { user, setNavValue } = useContext(UserContext);
+  const {
+    language,
+    setLanguage,
+    topic,
+    setTopic,
+    description,
+    setDescription,
+    programmingLanguageKnown,
+    setProgrammingLanguageKnown,
+  } = useContext(ProrammingLanguageContext);
+  const { reviewer, setReviewer } = useContext(ReviewContext);
+
   const [userProfile, setUserProfile] = useState({});
-  const [reviewer, setReviewer] = useState([]);
-  const [programmingLanguage, setProgrammingLanguage] = useState([]);
   const [stopper, setStopper] = useState(0);
 
   const getUser = () => {
@@ -42,8 +56,7 @@ const Profile = ({ match }) => {
             })
             .get(`api/v1/users/${match.params.id}/programmingLanguage`)
             .then((programmingLang) => {
-              setProgrammingLanguage(programmingLang.data.programmingLang);
-              console.log(programmingLang.data.programmingLang);
+              setProgrammingLanguageKnown(programmingLang.data.programmingLang);
             }),
         ])
         .catch((err) => {
@@ -92,7 +105,16 @@ const Profile = ({ match }) => {
       {match.params.id === user.id ? (
         <>
           <hr style={{ margin: '40px' }} />
-          <ProgrammingLanguages />
+          <ProgrammingLanguages
+            match={match.params.id}
+            language={language}
+            setLanguage={setLanguage}
+            topic={topic}
+            setTopic={setTopic}
+            description={description}
+            setDescription={setDescription}
+            setProgrammingLanguageKnown={setProgrammingLanguageKnown}
+          />
         </>
       ) : (
         <>
@@ -100,15 +122,17 @@ const Profile = ({ match }) => {
         </>
       )}
       <Grid className={classes.form}>
-        {programmingLanguage.length ? (
-          programmingLanguage.map((programmingLang) => {
+        {programmingLanguageKnown.length ? (
+          programmingLanguageKnown.map((programmingLang) => {
             return (
               <ProgrammingCard
+                match={match.params.id}
                 key={programmingLang.id}
                 id={programmingLang.id}
                 language={programmingLang.language}
                 choosenTopic={programmingLang.topic}
                 choosenDescription={programmingLang.description}
+                setProgrammingLanguageKnown={setProgrammingLanguageKnown}
               />
             );
           })
@@ -119,16 +143,32 @@ const Profile = ({ match }) => {
         )}
       </Grid>
       <hr style={{ margin: '40px' }} />
-      <Ratings
-        ratingsAverage={userProfile.ratingsAverage}
-        ratingsQuantity={userProfile.ratingsQuantity}
-      />
+      {match.params.id !== user.id ? (
+        <ReviewPost
+          userURL={match.params.id}
+          reviewer={reviewer}
+          setReviewer={setReviewer}
+          match={match.params.id}
+        />
+      ) : (
+        <>
+          <p></p>
+        </>
+      )}
+      <Typography component="h2" variant="h5">
+        Reviews({userProfile.ratingsQuantity})
+      </Typography>
       {reviewer.length ? (
         reviewer.map((review) => {
           return (
-            <p key={review.id}>
-              {review.user.firstname}: {review.review}
-            </p>
+            <ReviewCard
+              key={review.id}
+              review={review.review}
+              rating={review.rating}
+              firstname={review.user.firstname}
+              lastname={review.user.lastname}
+              profilePic={review.user.profilePic}
+            />
           );
         })
       ) : (
