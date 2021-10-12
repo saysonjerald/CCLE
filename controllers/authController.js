@@ -4,7 +4,7 @@ const jwt = require('jsonwebtoken');
 const User = require('../models/userModel');
 const catchAsync = require('../utils/catchAsync');
 const AppError = require('../utils/appError');
-const sendEmail = require('../utils/email');
+const Email = require('../utils/email');
 
 const signToken = (id) => {
   const value = jwt.sign({ id }, process.env.JWT_SECRET, {
@@ -21,9 +21,11 @@ const createSendToken = (user, statusCode, res) => {
       Date.now() + process.env.JWT_COOKIE_EXPIRES_IN * 24 * 60 * 60 * 1000
     ),
     httpOnly: true,
-    sameSite: 'none',
   };
-  if (process.env.NODE_ENV !== 'production') cookieOptions.secure = true;
+  if (process.env.NODE_ENV === 'production') {
+    cookieOptions.secure = true;
+    cookieOptions.sameSite = 'none';
+  }
 
   res.cookie('jwt', token, cookieOptions);
 
@@ -50,7 +52,50 @@ exports.signup = catchAsync(async (req, res, next) => {
     priceStarting: req.body.priceStarting,
   });
 
+  if (!newUser) {
+    return next(new AppError('This is an error!', 404));
+  }
+
+  const emailToken = newUser.createEmailToken();
+  await newUser.save({ validateBeforeSave: false });
+
+  const url = `${req.protocol}://${req.get(
+    'host'
+  )}/api/v1/users/verifyEmail/${emailToken}`;
+  console.log(url);
+  await new Email(newUser, url).sendWelcome();
+
   createSendToken(newUser, 201, res);
+});
+
+exports.verifyAccount = catchAsync(async (req, res, next) => {
+  try {
+    // 1) Get user based on the token
+    const hashedToken = crypto
+      .createHash('sha256')
+      .update(req.params.emailToken)
+      .digest('hex');
+
+    const user = await User.findOne({
+      emailToken: hashedToken,
+    });
+    console.log(user);
+
+    // 2) If token has not expired, and there is user, set the new password
+    if (!user) {
+      return next(new AppError('Token is invalid or has expired', 400));
+    }
+
+    user.isVerify = true;
+
+    await user.save({ validateBeforeSave: false });
+
+    // 3) Update changedPasswordAt property for the user
+    // 4) Log the user in, send JWT
+    createSendToken(user, 200, res);
+  } catch (err) {
+    console.log(err);
+  }
 });
 
 exports.login = catchAsync(async (req, res, next) => {
@@ -137,19 +182,11 @@ exports.forgotPassword = catchAsync(async (req, res, next) => {
   const resetToken = user.createPasswordResetToken();
   await user.save({ validateBeforeSave: false });
 
-  // 3) Send it to the user's email
-  const resetURL = `${req.protocol}://${req.get(
-    'host'
-  )}/api/v1/users/resetPassword/${resetToken}`;
-
-  const message = `Forgot your password? Submit a PATCH request with your new password and passwordConfirm to: ${resetURL}\nIf you didn't forget your password, please ignore this email!`;
-
   try {
-    await sendEmail({
-      email: user.email,
-      subject: 'Your password reset token (valid for 10 min)',
-      message,
-    });
+    const resetURL = `${req.protocol}://${req.get(
+      'host'
+    )}/api/v1/users/resetPassword/${resetToken}`;
+    await new Email(user, resetURL).sendPasswordReset();
 
     res.status(200).json({
       status: 'success',

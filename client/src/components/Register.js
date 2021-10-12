@@ -116,6 +116,7 @@ const RegisterSection = ({ isHide, setIsHide }) => {
       </Typography>
       <TextField
         className={classes.inputText}
+        inputProps={{ style: { textTransform: 'capitalize' } }}
         label="First Name"
         type="text"
         required
@@ -123,6 +124,7 @@ const RegisterSection = ({ isHide, setIsHide }) => {
       />
       <TextField
         className={classes.inputText}
+        inputProps={{ style: { textTransform: 'capitalize' } }}
         label="Last Name"
         type="text"
         required

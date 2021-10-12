@@ -22,6 +22,13 @@ const userSchema = new mongoose.Schema(
       lowercase: true,
       validate: [validator.isEmail, 'Please provide a valid email'],
     },
+    emailToken: {
+      type: String,
+    },
+    isVerify: {
+      type: Boolean,
+      default: false,
+    },
     password: {
       type: String,
       required: [true, 'Please provide your password'],
@@ -273,11 +280,16 @@ userSchema.methods.createPasswordResetToken = function () {
     .update(resetToken)
     .digest('hex');
 
-  console.log({ resetToken }, this.passwordResetToken);
-
   this.passwordResetExpires = Date.now() + 100 * 60 * 1000;
 
   return resetToken;
+};
+
+userSchema.methods.createEmailToken = function () {
+  const token = crypto.randomBytes(32).toString('hex');
+  this.emailToken = crypto.createHash('sha256').update(token).digest('hex');
+
+  return token;
 };
 
 const User = mongoose.model('User', userSchema);
