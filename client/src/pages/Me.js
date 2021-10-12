@@ -16,6 +16,8 @@ import {
 import { makeStyles } from '@mui/styles';
 import { styled } from '@mui/material';
 
+import IsEmailVerify from '../components/IsEmailVerify';
+
 import SpokenLanguages from '../components/SpokenLanguages';
 import Address from '../components/Address';
 import { UserContext } from '../contexts/UserContext';
@@ -404,6 +406,7 @@ const Me = ({ match }) => {
           </Grid>
         </Grid>
       </div>
+      <IsEmailVerify />
     </div>
   );
 };

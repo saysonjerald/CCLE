@@ -11,6 +11,7 @@ import ProgrammingLanguageProvider from './contexts/ProgrammingLanguageContext';
 import ReviewProvider from './contexts/ReviewContext';
 
 import PrivateRoute from './utils/PrivateRoute';
+import VerifyAccount from './pages/VerifyAccount';
 
 import Home from './pages/Home';
 import FindTutors from './pages/FindTutors';
@@ -53,6 +54,10 @@ function App() {
                 />
                 <PrivateRoute path="/user/:id" component={Profile} />
                 <PrivateRoute exact path="/me" component={Me} />
+                <Route
+                  path="/verifyAccount/:emailToken"
+                  component={VerifyAccount}
+                />
               </Switch>
             </ReviewProvider>
           </ProgrammingLanguageProvider>

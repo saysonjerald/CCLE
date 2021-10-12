@@ -59,10 +59,16 @@ exports.signup = catchAsync(async (req, res, next) => {
   const emailToken = newUser.createEmailToken();
   await newUser.save({ validateBeforeSave: false });
 
-  const url = `${req.protocol}://${req.get(
-    'host'
-  )}/api/v1/users/verifyEmail/${emailToken}`;
+  // FOR API -----------
+  // const url = `${req.protocol}://${req.get(
+  //   'host'
+  // )}/api/v1/users/verifyEmail/${emailToken}`;
+  // console.log(url);
+
+  // FOR WEB -----------
+  const url = `${req.protocol}://localhost:3000/verifyAccount/${emailToken}`;
   console.log(url);
+
   await new Email(newUser, url).sendWelcome();
 
   createSendToken(newUser, 201, res);
