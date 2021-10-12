@@ -20,7 +20,7 @@ Collaborative Code Learning Environment using MERN stack
 
 ✅ **Ratings  (Octobery 9, 2021)**
 
-❌ **Email Verification**
+✅ **Email Verification**
 
 ❌ **Making Session**
 
