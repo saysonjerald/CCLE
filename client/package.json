@@ -15,15 +15,21 @@
     "@testing-library/react": "^11.2.7",
     "@testing-library/user-event": "^12.8.3",
     "axios": "^0.21.4",
+    "codemirror": "^5.63.3",
     "country-city": "^1.0.0",
     "framer-motion": "^4.1.17",
+    "randomcolor": "^0.6.2",
     "react": "^17.0.2",
+    "react-codemirror2": "^7.2.1",
     "react-dom": "^17.0.2",
     "react-intersection-observer": "^8.32.1",
     "react-router-dom": "^5.2.1",
     "react-scripts": "4.0.3",
     "styled-components": "^5.3.1",
-    "web-vitals": "^1.1.2"
+    "web-vitals": "^1.1.2",
+    "y-codemirror": "^2.1.1",
+    "y-webrtc": "^10.2.0",
+    "yjs": "^13.5.14"
   },
   "scripts": {
     "start": "react-scripts start",

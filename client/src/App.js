@@ -17,6 +17,7 @@ import Home from './pages/Home';
 import FindTutors from './pages/FindTutors';
 import Profile from './pages/Profile';
 import Me from './pages/Me';
+import Session from './pages/Session';
 
 const theme = createTheme({
   palette: {
@@ -42,22 +43,25 @@ function App() {
         <UserContextProvider>
           <ProgrammingLanguageProvider>
             <ReviewProvider>
-              <Toolbar>
-                <Nav />
-              </Toolbar>
               <Switch>
-                <Route exact path="/" component={Home} />
-                <PrivateRoute
-                  exact
-                  path="/find-tutors"
-                  component={FindTutors}
-                />
-                <PrivateRoute path="/user/:id" component={Profile} />
-                <PrivateRoute exact path="/me" component={Me} />
-                <Route
-                  path="/verifyAccount/:emailToken"
-                  component={VerifyAccount}
-                />
+                <PrivateRoute path="/session/:id" component={Session} />
+                <>
+                  <Toolbar>
+                    <Nav />
+                  </Toolbar>
+                  <Route exact path="/" component={Home} />
+                  <PrivateRoute
+                    exact
+                    path="/find-tutors"
+                    component={FindTutors}
+                  />
+                  <PrivateRoute path="/user/:id" component={Profile} />
+                  <PrivateRoute exact path="/me" component={Me} />
+                  <Route
+                    path="/verifyAccount/:emailToken"
+                    component={VerifyAccount}
+                  />
+                </>
               </Switch>
             </ReviewProvider>
           </ProgrammingLanguageProvider>

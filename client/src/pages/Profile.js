@@ -1,8 +1,9 @@
 import React, { useState, useEffect, useContext } from 'react';
+import { useHistory } from 'react-router-dom';
 import styled from 'styled-components';
 import axios from 'axios';
 
-import { Grid, Typography } from '@mui/material';
+import { Grid, Typography, Button } from '@mui/material';
 import { makeStyles } from '@mui/styles';
 
 import { UserContext } from '../contexts/UserContext';
@@ -15,7 +16,8 @@ import ReviewCard from '../components/ReviewCard';
 import ReviewPost from '../components/ReviewPost';
 
 const Profile = ({ match }) => {
-  const { user, setNavValue } = useContext(UserContext);
+  const history = useHistory();
+  const { user, setNavValue, urlAPI } = useContext(UserContext);
   const {
     language,
     setLanguage,
@@ -91,11 +93,34 @@ const Profile = ({ match }) => {
   });
   const classes = useStyles();
 
+  const onHandleNewCollaborate = async () => {
+    try {
+      await axios
+        .create({
+          baseURL: urlAPI,
+          withCredentials: true, //I read around that you need this for cookies to be sent?
+        })
+        .post(`${urlAPI}session`, {})
+        .then((data) => {
+          history.push(`/session/${data.data.newSession.id}`);
+        });
+    } catch (err) {
+      console.log('error', err);
+    }
+  };
+
   return (
     <User>
       <h3>
         {userProfile.firstname} {userProfile.lastname}
       </h3>
+      <Button
+        onClick={onHandleNewCollaborate}
+        variant="contained"
+        color="success"
+      >
+        Collaborate Now
+      </Button>
       <p>{userProfile.bio}</p>
       <p>{userProfile.address}</p>
       <p>{userProfile.programmingLanguage}</p>

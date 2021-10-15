@@ -8,4 +8,7 @@ router.get('/isLoggedIn', authController.isLoggedIn);
 
 router.get('/getUser/:slug', veiwController.getUser);
 
+router.post('/session', veiwController.createSession);
+router.get('/session/:id', veiwController.getSession);
+
 module.exports = router;
