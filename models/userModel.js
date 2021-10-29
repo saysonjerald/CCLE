@@ -222,6 +222,18 @@ userSchema.virtual('programmingLanguages', {
   localField: '_id',
 });
 
+userSchema.virtual('pendingAppointmentStudent', {
+  ref: 'PendingAppointment',
+  foreignField: 'student',
+  localField: '_id',
+});
+
+userSchema.virtual('pendingAppointmentTeacher', {
+  ref: 'PendingAppointment',
+  foreignField: 'teacher',
+  localField: '_id',
+});
+
 userSchema.pre('save', async function (next) {
   //Only runthis function if password was actually modified
   if (!this.isModified('password')) return next();

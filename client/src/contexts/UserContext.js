@@ -1,5 +1,6 @@
 import React, { useEffect, useState, createContext } from 'react';
 import axios from 'axios';
+import { io } from 'socket.io-client';
 
 export const UserContext = createContext();
 
@@ -33,10 +34,16 @@ const UserContextProvider = (props) => {
           baseURL: 'http://localhost:3001/',
           withCredentials: true, //I read around that you need this for cookies to be sent?
         });
-        await auth.get('/isLoggedIn').then((currentUser) => {
-          setUser(currentUser.data);
-          setLoading(false);
-        });
+        await auth
+          .get('/isLoggedIn')
+          .then((currentUser) => {
+            setUser(currentUser.data);
+            setLoading(false);
+          })
+          .then(() => {
+            // const socket = io('http://localhost:3001');
+            // socket.emit('online', { id: user.id, isOnline: true });
+          });
       } catch (err) {
         console.log(err);
         setLoading(false);

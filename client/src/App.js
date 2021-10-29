@@ -9,6 +9,7 @@ import GlobalStyle from './components/GlobalStyle';
 import UserContextProvider from './contexts/UserContext';
 import ProgrammingLanguageProvider from './contexts/ProgrammingLanguageContext';
 import ReviewProvider from './contexts/ReviewContext';
+import BookingProvider from './contexts/BookingContext';
 
 import PrivateRoute from './utils/PrivateRoute';
 import VerifyAccount from './pages/VerifyAccount';
@@ -43,26 +44,28 @@ function App() {
         <UserContextProvider>
           <ProgrammingLanguageProvider>
             <ReviewProvider>
-              <Switch>
-                <PrivateRoute path="/session/:id" component={Session} />
-                <>
-                  <Toolbar>
-                    <Nav />
-                  </Toolbar>
-                  <Route exact path="/" component={Home} />
-                  <PrivateRoute
-                    exact
-                    path="/find-tutors"
-                    component={FindTutors}
-                  />
-                  <PrivateRoute path="/user/:id" component={Profile} />
-                  <PrivateRoute exact path="/me" component={Me} />
-                  <Route
-                    path="/verifyAccount/:emailToken"
-                    component={VerifyAccount}
-                  />
-                </>
-              </Switch>
+              <BookingProvider>
+                <Switch>
+                  <PrivateRoute path="/session/:id" component={Session} />
+                  <>
+                    <Toolbar>
+                      <Nav />
+                    </Toolbar>
+                    <Route exact path="/" component={Home} />
+                    <PrivateRoute
+                      exact
+                      path="/find-tutors"
+                      component={FindTutors}
+                    />
+                    <PrivateRoute path="/user/:id" component={Profile} />
+                    <PrivateRoute exact path="/me" component={Me} />
+                    <Route
+                      path="/verifyAccount/:emailToken"
+                      component={VerifyAccount}
+                    />
+                  </>
+                </Switch>
+              </BookingProvider>
             </ReviewProvider>
           </ProgrammingLanguageProvider>
         </UserContextProvider>

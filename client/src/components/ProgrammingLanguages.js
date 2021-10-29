@@ -102,9 +102,6 @@ const ProgrammingLanguages = ({
 
   return (
     <>
-      <Typography component="h2" variant="h6">
-        Programming Languages
-      </Typography>
       <Button variant="contained" onClick={handleClickOpen}>
         Add Language
       </Button>

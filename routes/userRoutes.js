@@ -3,6 +3,7 @@ const userController = require('../controllers/userController');
 const authController = require('../controllers/authController');
 const reviewRoutes = require('./reviewRoutes');
 const programmingLanguageRoutes = require('./programmingLanguageRoutes');
+const pendingAppointmentRoutes = require('./pendingAppointmentRoutes');
 
 const router = express.Router();
 
@@ -47,5 +48,8 @@ router
 
 router.use('/:id/programmingLanguage', programmingLanguageRoutes);
 router.use('/:revieweeId/reviews', reviewRoutes);
+router.use('/:teacher/pendingAppointment', pendingAppointmentRoutes);
+router.use('/:teacher/pendingAppointment/teacher', pendingAppointmentRoutes);
+router.use('/:teacher/pendingAppointment/student', pendingAppointmentRoutes);
 
 module.exports = router;

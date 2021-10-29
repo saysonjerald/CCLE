@@ -3,17 +3,20 @@ import { useHistory } from 'react-router-dom';
 import styled from 'styled-components';
 import axios from 'axios';
 
-import { Grid, Typography, Button } from '@mui/material';
+import { Grid, Typography, Button, Avatar } from '@mui/material';
 import { makeStyles } from '@mui/styles';
 
 import { UserContext } from '../contexts/UserContext';
 import { ProrammingLanguageContext } from '../contexts/ProgrammingLanguageContext';
 import { ReviewContext } from '../contexts/ReviewContext';
+import { BookingContext } from '../contexts/BookingContext';
 
 import ProgrammingLanguages from '../components/ProgrammingLanguages';
 import ProgrammingCard from '../components/ProgrammingCard';
 import ReviewCard from '../components/ReviewCard';
 import ReviewPost from '../components/ReviewPost';
+import PendingCardTeacher from '../components/PendingCardTeacher';
+import PendingCardStudent from '../components/PendingCardStudent';
 
 const Profile = ({ match }) => {
   const history = useHistory();
@@ -29,6 +32,12 @@ const Profile = ({ match }) => {
     setProgrammingLanguageKnown,
   } = useContext(ProrammingLanguageContext);
   const { reviewer, setReviewer } = useContext(ReviewContext);
+  const {
+    pendingAppointmentStudent,
+    setPendingAppointmentStudent,
+    pendingAppointmentTeacher,
+    setPendingAppointmentTeacher,
+  } = useContext(BookingContext);
 
   const [userProfile, setUserProfile] = useState({});
   const [stopper, setStopper] = useState(0);
@@ -59,6 +68,24 @@ const Profile = ({ match }) => {
             .get(`api/v1/users/${match.params.id}/programmingLanguage`)
             .then((programmingLang) => {
               setProgrammingLanguageKnown(programmingLang.data.programmingLang);
+            }),
+          await axios
+            .create({
+              baseURL: 'http://localhost:3001/',
+              withCredentials: true, //I read around that you need this for cookies to be sent?
+            })
+            .get(`api/v1/users/${match.params.id}/pendingAppointment/student`)
+            .then((data) => {
+              setPendingAppointmentStudent(data.data.pendingAppointmentStudent);
+            }),
+          await axios
+            .create({
+              baseURL: 'http://localhost:3001/',
+              withCredentials: true, //I read around that you need this for cookies to be sent?
+            })
+            .get(`api/v1/users/${match.params.id}/pendingAppointment/teacher`)
+            .then((data) => {
+              setPendingAppointmentTeacher(data.data.pendingAppointmentTeacher);
             }),
         ])
         .catch((err) => {
@@ -103,6 +130,7 @@ const Profile = ({ match }) => {
         .post(`${urlAPI}session`, {})
         .then((data) => {
           history.push(`/session/${data.data.newSession.id}`);
+          console.log(userProfile);
         });
     } catch (err) {
       console.log('error', err);
@@ -111,6 +139,11 @@ const Profile = ({ match }) => {
 
   return (
     <User>
+      <Avatar
+        alt={`${userProfile.firstname} ${userProfile.lastname}`}
+        src={`${urlAPI}/img/users/${userProfile.profilePic}`}
+        sx={{ width: 156, height: 156 }}
+      />
       <h3>
         {userProfile.firstname} {userProfile.lastname}
       </h3>
@@ -119,7 +152,7 @@ const Profile = ({ match }) => {
         variant="contained"
         color="success"
       >
-        Collaborate Now
+        Set Appointment
       </Button>
       <p>{userProfile.bio}</p>
       <p>{userProfile.address}</p>
@@ -127,6 +160,60 @@ const Profile = ({ match }) => {
       <p>{userProfile.spokenLanguage}</p>
       <p>{userProfile.prices}</p>
       <p>{userProfile.priceStarting}</p>
+      {match.params.id === user.id ? (
+        <>
+          <Typography component="h2" variant="h5">
+            Appointment Request({pendingAppointmentTeacher.length})
+          </Typography>
+          <Grid container spacing={2}>
+            {pendingAppointmentTeacher.length ? (
+              pendingAppointmentTeacher.map((appointment) => {
+                return (
+                  <PendingCardTeacher
+                    key={appointment.id}
+                    profilePic={appointment.student.profilePic}
+                    firstname={appointment.student.firstname}
+                    lastname={appointment.student.lastname}
+                    startingDate={appointment.startingDate}
+                    endDate={appointment.endingDate}
+                  />
+                );
+              })
+            ) : (
+              <>
+                <p>There are no request appointments</p>
+              </>
+            )}
+          </Grid>
+        </>
+      ) : (
+        <>
+          <p></p>
+        </>
+      )}
+      <Typography component="h2" variant="h5">
+        Your Pending Appointment({pendingAppointmentStudent.length})
+      </Typography>
+      <Grid container spacing={2}>
+        {pendingAppointmentStudent.length ? (
+          pendingAppointmentStudent.map((appointment) => {
+            return (
+              <PendingCardStudent
+                key={appointment.id}
+                profilePic={appointment.student.profilePic}
+                firstname={appointment.student.firstname}
+                lastname={appointment.student.lastname}
+                startingDate={appointment.startingDate}
+                ing={appointment.endingDate}
+              />
+            );
+          })
+        ) : (
+          <>
+            <p>There are no request appointments</p>
+          </>
+        )}
+      </Grid>
       {match.params.id === user.id ? (
         <>
           <hr style={{ margin: '40px' }} />
@@ -146,6 +233,9 @@ const Profile = ({ match }) => {
           <p></p>
         </>
       )}
+      <Typography component="h2" variant="h5">
+        Programming Languages
+      </Typography>
       <Grid className={classes.form}>
         {programmingLanguageKnown.length ? (
           programmingLanguageKnown.map((programmingLang) => {
@@ -157,6 +247,7 @@ const Profile = ({ match }) => {
                 language={programmingLang.language}
                 choosenTopic={programmingLang.topic}
                 choosenDescription={programmingLang.description}
+                programmingLanguageKnown={programmingLanguageKnown}
                 setProgrammingLanguageKnown={setProgrammingLanguageKnown}
               />
             );

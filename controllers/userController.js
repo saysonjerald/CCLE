@@ -117,6 +117,8 @@ exports.getUser = catchAsync(async (req, res, next) => {
   const user = await User.findById(req.params.id).populate([
     'reviews',
     'programmingLanguages',
+    'pendingAppointmentStudent',
+    'pendingAppointmentTeacher',
   ]);
 
   if (!user) {

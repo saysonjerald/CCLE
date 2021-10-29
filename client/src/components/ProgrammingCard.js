@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import {
   Typography,
   Button,
@@ -33,6 +33,7 @@ const ProgrammingCard = ({
   language,
   choosenTopic,
   choosenDescription,
+  programmingLanguageKnown,
   setProgrammingLanguageKnown,
 }) => {
   const { user, urlAPI } = useContext(UserContext);
@@ -41,6 +42,9 @@ const ProgrammingCard = ({
   const [programmingLanguage, setProgrammingLanguage] = useState(language);
   const [topic, setTopic] = useState(choosenTopic);
   const [description, setDescription] = useState(choosenDescription);
+
+  const [initTopic, setInitTopic] = useState();
+  const [initDescription, setInitDescription] = useState();
 
   const useStyles = makeStyles({
     form: {
@@ -80,8 +84,8 @@ const ProgrammingCard = ({
           withCredentials: true, //I read around that you need this for cookies to be sent?
         })
         .get(`api/v1/users/${match}/programmingLanguage`)
-        .then((programmingLang) => {
-          setProgrammingLanguageKnown(programmingLang.data.programmingLang);
+        .then((data) => {
+          setProgrammingLanguageKnown(data.data.programmingLang);
         });
     } catch (err) {
       console.log('error', err.response.data.message);
@@ -98,10 +102,11 @@ const ProgrammingCard = ({
         })
         .patch(`${urlAPI}api/v1/users/${user.id}/programmingLanguage/${id}`, {
           language: programmingLanguage,
-          topic,
-          description,
+          topic: initTopic,
+          description: initDescription,
         })
-        .then(async () => {
+        .then(async (data) => {
+          setProgrammingLanguageKnown(data.data.programmingLang);
           await getProgrammingLanguage();
         });
 
@@ -110,7 +115,7 @@ const ProgrammingCard = ({
         setProgrammingLanguage('');
         setTopic([]);
         setDescription('');
-        await getProgrammingLanguage();
+
         return res;
       }
     } catch (err) {
@@ -129,9 +134,6 @@ const ProgrammingCard = ({
         .delete(`${urlAPI}api/v1/users/${user.id}/programmingLanguage/${id}`)
         .then(async () => {
           await getProgrammingLanguage();
-          setProgrammingLanguage('');
-          setTopic([]);
-          setDescription('');
         });
     } catch (err) {
       console.log('error', err.response.data.message);
@@ -218,7 +220,7 @@ const ProgrammingCard = ({
             id="topics"
             options={topicList}
             onChange={(event, value) => {
-              setTopic(value);
+              setInitTopic(value);
             }}
             disableCloseOnSelect
             defaultValue={choosenTopic.map((value) => value)}
@@ -251,7 +253,7 @@ const ProgrammingCard = ({
             rows={4}
             fullWidth
             defaultValue={choosenDescription}
-            onChange={(e) => setDescription(e.target.value)}
+            onChange={(e) => setInitDescription(e.target.value)}
           />
         </DialogContent>
         <DialogActions>
