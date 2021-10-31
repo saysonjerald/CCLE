@@ -32,11 +32,17 @@ export default function SetAppointment() {
     setOpen(false);
   };
 
-  const [value, setValue] = useState(new Date('2014-08-18T21:11:54'));
-  const [ratePerMinute, setRatePerMinute] = useState();
+  const today = new Date();
+  const [date, setDate] = useState(new Date());
+  const [time, setTime] = useState(new Date());
+  const [timeSpend, setTimeSpend] = useState(30);
 
-  const handleChange = (newValue) => {
-    setValue(newValue);
+  const handleChangeDate = (newValue) => {
+    setDate(newValue);
+  };
+
+  const handleChangeTime = (newValue) => {
+    setTime(newValue);
   };
 
   const marks = [
@@ -99,14 +105,15 @@ export default function SetAppointment() {
               <DesktopDatePicker
                 label="Date"
                 inputFormat="MM/dd/yyyy"
-                value={value}
-                onChange={handleChange}
+                value={date}
+                minDate={today.setDate(today.getDate() + 1)}
+                onChange={handleChangeDate}
                 renderInput={(params) => <TextField {...params} />}
               />
               <TimePicker
                 label="Starting Time"
-                value={value}
-                onChange={handleChange}
+                value={time}
+                onChange={handleChangeTime}
                 renderInput={(params) => <TextField {...params} />}
               />
               <Typography id="track-false-slider" style={{ margin: '20px' }}>
@@ -116,8 +123,8 @@ export default function SetAppointment() {
                 aria-labelledby="track-false-slider"
                 getAriaValueText={valueLabelFormat}
                 valueLabelFormat={valueLabelFormat}
-                onChange={(e) => setRatePerMinute(e.target.value)}
-                defaultValue={60}
+                onChange={(e) => setTimeSpend(e.target.value)}
+                defaultValue={30}
                 min={30}
                 max={720}
                 marks={marks}
