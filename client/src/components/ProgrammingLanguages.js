@@ -10,6 +10,10 @@ import {
   DialogActions,
   Autocomplete,
   Checkbox,
+  Divider,
+  Chip,
+  Slider,
+  Input,
 } from '@mui/material';
 
 import CheckBoxOutlineBlankIcon from '@mui/icons-material/CheckBoxOutlineBlank';
@@ -34,6 +38,8 @@ const ProgrammingLanguages = ({
   const { user, urlAPI } = useContext(UserContext);
 
   const [open, setOpen] = useState(false);
+  const [ratePerMinute, setRatePerMinute] = React.useState(0.05);
+  const maxRate = 30;
 
   const useStyles = makeStyles({
     form: {
@@ -55,6 +61,28 @@ const ProgrammingLanguages = ({
 
   const handleClose = () => {
     setOpen(false);
+  };
+
+  function valuetext(value) {
+    return `$${value}`;
+  }
+
+  const handleSliderChange = (event, newValue) => {
+    setRatePerMinute(newValue);
+  };
+
+  const handleInputChange = (event) => {
+    setRatePerMinute(
+      event.target.value === '' ? '' : Number(event.target.value)
+    );
+  };
+
+  const handleBlur = () => {
+    if (ratePerMinute < 0) {
+      setRatePerMinute(0);
+    } else if (ratePerMinute > maxRate) {
+      setRatePerMinute(maxRate);
+    }
   };
 
   const getProgrammingLanguage = async () => {
@@ -85,14 +113,16 @@ const ProgrammingLanguages = ({
           language,
           topic,
           description,
+          ratePerMinute,
         });
 
       if (res.data.status === 'success') {
+        await getProgrammingLanguage();
         console.log('success updated successfully!');
         setLanguage('');
         setTopic([]);
         setDescription('');
-        await getProgrammingLanguage();
+        ratePerMinute(0.05);
         return res;
       }
     } catch (err) {
@@ -139,7 +169,6 @@ const ProgrammingLanguages = ({
               />
             )}
           />
-
           <Autocomplete
             className={classes.margin}
             multiple
@@ -171,7 +200,6 @@ const ProgrammingLanguages = ({
               />
             )}
           />
-
           <TextField
             className={classes.margin}
             label="Tell us your experience on this language"
@@ -181,6 +209,36 @@ const ProgrammingLanguages = ({
             fullWidth
             value={description}
             onChange={(e) => setDescription(e.target.value)}
+          />
+          <Divider>
+            <Chip label="Pricing" />
+          </Divider>
+          <Typography id="non-linear-slider">Rate per minute</Typography>
+          <span>$</span>
+          <Input
+            value={ratePerMinute}
+            size="small"
+            onChange={handleInputChange}
+            onBlur={handleBlur}
+            inputProps={{
+              step: 0.01,
+              min: 0,
+              max: maxRate,
+              type: 'number',
+              'aria-labelledby': 'input-slider',
+            }}
+          />
+          <Slider
+            value={typeof ratePerMinute === 'number' ? ratePerMinute : 0}
+            onChange={handleSliderChange}
+            aria-labelledby="input-slider"
+            defaultValue={0.05}
+            getAriaValueText={valuetext}
+            valueLabelFormat={valuetext}
+            valueLabelDisplay="auto"
+            step={0.01}
+            min={0.01}
+            max={30}
           />
         </DialogContent>
         <DialogActions>

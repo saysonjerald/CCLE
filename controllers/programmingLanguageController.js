@@ -59,7 +59,13 @@ exports.updateProgLanguages = catchAsync(async (req, res, next) => {
   }
 
   // 2 Filtered out unwanted fields names that are not allowed
-  const filteredBody = filterObj(req.body, 'topic', 'language', 'description');
+  const filteredBody = filterObj(
+    req.body,
+    'topic',
+    'language',
+    'description',
+    'ratePerMinute'
+  );
 
   const programmingLang = await ProgrammingLanguage.findByIdAndUpdate(
     req.params.progId ? { _id: req.params.progId } : {},

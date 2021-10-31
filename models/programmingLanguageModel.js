@@ -162,6 +162,10 @@ const programmingLanguageSchema = new mongoose.Schema(
       type: String,
       require: [true, 'Description connot be empty!'],
     },
+    ratePerMinute: {
+      type: Number,
+      require: [true, 'Adding programming language requires rate per minute!'],
+    },
     user: {
       type: mongoose.Schema.ObjectId,
       ref: 'User',

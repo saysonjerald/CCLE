@@ -14,6 +14,9 @@ import {
   Checkbox,
   TextField,
   DialogActions,
+  Divider,
+  Input,
+  Slider,
 } from '@mui/material';
 import axios from 'axios';
 import { v4 as uuidv4 } from 'uuid';
@@ -33,6 +36,7 @@ const ProgrammingCard = ({
   language,
   choosenTopic,
   choosenDescription,
+  ratePerMinute,
   programmingLanguageKnown,
   setProgrammingLanguageKnown,
 }) => {
@@ -45,6 +49,8 @@ const ProgrammingCard = ({
 
   const [initTopic, setInitTopic] = useState();
   const [initDescription, setInitDescription] = useState();
+  const [initRatePerMinute, setInitRatePerMinute] = useState();
+  const maxRate = 30;
 
   const useStyles = makeStyles({
     form: {
@@ -76,6 +82,28 @@ const ProgrammingCard = ({
     setOpen(false);
   };
 
+  function valuetext(value) {
+    return `$${value}`;
+  }
+
+  const handleSliderChange = (event, newValue) => {
+    setInitRatePerMinute(newValue);
+  };
+
+  const handleInputChange = (event) => {
+    setInitRatePerMinute(
+      event.target.value === '' ? '' : Number(event.target.value)
+    );
+  };
+
+  const handleBlur = () => {
+    if (ratePerMinute < 0) {
+      setInitRatePerMinute(0);
+    } else if (ratePerMinute > maxRate) {
+      setInitRatePerMinute(maxRate);
+    }
+  };
+
   const getProgrammingLanguage = async () => {
     try {
       await axios
@@ -104,6 +132,7 @@ const ProgrammingCard = ({
           language: programmingLanguage,
           topic: initTopic,
           description: initDescription,
+          ratePerMinute: initRatePerMinute,
         })
         .then(async (data) => {
           setProgrammingLanguageKnown(data.data.programmingLang);
@@ -142,7 +171,21 @@ const ProgrammingCard = ({
 
   return (
     <>
-      <Card sx={{ maxWidth: 345 }} className={classes.card}>
+      <Card
+        sx={{ position: 'relative', maxWidth: 345 }}
+        className={classes.card}
+      >
+        <span
+          style={{
+            position: 'absolute',
+            top: 0,
+            right: 0,
+            backgroundColor: 'brown',
+            padding: '5px 10px',
+          }}
+        >
+          ${ratePerMinute} per minute
+        </span>
         <CardMedia
           component="img"
           alt={`${language}`}
@@ -254,6 +297,40 @@ const ProgrammingCard = ({
             fullWidth
             defaultValue={choosenDescription}
             onChange={(e) => setInitDescription(e.target.value)}
+          />
+          <Divider>
+            <Chip label="Pricing" />
+          </Divider>
+          <Typography id="non-linear-slider">Rate per minute</Typography>
+          <span>$</span>
+          <Input
+            value={initRatePerMinute}
+            defaultValue={ratePerMinute}
+            size="small"
+            onChange={handleInputChange}
+            onBlur={handleBlur}
+            inputProps={{
+              step: 0.01,
+              min: 0,
+              max: maxRate,
+              type: 'number',
+              'aria-labelledby': 'input-slider',
+            }}
+          />
+          <Slider
+            value={
+              typeof initRatePerMinute === 'number'
+                ? initRatePerMinute
+                : ratePerMinute
+            }
+            onChange={handleSliderChange}
+            aria-labelledby="input-slider"
+            getAriaValueText={valuetext}
+            valueLabelFormat={valuetext}
+            valueLabelDisplay="auto"
+            step={0.01}
+            min={0.01}
+            max={30}
           />
         </DialogContent>
         <DialogActions>

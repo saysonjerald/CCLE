@@ -17,6 +17,7 @@ import ReviewCard from '../components/ReviewCard';
 import ReviewPost from '../components/ReviewPost';
 import PendingCardTeacher from '../components/PendingCardTeacher';
 import PendingCardStudent from '../components/PendingCardStudent';
+import SetAppointment from '../components/SetAppointment';
 
 const Profile = ({ match }) => {
   const history = useHistory();
@@ -141,19 +142,15 @@ const Profile = ({ match }) => {
     <User>
       <Avatar
         alt={`${userProfile.firstname} ${userProfile.lastname}`}
-        src={`${urlAPI}/img/users/${userProfile.profilePic}`}
+        src={`${urlAPI}img/users/${userProfile.profilePic}`}
         sx={{ width: 156, height: 156 }}
       />
       <h3>
         {userProfile.firstname} {userProfile.lastname}
       </h3>
-      <Button
-        onClick={onHandleNewCollaborate}
-        variant="contained"
-        color="success"
-      >
-        Set Appointment
-      </Button>
+      <div>
+        <SetAppointment />
+      </div>
       <p>{userProfile.bio}</p>
       <p>{userProfile.address}</p>
       <p>{userProfile.programmingLanguage}</p>
@@ -247,6 +244,7 @@ const Profile = ({ match }) => {
                 language={programmingLang.language}
                 choosenTopic={programmingLang.topic}
                 choosenDescription={programmingLang.description}
+                ratePerMinute={programmingLang.ratePerMinute}
                 programmingLanguageKnown={programmingLanguageKnown}
                 setProgrammingLanguageKnown={setProgrammingLanguageKnown}
               />
