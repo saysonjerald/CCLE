@@ -16,12 +16,9 @@ export default function PendingCardTeacher({
   firstname,
   lastname,
   startingDate,
-  endDate,
+  endingDate,
 }) {
   const { user, urlAPI } = useContext(UserContext);
-
-  const start = new Date(startingDate);
-  const end = new Date(endDate);
 
   const getTime = (time) => {
     return new Date(time).toLocaleString('en-US', {
@@ -45,27 +42,11 @@ export default function PendingCardTeacher({
           </Typography>
           <Typography variant="body2">
             Starting Date: <br />
-            {' ' +
-              (start.getUTCMonth() + 1) +
-              ' ' +
-              start.getUTCDate() +
-              ' ' +
-              start.getUTCFullYear() +
-              ' | ' +
-              getTime(startingDate) +
-              ' UTC'}
+            {new Date(startingDate).toLocaleString()}
             <br />
             <br />
             End Date: <br />
-            {' ' +
-              (start.getUTCMonth() + 1) +
-              ' ' +
-              start.getUTCDate() +
-              ' ' +
-              start.getUTCFullYear() +
-              ' | ' +
-              getTime(startingDate) +
-              ' UTC'}
+            {new Date(endingDate).toLocaleString()}
           </Typography>
         </CardContent>
         <CardActions>

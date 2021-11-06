@@ -1,15 +1,15 @@
 import { createGlobalStyle } from 'styled-components';
 
 const GlobalStyle = createGlobalStyle`
-body::-webkit-scrollbar {
+*::-webkit-scrollbar {
   width: 1em;
 }
  
-body::-webkit-scrollbar-track {
+*::-webkit-scrollbar-track {
   box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
 }
 
-body::-webkit-scrollbar-thumb {
+*::-webkit-scrollbar-thumb {
     border-radius: 8px;
     background-color: rgb(107, 107, 107);
     min-height: 24px;
@@ -92,7 +92,6 @@ a:visited {
   right: 0;
   width: 100%;
 }
-
 
 `;
 export default GlobalStyle;

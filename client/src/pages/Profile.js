@@ -15,9 +15,10 @@ import ProgrammingLanguages from '../components/ProgrammingLanguages';
 import ProgrammingCard from '../components/ProgrammingCard';
 import ReviewCard from '../components/ReviewCard';
 import ReviewPost from '../components/ReviewPost';
-import PendingCardTeacher from '../components/PendingCardTeacher';
-import PendingCardStudent from '../components/PendingCardStudent';
+import PendingCardTeacher from '../components/PendingCardStudent';
+import PendingCardStudent from '../components/PendingCardTeacher';
 import SetAppointment from '../components/SetAppointment';
+import BookingCalendar from '../components/BookingCalendar';
 
 const Profile = ({ match }) => {
   const history = useHistory();
@@ -149,7 +150,11 @@ const Profile = ({ match }) => {
         {userProfile.firstname} {userProfile.lastname}
       </h3>
       <div>
-        <SetAppointment />
+        {match.params.id !== user.id ? (
+          <SetAppointment profileId={match.params.id} />
+        ) : (
+          <p></p>
+        )}
       </div>
       <p>{userProfile.bio}</p>
       <p>{userProfile.address}</p>
@@ -160,19 +165,19 @@ const Profile = ({ match }) => {
       {match.params.id === user.id ? (
         <>
           <Typography component="h2" variant="h5">
-            Appointment Request({pendingAppointmentTeacher.length})
+            Appointment Request({pendingAppointmentStudent.length})
           </Typography>
           <Grid container spacing={2}>
-            {pendingAppointmentTeacher.length ? (
-              pendingAppointmentTeacher.map((appointment) => {
+            {pendingAppointmentStudent.length ? (
+              pendingAppointmentStudent.map((appointment) => {
                 return (
-                  <PendingCardTeacher
+                  <PendingCardStudent
                     key={appointment.id}
                     profilePic={appointment.student.profilePic}
                     firstname={appointment.student.firstname}
                     lastname={appointment.student.lastname}
                     startingDate={appointment.startingDate}
-                    endDate={appointment.endingDate}
+                    endingDate={appointment.endingDate}
                   />
                 );
               })
@@ -189,19 +194,19 @@ const Profile = ({ match }) => {
         </>
       )}
       <Typography component="h2" variant="h5">
-        Your Pending Appointment({pendingAppointmentStudent.length})
+        Your Pending Appointment({pendingAppointmentTeacher.length})
       </Typography>
       <Grid container spacing={2}>
-        {pendingAppointmentStudent.length ? (
-          pendingAppointmentStudent.map((appointment) => {
+        {pendingAppointmentTeacher.length ? (
+          pendingAppointmentTeacher.map((appointment) => {
             return (
-              <PendingCardStudent
+              <PendingCardTeacher
                 key={appointment.id}
-                profilePic={appointment.student.profilePic}
-                firstname={appointment.student.firstname}
-                lastname={appointment.student.lastname}
+                profilePic={appointment.teacher.profilePic}
+                firstname={appointment.teacher.firstname}
+                lastname={appointment.teacher.lastname}
                 startingDate={appointment.startingDate}
-                ing={appointment.endingDate}
+                endingDate={appointment.endingDate}
               />
             );
           })
@@ -257,6 +262,7 @@ const Profile = ({ match }) => {
         )}
       </Grid>
       <hr style={{ margin: '40px' }} />
+      <BookingCalendar />
       {match.params.id !== user.id ? (
         <ReviewPost
           userURL={match.params.id}

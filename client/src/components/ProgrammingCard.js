@@ -169,6 +169,10 @@ const ProgrammingCard = ({
     }
   };
 
+  useEffect(() => {
+    return () => {};
+  }, []);
+
   return (
     <>
       <Card
@@ -304,8 +308,7 @@ const ProgrammingCard = ({
           <Typography id="non-linear-slider">Rate per minute</Typography>
           <span>$</span>
           <Input
-            value={initRatePerMinute}
-            defaultValue={ratePerMinute}
+            value={initRatePerMinute ? initRatePerMinute : ratePerMinute}
             size="small"
             onChange={handleInputChange}
             onBlur={handleBlur}

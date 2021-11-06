@@ -2,20 +2,26 @@ const mongoose = require('mongoose');
 
 const pendingAppointmentSchema = new mongoose.Schema(
   {
+    programmingLanguage: {
+      type: String,
+    },
     startingDate: {
       type: Date,
-      default: Date.now(),
     },
     endingDate: {
       type: Date,
-      default: Date.now() + 2 * 24 * 60 * 60 * 1000,
-      validate: {
-        //This only works on CREATE and SAVE!
-        validator: function (el) {
-          return el > this.startingDate;
-        },
-        message: 'End Date must be greater than Starting Date!',
-      },
+    },
+    timeSpend: {
+      type: Number,
+    },
+    totalRate: {
+      type: Number,
+    },
+    totalCommission: {
+      type: Number,
+    },
+    totalAmount: {
+      type: Number,
     },
     isPending: {
       type: Boolean,
