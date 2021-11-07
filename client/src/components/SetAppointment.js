@@ -159,9 +159,9 @@ export default function SetAppointment({ profileId }) {
           startingDate: startingDate.toUTCString(),
           endingDate: endingDate.toUTCString(),
           timeSpend,
-          totalRate,
-          totalCommission,
-          totalAmount: total,
+          grossPay: totalRate,
+          commission: totalCommission,
+          netPay: total,
         });
 
       if (res.data.status === 'success') {

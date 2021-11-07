@@ -4,6 +4,7 @@ const authController = require('../controllers/authController');
 const reviewRoutes = require('./reviewRoutes');
 const programmingLanguageRoutes = require('./programmingLanguageRoutes');
 const pendingAppointmentRoutes = require('./pendingAppointmentRoutes');
+const bookingRoutes = require('./bookingRoutes');
 
 const router = express.Router();
 
@@ -51,5 +52,6 @@ router.use('/:revieweeId/reviews', reviewRoutes);
 router.use('/:teacher/pendingAppointment', pendingAppointmentRoutes);
 router.use('/:teacher/pendingAppointment/teacher', pendingAppointmentRoutes);
 router.use('/:teacher/pendingAppointment/student', pendingAppointmentRoutes);
+router.use('/:teacher/booking', bookingRoutes);
 
 module.exports = router;

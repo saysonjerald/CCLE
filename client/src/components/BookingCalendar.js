@@ -51,17 +51,15 @@ const BookingCalendar = () => {
   const classes = useStyles();
 
   return (
-    <>
-      <CalendarWrapper>
-        <Calendar
-          localizer={localizer}
-          events={events}
-          startAccessor="start"
-          endAccessor="end"
-          style={{ height: 500 }}
-        />
-      </CalendarWrapper>
-    </>
+    <CalendarWrapper>
+      <Calendar
+        localizer={localizer}
+        events={events}
+        startAccessor="start"
+        endAccessor="end"
+        style={{ height: 500 }}
+      />
+    </CalendarWrapper>
   );
 };
 

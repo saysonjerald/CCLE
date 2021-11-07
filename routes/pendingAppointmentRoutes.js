@@ -1,5 +1,5 @@
 const express = require('express');
-const pendingAppointment = require('../controllers/pendingAppointment');
+const pendingAppointment = require('../controllers/pendingAppointmentController');
 const authController = require('../controllers/authController');
 
 const router = express.Router({ mergeParams: true });

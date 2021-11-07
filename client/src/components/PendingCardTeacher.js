@@ -11,7 +11,7 @@ import {
 } from '@mui/material';
 import { UserContext } from '../contexts/UserContext';
 
-export default function PendingCardTeacher({
+export default function PendingCardStudent({
   profilePic,
   firstname,
   lastname,
@@ -20,19 +20,13 @@ export default function PendingCardTeacher({
 }) {
   const { user, urlAPI } = useContext(UserContext);
 
-  const getTime = (time) => {
-    return new Date(time).toLocaleString('en-US', {
-      hour: 'numeric',
-      minute: 'numeric',
-      hour12: true,
-      timeZone: 'UTC',
-    });
-  };
-
   return (
     <Grid item>
       <Card sx={{ maxWidth: 275 }}>
         <CardContent>
+          <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
+            Status: Pending
+          </Typography>
           <Avatar
             alt={`${firstname} ${lastname}`}
             src={`${urlAPI}/img/users/${profilePic}`}
@@ -50,8 +44,7 @@ export default function PendingCardTeacher({
           </Typography>
         </CardContent>
         <CardActions>
-          <Button size="small">Accept</Button>
-          <Button size="small">Reject</Button>
+          <Button size="small">Cancel</Button>
         </CardActions>
       </Card>
     </Grid>

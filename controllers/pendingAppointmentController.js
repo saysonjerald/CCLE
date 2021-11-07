@@ -1,4 +1,4 @@
-const PendingAppointment = require('../models/pendingAppointment');
+const PendingAppointment = require('../models/pendingAppointmentModel');
 const catchAsync = require('../utils/catchAsync');
 
 exports.createPendingAppointment = catchAsync(async (req, res) => {

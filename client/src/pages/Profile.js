@@ -15,8 +15,8 @@ import ProgrammingLanguages from '../components/ProgrammingLanguages';
 import ProgrammingCard from '../components/ProgrammingCard';
 import ReviewCard from '../components/ReviewCard';
 import ReviewPost from '../components/ReviewPost';
-import PendingCardTeacher from '../components/PendingCardStudent';
-import PendingCardStudent from '../components/PendingCardTeacher';
+import PendingCardTeacher from '../components/PendingCardTeacher';
+import PendingCardStudent from '../components/PendingCardStudent';
 import SetAppointment from '../components/SetAppointment';
 import BookingCalendar from '../components/BookingCalendar';
 
@@ -39,6 +39,8 @@ const Profile = ({ match }) => {
     setPendingAppointmentStudent,
     pendingAppointmentTeacher,
     setPendingAppointmentTeacher,
+    bookedList,
+    setBookedList,
   } = useContext(BookingContext);
 
   const [userProfile, setUserProfile] = useState({});
@@ -79,6 +81,7 @@ const Profile = ({ match }) => {
             .get(`api/v1/users/${match.params.id}/pendingAppointment/student`)
             .then((data) => {
               setPendingAppointmentStudent(data.data.pendingAppointmentStudent);
+              console.log(data.data);
             }),
           await axios
             .create({
@@ -88,6 +91,17 @@ const Profile = ({ match }) => {
             .get(`api/v1/users/${match.params.id}/pendingAppointment/teacher`)
             .then((data) => {
               setPendingAppointmentTeacher(data.data.pendingAppointmentTeacher);
+              console.log(data.data);
+            }),
+          await axios
+            .create({
+              baseURL: 'http://localhost:3001/',
+              withCredentials: true, //I read around that you need this for cookies to be sent?
+            })
+            .get(`api/v1/users/${match.params.id}/booking/`)
+            .then((data) => {
+              setBookedList(data.data);
+              console.log(data.data);
             }),
         ])
         .catch((err) => {
@@ -170,14 +184,23 @@ const Profile = ({ match }) => {
           <Grid container spacing={2}>
             {pendingAppointmentStudent.length ? (
               pendingAppointmentStudent.map((appointment) => {
+                console.log(appointment);
                 return (
                   <PendingCardStudent
                     key={appointment.id}
+                    appointmentId={appointment.id}
+                    studentId={appointment.student.id}
+                    teacherId={appointment.teacher.id}
                     profilePic={appointment.student.profilePic}
                     firstname={appointment.student.firstname}
                     lastname={appointment.student.lastname}
+                    programmingLanguage={appointment.programmingLanguage}
                     startingDate={appointment.startingDate}
                     endingDate={appointment.endingDate}
+                    timeSpend={appointment.timeSpend}
+                    grossPay={appointment.grossPay}
+                    commission={appointment.commission}
+                    netPay={appointment.netPay}
                   />
                 );
               })
@@ -262,7 +285,7 @@ const Profile = ({ match }) => {
         )}
       </Grid>
       <hr style={{ margin: '40px' }} />
-      <BookingCalendar />
+      {BookingCalendar && <BookingCalendar />}
       {match.params.id !== user.id ? (
         <ReviewPost
           userURL={match.params.id}

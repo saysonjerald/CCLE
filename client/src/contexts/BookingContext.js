@@ -10,6 +10,8 @@ const BookingProvider = (props) => {
     []
   );
 
+  const [bookedList, setBookedList] = useState([]);
+
   return (
     <BookingContext.Provider
       value={{
@@ -17,6 +19,8 @@ const BookingProvider = (props) => {
         setPendingAppointmentStudent,
         pendingAppointmentTeacher,
         setPendingAppointmentTeacher,
+        bookedList,
+        setBookedList,
       }}
     >
       {props.children}
