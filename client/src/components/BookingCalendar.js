@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { Calendar, dateFnsLocalizer } from 'react-big-calendar';
 import format from 'date-fns/format';
 import parse from 'date-fns/parse';
@@ -8,6 +8,8 @@ import enUS from 'date-fns/locale/en-US';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
 import { makeStyles } from '@mui/styles';
 import styled from 'styled-components';
+
+import { BookingContext } from '../contexts/BookingContext';
 
 const locales = {
   'en-US': enUS,
@@ -21,26 +23,9 @@ const localizer = dateFnsLocalizer({
   locales,
 });
 
-const events = [
-  {
-    title: 'Drinking',
-    allDay: true,
-    start: new Date(2021, 11, 1),
-    end: new Date(2021, 11, 2),
-  },
-  {
-    title: 'Vacation',
-    start: new Date(2021, 11, 5),
-    end: new Date(2021, 11, 6),
-  },
-  {
-    title: 'Conference',
-    start: new Date(2021, 11, 7),
-    end: new Date(2021, 11, 8),
-  },
-];
-
 const BookingCalendar = () => {
+  const { bookedList } = useContext(BookingContext);
+
   const useStyles = makeStyles({
     bg: {
       backgroundColor: '#fff',
@@ -54,7 +39,13 @@ const BookingCalendar = () => {
     <CalendarWrapper>
       <Calendar
         localizer={localizer}
-        events={events}
+        events={bookedList.map((el) => {
+          return {
+            title: el.student.firstname,
+            start: new Date(el.startingDate),
+            end: new Date(el.endingDate),
+          };
+        })}
         startAccessor="start"
         endAccessor="end"
         style={{ height: 500 }}
@@ -66,6 +57,13 @@ const BookingCalendar = () => {
 const CalendarWrapper = styled.div`
   background-color: #fff;
   color: #222;
+
+  a:link {
+    color: #444;
+  }
+  a:hover {
+    color: #222;
+  }
 
   .rbc-date-cell {
     a {

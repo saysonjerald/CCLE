@@ -81,7 +81,6 @@ const Profile = ({ match }) => {
             .get(`api/v1/users/${match.params.id}/pendingAppointment/student`)
             .then((data) => {
               setPendingAppointmentStudent(data.data.pendingAppointmentStudent);
-              console.log(data.data);
             }),
           await axios
             .create({
@@ -91,7 +90,6 @@ const Profile = ({ match }) => {
             .get(`api/v1/users/${match.params.id}/pendingAppointment/teacher`)
             .then((data) => {
               setPendingAppointmentTeacher(data.data.pendingAppointmentTeacher);
-              console.log(data.data);
             }),
           await axios
             .create({
@@ -100,8 +98,8 @@ const Profile = ({ match }) => {
             })
             .get(`api/v1/users/${match.params.id}/booking/`)
             .then((data) => {
-              setBookedList(data.data);
-              console.log(data.data);
+              setBookedList(data.data.BookingTeacher);
+              console.log(data.data.BookingTeacher);
             }),
         ])
         .catch((err) => {
@@ -184,7 +182,6 @@ const Profile = ({ match }) => {
           <Grid container spacing={2}>
             {pendingAppointmentStudent.length ? (
               pendingAppointmentStudent.map((appointment) => {
-                console.log(appointment);
                 return (
                   <PendingCardStudent
                     key={appointment.id}
