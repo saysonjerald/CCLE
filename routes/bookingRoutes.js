@@ -1,12 +1,18 @@
 const express = require('express');
-const Booking = require('../controllers/bookingController');
+const booking = require('../controllers/bookingController');
+const pendingAppointment = require('../controllers/pendingAppointmentController');
 const authController = require('../controllers/authController');
 
 const router = express.Router({ mergeParams: true });
 
 router
   .route('/')
-  .get(authController.protect, Booking.getBooking)
-  .post(authController.protect, Booking.createBooking);
+  .get(authController.protect, booking.getBooking)
+  .post(
+    authController.protect,
+    booking.validate,
+    booking.createBooking,
+    pendingAppointment.updatePendingStatusAccept
+  );
 
 module.exports = router;

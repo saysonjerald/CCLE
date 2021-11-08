@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import axios from 'axios';
 import {
   Button,
@@ -22,7 +22,7 @@ import CheckBoxIcon from '@mui/icons-material/CheckBox';
 
 import 'date-fns';
 import AdapterDateFns from '@mui/lab/AdapterDateFns';
-import { LocalizationProvider, DateTimePicker, TimePicker } from '@mui/lab';
+import { LocalizationProvider, DateTimePicker } from '@mui/lab';
 
 import { ProrammingLanguageContext } from '../contexts/ProgrammingLanguageContext';
 import { UserContext } from '../contexts/UserContext';
@@ -49,6 +49,9 @@ export default function SetAppointment({ profileId }) {
   const [totalCommission, setTotalCommission] = useState(0);
   const [totalRate, setTotalRate] = useState(0);
   const [total, setTotal] = useState(0);
+
+  const [value, setValue] = useState();
+
   const handleClickOpen = () => {
     setOpen(true);
   };
@@ -171,6 +174,22 @@ export default function SetAppointment({ profileId }) {
       console.log('error', err.response.data.message);
     }
   };
+
+  function disableTime(time) {
+    console.log(startingDate);
+    console.log(time);
+    return 10 < time;
+  }
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      console.log('Hello');
+    }, 1500);
+
+    return () => {
+      clearTimeout(timer);
+    };
+  }, [timeSpend]);
 
   return (
     <div>

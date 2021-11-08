@@ -23,9 +23,10 @@ const pendingAppointmentSchema = new mongoose.Schema(
     netPay: {
       type: Number,
     },
-    isPending: {
-      type: Boolean,
-      default: true,
+    pendingStatus: {
+      type: String,
+      default: 'Pending',
+      enum: ['Pending', 'Accepted', 'Rejected'],
     },
     teacher: {
       type: mongoose.Schema.ObjectId,

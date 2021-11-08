@@ -1,13 +1,15 @@
 const Booking = require('../models/bookingModel');
 const catchAsync = require('../utils/catchAsync');
+const AppError = require('../utils/appError');
 
-exports.createBooking = catchAsync(async (req, res) => {
+exports.createBooking = catchAsync(async (req, res, next) => {
   const newBooking = await Booking.create(req.body);
 
-  res.status(200).json({
-    status: 'success',
-    Booking: newBooking,
-  });
+  if (!newBooking) {
+    return next(new AppError('Booking Failed! Avoid duplicate schedules'));
+  }
+
+  next();
 });
 
 exports.getBooking = catchAsync(async (req, res, next) => {
@@ -24,4 +26,20 @@ exports.getBooking = catchAsync(async (req, res, next) => {
     status: 'success',
     BookingTeacher,
   });
+});
+
+exports.validate = catchAsync(async (req, res, next) => {
+  if (!req.body.teacher) req.body.teacher = req.params.teacher;
+
+  const existingBooked = await Booking.find({
+    teacher: req.body.teacher,
+    startingDate: { $lt: req.body.endingDate },
+    endingDate: { $gt: req.body.startingDate },
+  });
+
+  if (existingBooked.length !== 0) {
+    return next(new AppError('Someone already booked this timeframe', 404));
+  }
+
+  next();
 });

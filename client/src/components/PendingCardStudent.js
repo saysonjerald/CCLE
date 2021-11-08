@@ -74,6 +74,7 @@ export default function PendingCardTeacher({
           withCredentials: true, //I read around that you need this for cookies to be sent?
         })
         .post(`${urlAPI}api/v1/users/${user.id}/booking`, {
+          appointmentId,
           student: studentId,
           teacher: teacherId,
           startingDate,
@@ -83,6 +84,29 @@ export default function PendingCardTeacher({
           commission,
           netPay,
         });
+    } catch (err) {
+      console.log('error', err.response.data.message);
+    }
+  };
+
+  const rejectAppointment = async () => {
+    try {
+      const res = await axios
+        .create({
+          baseURL: urlAPI,
+          withCredentials: true, //I read around that you need this for cookies to be sent?
+        })
+        .patch(
+          `${urlAPI}api/v1/users/${user.id}/pendingAppointment/student/update`,
+          {
+            appointmentId,
+            pendingStatus: 'Rejected',
+          }
+        );
+
+      if (res.status === 'success') {
+        console.log('Success: Pending Status Updated');
+      }
     } catch (err) {
       console.log('error', err.response.data.message);
     }
@@ -179,7 +203,6 @@ export default function PendingCardTeacher({
               if (openStatus === 'accept') {
                 await createBooking(e)
                   .then(() => {
-                    console.log('Booking Created');
                     handleClose();
                   })
                   .catch((err) => {
@@ -188,7 +211,13 @@ export default function PendingCardTeacher({
               }
 
               if (openStatus === 'reject') {
-                console.log('Booking is rejected');
+                await rejectAppointment(e)
+                  .then(() => {
+                    handleClose();
+                  })
+                  .catch((err) => {
+                    console.log(err);
+                  });
               }
             }}
             autoFocus

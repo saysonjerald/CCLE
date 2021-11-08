@@ -99,7 +99,6 @@ const Profile = ({ match }) => {
             .get(`api/v1/users/${match.params.id}/booking/`)
             .then((data) => {
               setBookedList(data.data.BookingTeacher);
-              console.log(data.data.BookingTeacher);
             }),
         ])
         .catch((err) => {
@@ -227,6 +226,7 @@ const Profile = ({ match }) => {
                 lastname={appointment.teacher.lastname}
                 startingDate={appointment.startingDate}
                 endingDate={appointment.endingDate}
+                pendingStatus={appointment.pendingStatus}
               />
             );
           })

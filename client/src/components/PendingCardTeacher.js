@@ -17,6 +17,7 @@ export default function PendingCardStudent({
   lastname,
   startingDate,
   endingDate,
+  pendingStatus,
 }) {
   const { user, urlAPI } = useContext(UserContext);
 
@@ -25,7 +26,7 @@ export default function PendingCardStudent({
       <Card sx={{ maxWidth: 275 }}>
         <CardContent>
           <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
-            Status: Pending
+            Status: {pendingStatus}
           </Typography>
           <Avatar
             alt={`${firstname} ${lastname}`}
