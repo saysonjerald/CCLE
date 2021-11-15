@@ -39,8 +39,6 @@ function currencyConvert(value) {
 
 export default function PendingCardTeacher({
   appointmentId,
-  studentId,
-  teacherId,
   profilePic,
   firstname,
   lastname,
@@ -51,6 +49,8 @@ export default function PendingCardTeacher({
   grossPay,
   commission,
   netPay,
+  setPendingAppointmentStudent,
+  match,
 }) {
   const { user, urlAPI } = useContext(UserContext);
 
@@ -66,30 +66,7 @@ export default function PendingCardTeacher({
     setOpen(false);
   };
 
-  const createBooking = async () => {
-    try {
-      await axios
-        .create({
-          baseURL: urlAPI,
-          withCredentials: true, //I read around that you need this for cookies to be sent?
-        })
-        .post(`${urlAPI}api/v1/users/${user.id}/booking`, {
-          appointmentId,
-          student: studentId,
-          teacher: teacherId,
-          startingDate,
-          endingDate,
-          timeSpend,
-          grossPay,
-          commission,
-          netPay,
-        });
-    } catch (err) {
-      console.log('error', err.response.data.message);
-    }
-  };
-
-  const rejectAppointment = async () => {
+  const updateAppointment = async (status) => {
     try {
       const res = await axios
         .create({
@@ -97,12 +74,25 @@ export default function PendingCardTeacher({
           withCredentials: true, //I read around that you need this for cookies to be sent?
         })
         .patch(
-          `${urlAPI}api/v1/users/${user.id}/pendingAppointment/student/update`,
+          `${urlAPI}api/v1/users/${match.params.id}/pendingAppointment/student/update`,
           {
             appointmentId,
-            pendingStatus: 'Rejected',
+            pendingStatus: status,
+            startingDate,
+            endingDate,
           }
-        );
+        )
+        .then(async () => {
+          await axios
+            .create({
+              baseURL: urlAPI,
+              withCredentials: true, //I read around that you need this for cookies to be sent?
+            })
+            .get(`api/v1/users/${match.params.id}/pendingAppointment/student`)
+            .then((data) => {
+              setPendingAppointmentStudent(data.data.pendingAppointmentStudent);
+            });
+        });
 
       if (res.status === 'success') {
         console.log('Success: Pending Status Updated');
@@ -200,8 +190,8 @@ export default function PendingCardTeacher({
           <Button onClick={handleClose}>Cancel</Button>
           <Button
             onClick={async (e) => {
-              if (openStatus === 'accept') {
-                await createBooking(e)
+              if (openStatus === 'reject') {
+                await updateAppointment('Rejected')
                   .then(() => {
                     handleClose();
                   })
@@ -210,8 +200,8 @@ export default function PendingCardTeacher({
                   });
               }
 
-              if (openStatus === 'reject') {
-                await rejectAppointment(e)
+              if (openStatus === 'accept') {
+                await updateAppointment('Accepted')
                   .then(() => {
                     handleClose();
                   })

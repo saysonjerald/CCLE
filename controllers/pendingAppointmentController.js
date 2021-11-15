@@ -63,10 +63,10 @@ exports.updatePendingStatusAccept = catchAsync(async (req, res, next) => {
   });
 });
 
-exports.updatePendingStatusRejected = catchAsync(async (req, res, next) => {
+exports.updatePendingStatus = catchAsync(async (req, res, next) => {
   const pendingStatus = await PendingAppointment.findByIdAndUpdate(
     req.body.appointmentId,
-    { pendingStatus: 'Rejected' },
+    { pendingStatus: req.body.pendingStatus },
     {
       new: true,
       runValidators: true,
@@ -80,4 +80,28 @@ exports.updatePendingStatusRejected = catchAsync(async (req, res, next) => {
     status: 'success',
     pendingStatus,
   });
+});
+
+exports.validate = catchAsync(async (req, res, next) => {
+  if (!req.body.teacher) req.body.teacher = req.params.teacher;
+  const endingDateType = new Date(req.body.endingDate);
+  const startingDateType = new Date(req.body.startingDate);
+
+  const existingAppointment = await PendingAppointment.find({
+    teacher: req.body.teacher,
+    pendingStatus: 'Accepted',
+    startingDate: { $lt: endingDateType },
+    endingDate: { $gt: startingDateType },
+  });
+
+  if (existingAppointment.length !== 0) {
+    return next(
+      new AppError(
+        `This timeframe is already occupied by the other user under your accepted appointment. Plese choose another timeframe.`,
+        404
+      )
+    );
+  }
+
+  next();
 });

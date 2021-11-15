@@ -14,13 +14,13 @@ const pendingAppointmentSchema = new mongoose.Schema(
     timeSpend: {
       type: Number,
     },
-    grossPay: {
+    totalRate: {
       type: Number,
     },
-    commission: {
+    totalCommission: {
       type: Number,
     },
-    netPay: {
+    totalAmount: {
       type: Number,
     },
     pendingStatus: {

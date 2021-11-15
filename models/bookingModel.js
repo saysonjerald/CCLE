@@ -7,20 +7,12 @@ const bookingSchema = new mongoose.Schema(
     },
     startingDate: {
       type: Date,
+      unique: true,
     },
     endingDate: {
       type: Date,
     },
     timeSpend: {
-      type: Number,
-    },
-    grossPay: {
-      type: Number,
-    },
-    commission: {
-      type: Number,
-    },
-    netPay: {
       type: Number,
     },
     teacher: {
@@ -33,14 +25,16 @@ const bookingSchema = new mongoose.Schema(
       ref: 'User',
       required: [true, 'User account is required to set appointment'],
     },
+    session: {
+      type: mongoose.Schema.ObjectId,
+      ref: 'Session',
+    },
   },
   {
     toJSON: { virtuals: true },
     toObject: { virtuals: true },
   }
 );
-
-// bookingSchema.index({ startingDate: 1 }, { unique: true });
 
 bookingSchema.pre(/^find/, function (next) {
   this.populate({
@@ -55,6 +49,15 @@ bookingSchema.pre(/^find/, function (next) {
   this.populate({
     path: 'teacher',
     select: 'firstname lastname profilePic',
+  });
+
+  next();
+});
+
+bookingSchema.pre(/^find/, function (next) {
+  this.populate({
+    path: 'session',
+    select: '_id startingDate expireDate',
   });
 
   next();

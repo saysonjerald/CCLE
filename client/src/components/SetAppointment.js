@@ -151,6 +151,7 @@ export default function SetAppointment({ profileId }) {
 
   const addPendingAppointment = async (e) => {
     e.preventDefault();
+    console.log(startingDate.toISOString());
     try {
       const res = await axios
         .create({
@@ -158,9 +159,10 @@ export default function SetAppointment({ profileId }) {
           withCredentials: true, //I read around that you need this for cookies to be sent?
         })
         .post(`${urlAPI}api/v1/users/${profileId}/pendingAppointment`, {
+          teacher: profileId,
           programmingLanguage: choosenLanguage,
-          startingDate: startingDate.toUTCString(),
-          endingDate: endingDate.toUTCString(),
+          startingDate: startingDate,
+          endingDate: endingDate,
           timeSpend,
           grossPay: totalRate,
           commission: totalCommission,
@@ -181,10 +183,12 @@ export default function SetAppointment({ profileId }) {
     return 10 < time;
   }
 
+  function disableRandomDates(date) {
+    console.log(date);
+  }
+
   useEffect(() => {
-    const timer = setTimeout(() => {
-      console.log('Hello');
-    }, 1500);
+    const timer = setTimeout(() => {}, 1500);
 
     return () => {
       clearTimeout(timer);
@@ -247,6 +251,7 @@ export default function SetAppointment({ profileId }) {
                 value={startingDate}
                 minDate={today.setDate(today.getDate() + 1)}
                 onChange={handleChangeDate}
+                shouldDisableDate={disableRandomDates}
                 renderInput={(params) => <TextField {...params} />}
               />
               <Typography id="track-false-slider" style={{ margin: '20px' }}>
@@ -296,7 +301,6 @@ export default function SetAppointment({ profileId }) {
                   handleClose();
                 })
                 .catch((err) => {
-                  console.log(err);
                   handleClose();
                 });
             }}

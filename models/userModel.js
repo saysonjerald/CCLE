@@ -62,9 +62,14 @@ const userSchema = new mongoose.Schema(
     address: {
       type: String,
     },
-    programmingLanguage: {
-      type: [String],
+    userType: {
+      type: String,
+      enum: ['regular', 'admin'],
+      default: 'regular',
     },
+    // programmingLanguage: {
+    //   type: [String],
+    // },
     spokenLanguage: {
       type: [String],
       enum: [
@@ -185,10 +190,10 @@ const userSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
-    isOnline: {
-      type: Boolean,
-      default: false,
-    },
+    // isOnline: {
+    //   type: Boolean,
+    //   default: false,
+    // },
     passwordChangedAt: Date,
     passwordResetToken: String,
     passwordResetExpires: Date,

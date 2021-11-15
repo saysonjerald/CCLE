@@ -10,6 +10,9 @@ const UserContextProvider = (props) => {
   const [loading, setLoading] = useState(true);
   const [navValue, setNavValue] = useState('1');
   const [urlAPI, seturlAPI] = useState('http://localhost:3001/');
+  const [urlAPIFrontEnd, seturlAPIFrontEnd] = useState(
+    'http://localhost:3000/'
+  );
 
   // async function findUser() {
   //   try {
@@ -61,6 +64,7 @@ const UserContextProvider = (props) => {
         navValue,
         setNavValue,
         urlAPI,
+        urlAPIFrontEnd,
       }}
     >
       {props.children}

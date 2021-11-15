@@ -25,7 +25,8 @@ router
   .route('/student/update')
   .patch(
     authController.protect,
-    pendingAppointment.updatePendingStatusRejected
+    pendingAppointment.validate,
+    pendingAppointment.updatePendingStatus
   );
 
 module.exports = router;
