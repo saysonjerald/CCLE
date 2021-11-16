@@ -1,5 +1,6 @@
 import React, { useContext } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
+import axios from 'axios';
 import {
   AppBar,
   Tab,
@@ -16,6 +17,7 @@ import { makeStyles } from '@mui/styles';
 
 const Nav = () => {
   const { user, navValue, setNavValue, urlAPI } = useContext(UserContext);
+  const history = useHistory();
 
   const useStyles = makeStyles({
     navHide: {
@@ -34,6 +36,20 @@ const Nav = () => {
 
   const handleClose = () => {
     setAnchorEl(null);
+  };
+
+  const logout = async () => {
+    const auth = axios.create({
+      baseURL: 'http://localhost:3001/',
+      withCredentials: true, //I read around that you need this for cookies to be sent?
+    });
+    try {
+      await auth.get('/api/v1/users/logout').then(() => {
+        history.push(`/`);
+      });
+    } catch (err) {
+      console.log(err);
+    }
   };
 
   return (
@@ -99,7 +115,15 @@ const Nav = () => {
                 <Link to="/me">
                   <MenuItem onClick={handleClose}>My account</MenuItem>
                 </Link>
-                <MenuItem onClick={handleClose}>Logout</MenuItem>
+                <MenuItem
+                  onClick={async () => {
+                    await logout().then(() => {
+                      window.location.reload(false);
+                    });
+                  }}
+                >
+                  Logout
+                </MenuItem>
               </Menu>
             </div>
           )}

@@ -151,7 +151,6 @@ export default function SetAppointment({ profileId }) {
 
   const addPendingAppointment = async (e) => {
     e.preventDefault();
-    console.log(startingDate.toISOString());
     try {
       const res = await axios
         .create({
@@ -176,16 +175,6 @@ export default function SetAppointment({ profileId }) {
       console.log('error', err.response.data.message);
     }
   };
-
-  function disableTime(time) {
-    console.log(startingDate);
-    console.log(time);
-    return 10 < time;
-  }
-
-  function disableRandomDates(date) {
-    console.log(date);
-  }
 
   useEffect(() => {
     const timer = setTimeout(() => {}, 1500);
@@ -251,7 +240,6 @@ export default function SetAppointment({ profileId }) {
                 value={startingDate}
                 minDate={today.setDate(today.getDate() + 1)}
                 onChange={handleChangeDate}
-                shouldDisableDate={disableRandomDates}
                 renderInput={(params) => <TextField {...params} />}
               />
               <Typography id="track-false-slider" style={{ margin: '20px' }}>

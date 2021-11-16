@@ -122,6 +122,17 @@ exports.login = catchAsync(async (req, res, next) => {
   createSendToken(user, 201, res);
 });
 
+exports.logout = catchAsync(async (req, res, next) => {
+  res.cookie('jwt', 'loggedOut', {
+    expire: new Date(Date.now() + 10 * 1000),
+    httpOnly: true,
+  });
+
+  res.status(200).json({
+    status: 'success',
+  });
+});
+
 exports.protect = catchAsync(async (req, res, next) => {
   let token;
   if (

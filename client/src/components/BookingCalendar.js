@@ -254,10 +254,10 @@ const BookingCalendar = ({ match }) => {
                 </Card>
                 <TextField
                   value={link}
-                  onChange={() => {
+                  fullWidth
+                  onChange={(e) => {
                     setLink(link);
                   }}
-                  fullWidth
                   InputProps={{
                     endAdornment: (
                       <IconButton

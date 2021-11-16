@@ -55,6 +55,7 @@ exports.getBookingbyDate = catchAsync(async (req, res, next) => {
 });
 
 exports.validate = catchAsync(async (req, res, next) => {
+  if (!req.body.student) req.body.student = req.user.id;
   if (!req.body.teacher) req.body.teacher = req.params.teacher;
 
   const endingDateType = new Date(req.body.endingDate);
@@ -66,10 +67,25 @@ exports.validate = catchAsync(async (req, res, next) => {
     endingDate: { $gt: startingDateType },
   });
 
+  const existingUserBooked = await Booking.find({
+    teacher: req.body.student,
+    startingDate: { $lt: endingDateType },
+    endingDate: { $gt: startingDateType },
+  });
+
   if (existingBooked.length !== 0) {
     return next(
       new AppError(
         `This timeframe is already occupied by the other user under this teacher's appointment. Plese choose another timeframe.`,
+        404
+      )
+    );
+  }
+
+  if (existingUserBooked.length !== 0) {
+    return next(
+      new AppError(
+        `You already have an appointment on this schedule. Plese choose another timeframe.`,
         404
       )
     );
