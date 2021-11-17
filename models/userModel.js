@@ -179,17 +179,17 @@ const userSchema = new mongoose.Schema(
         'Zulu',
       ],
     },
-    prices: {
-      type: [Number],
-    },
-    priceStarting: {
-      type: Number,
-      default: 1,
-    },
-    isTeacher: {
-      type: Boolean,
-      default: false,
-    },
+    // prices: {
+    //   type: [Number],
+    // },
+    // priceStarting: {
+    //   type: Number,
+    //   default: 1,
+    // },
+    // isTeacher: {
+    //   type: Boolean,
+    //   default: false,
+    // },
     // isOnline: {
     //   type: Boolean,
     //   default: false,

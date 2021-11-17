@@ -1,5 +1,6 @@
 const dotenv = require('dotenv');
 const mongoose = require('mongoose');
+const socketIO = require('./socket-server');
 
 process.on('uncaughtException', (err) => {
   console.log(err.name, err.message);
@@ -23,6 +24,7 @@ const server = app.listen(process.env.PORT || 3000, () => {
   console.log(`Server is running on ${process.env.NODE_ENV} mode`);
   console.log(`under port ${process.env.PORT}`);
 });
+socketIO(server);
 
 process.on('unhandledRejection', (err) => {
   console.log(err.name, err.message);

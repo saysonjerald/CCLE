@@ -7,7 +7,7 @@ import './CodeMirrorDependecies/Editor.css';
 import RandomColor from 'randomcolor';
 import './CodeMirrorDependecies/EditorAddons';
 
-export function Editor(props) {
+export function Editor({ roomID, name }) {
   const [EditorRef, setEditorRef] = useState(null);
   const [code, setCode] = useState('');
 
@@ -21,7 +21,7 @@ export function Editor(props) {
 
       let provider = null;
       try {
-        provider = new WebrtcProvider('Any Room Name', ydoc, {
+        provider = new WebrtcProvider(`${console.log(roomID)}`, ydoc, {
           //Remember the other tab or
           //other user should be in same room for seeing real-time changes
           signaling: [
@@ -40,7 +40,7 @@ export function Editor(props) {
         const color = RandomColor(); //Provied any random color to be used for each user
 
         awareness.setLocalStateField('user', {
-          name: 'Users Name',
+          name: name,
           color: color,
         });
 
