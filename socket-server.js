@@ -28,5 +28,11 @@ module.exports = (server) => {
       })
     })
 
+    socket.on('send_messasge', (message, userId, room) => {
+      socket.to(room).emit('receive_messasge', message, userId);
+      console.log(room);
+      console.log(socket.rooms);
+    })
+
   })
 }

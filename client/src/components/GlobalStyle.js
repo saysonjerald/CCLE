@@ -1,4 +1,5 @@
 import { createGlobalStyle } from 'styled-components';
+import 'react-chat-theme/lib/styles.css';
 
 const GlobalStyle = createGlobalStyle`
 *::-webkit-scrollbar {
@@ -20,6 +21,10 @@ a:link,
 a:visited {
   text-decoration: none;
   color: white;
+}
+
+video::-webkit-media-controls {
+  display: none;
 }
 
 .CodeMirror {
@@ -91,6 +96,48 @@ a:visited {
 .CodeMirror-overlayscroll-vertical div {
   right: 0;
   width: 100%;
+}
+
+
+//ChatBox
+.rcw-launcher, .rcw-conversation-container {
+ box-shadow: none;
+ background-color: #6EBB4E;
+}
+
+.rcw-conversation-container .rcw-header {
+  background-color: #6EBB4E;
+  border-bottom: 1px solid #999;
+}
+
+.rcw-client .rcw-message-text {
+  background-color: #6EBB4E;
+}
+
+.rcw-response .rcw-message-text {
+  background-color: #97d47c;
+}
+
+.rcw-message {
+  height: 50px;
+}
+
+.rcw-header {
+  height: 55px;
+}
+
+.rcw-header span {
+  display: none;
+  
+}
+
+.rcw-conversation-container .rcw-title {
+  padding: 0 20px;
+  text-align: left;
+}
+
+.rcw-messages-container {
+  height: 300px;
 }
 
 `;

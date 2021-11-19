@@ -219,7 +219,7 @@ const Profile = ({ match }) => {
         </>
       )}
       <Typography component="h2" variant="h5">
-        Your Pending Appointment({pendingTeacherCounter})
+        Booking Request({pendingTeacherCounter})
       </Typography>
       <Grid container spacing={2}>
         {pendingAppointmentTeacher.length ? (
