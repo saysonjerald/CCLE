@@ -30,8 +30,18 @@ module.exports = (server) => {
 
     socket.on('send_messasge', (message, userId, room) => {
       socket.to(room).emit('receive_messasge', message, userId);
-      console.log(room);
-      console.log(socket.rooms);
+    })
+
+    socket.on("offer", (offer, roomID) => {
+      socket.to(roomID).emit("offer", offer);
+    })
+
+    socket.on("answer", (answer, roomID) => {
+      socket.to(roomID).emit("answer", answer);
+    })
+
+    socket.on("ice", (ice, roomID) => {
+      socket.to(roomID).emit("ice", ice);
     })
 
   })

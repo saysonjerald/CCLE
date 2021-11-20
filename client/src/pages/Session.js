@@ -22,7 +22,9 @@ const Session = ({ match }) => {
 
   //Video Cam MySelf
   const myFace = useRef();
-  const userStream = useRef();
+  const peerFace = useRef();
+  const myStream = useRef();
+  const myPeerConnection = useRef();
 
   socket = io(urlAPI);
   const [roomID, setroomID] = useState();
@@ -75,27 +77,6 @@ const Session = ({ match }) => {
       });
   };
 
-  let myStream;
-
-  const getMedia = () => {
-    try {
-      myStream = navigator.mediaDevices
-        .getUserMedia({
-          audio: true,
-          video: true,
-        })
-        .then((stream) => {
-          if (!isValid) {
-            return;
-          }
-          myFace.current.srcObject = stream;
-          userStream.current = stream;
-        });
-    } catch (err) {
-      console.log(err);
-    }
-  };
-
   //Double Click Video fullscreen
   function openFullscreen() {
     if (myFace.current.requestFullscreen) {
@@ -111,7 +92,7 @@ const Session = ({ match }) => {
 
   //Mute Microphone
   const muteMic = () => {
-    userStream.current
+    myStream.current
       .getAudioTracks()
       .forEach((track) => (track.enabled = !track.enabled));
     setIsMuted(!isMuted);
@@ -119,18 +100,54 @@ const Session = ({ match }) => {
 
   //Turn of Camera
   const turnOffCam = () => {
-    userStream.current
+    myStream.current
       .getVideoTracks()
       .forEach((track) => (track.enabled = !track.enabled));
     setIsCameraOn(!isCameraOn);
     myFace.current.hidden = !myFace.current.hidden;
   };
 
+  const getMedia = async () => {
+    try {
+      myStream.current = await navigator.mediaDevices.getUserMedia({
+        audio: true,
+        video: true,
+      });
+      myFace.current.srcObject = myStream.current;
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  function handleIce(data) {
+    console.log('sent candidate');
+    socket.emit('ice', data.candidate, roomID);
+  }
+
+  function handleAddStream(data) {
+    console.log(myStream.data);
+    console.log(data.stream);
+    peerFace.current.srcObject = data.stream;
+  }
+
+  const makeConnection = () => {
+    myPeerConnection.current = new RTCPeerConnection();
+    myPeerConnection.current.addEventListener('icecandidate', handleIce);
+    myPeerConnection.current.addEventListener('addstream', handleAddStream);
+    myStream.current
+      .getTracks()
+      .forEach((track) =>
+        myPeerConnection.current.addTrack(track, myStream.current)
+      );
+  };
+
   useEffect(() => {
     //Socket connection for notification
+    //Fix Camera, !DONT CHANGE SYNTHETIC
     (async () => {
-      getSession(socket).then(() => {
-        getMedia();
+      await getSession(socket).then(async () => {
+        const media = await getMedia();
+        makeConnection();
       });
     })();
 
@@ -140,13 +157,22 @@ const Session = ({ match }) => {
       setroomID(roomId);
     });
 
-    socket.on('welcome', (name) => {
+    socket.on('welcome', async (name) => {
       handleOpen({
         vertical: 'buttom',
         horizontal: 'left',
       });
       setFullname(`${user.firstname} ${user.lastname}` === name ? 'You' : name);
       setDescription('joined the room');
+    });
+
+    socket.on('offer', async (offer) => {
+      console.log('received the offer');
+      myPeerConnection.current.setRemoteDescription(offer);
+      const answer = await myPeerConnection.current.createAnswer();
+      myPeerConnection.current.setLocalDescription(answer);
+      socket.emit('answer', answer, roomID);
+      console.log('sent the answer');
     });
 
     socket.on('bye', (name) => {
@@ -158,10 +184,20 @@ const Session = ({ match }) => {
       setDescription('has beed disconnected from the room');
     });
 
+    socket.on('answer', (answer) => {
+      console.log('received the answer');
+      myPeerConnection.current.setRemoteDescription(answer);
+    });
+
+    socket.on('ice', (ice) => {
+      console.log('received candidate');
+      myPeerConnection.current.addIceCandidate(ice);
+    });
+
     socket.on('receive_messasge', (message, userId) => {
       if (user.id !== userId) addResponseMessage(message);
     });
-  }, [false]);
+  }, []);
 
   return (
     <div>
@@ -173,13 +209,6 @@ const Session = ({ match }) => {
         }}
       >
         <Editor roomID={roomID} name={user.firstname} />
-        <Snackbar
-          anchorOrigin={{ vertical, horizontal }}
-          open={open}
-          onClose={handleClose}
-          message={`${fullname} ${description}`}
-          key={vertical + horizontal}
-        />
         <Widget
           handleNewUserMessage={(message) => {
             socket.emit('send_messasge', message, user.id, roomID);
@@ -198,6 +227,30 @@ const Session = ({ match }) => {
               openFullscreen();
             }}
             ref={myFace}
+            style={{
+              position: 'absolute',
+              top: '0',
+              left: '0',
+            }}
+            autoPlay
+            playsInline
+            width="300"
+            height="200"
+          ></video>
+        </Rnd>
+
+        <Rnd
+          style={{ zIndex: 999 }}
+          default={{
+            x: 50,
+            y: 400,
+          }}
+        >
+          <video
+            onDoubleClick={() => {
+              openFullscreen();
+            }}
+            ref={peerFace}
             style={{
               position: 'absolute',
               top: '0',
@@ -239,6 +292,13 @@ const Session = ({ match }) => {
             {isCameraOn ? <VideocamIcon /> : <VideocamOffSharpIcon />}
           </Fab>
         </VideButtonsWrapper>
+        <Snackbar
+          anchorOrigin={{ vertical, horizontal }}
+          open={open}
+          onClose={handleClose}
+          message={`${fullname} ${description}`}
+          key={vertical + horizontal}
+        />
       </Grid>
     </div>
   );
