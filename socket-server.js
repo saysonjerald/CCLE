@@ -14,7 +14,7 @@ module.exports = (server) => {
       socket["name"] = fullname;
     });
 
-    socket.on('join_room', (roomId, done) => {
+    socket.on('join_room', (roomId, userId, done) => {
       socket.join(roomId);
       socket.rooms.forEach((room) => {
         socket.to(room).emit('welcome', `${socket.name}`)
@@ -24,25 +24,22 @@ module.exports = (server) => {
 
     socket.on('disconnecting', () => {
       socket.rooms.forEach((room) => {
-        socket.to(room).emit('bye', `${socket.name}`)
+        socket.broadcast.to(room).emit('bye', `${socket.name}`)
       })
     })
 
     socket.on('send_messasge', (message, userId, room) => {
-      socket.to(room).emit('receive_messasge', message, userId);
+      socket.broadcast.to(room).emit('receive_messasge', message, userId);
     })
 
-    socket.on("offer", (offer, roomID) => {
-      socket.to(roomID).emit("offer", offer);
-    })
+    socket.on("join-user", (roomId) => {
+      socket.to(roomId).emit('user-connected', roomId);
+    });
 
-    socket.on("answer", (answer, roomID) => {
-      socket.to(roomID).emit("answer", answer);
-    })
-
-    socket.on("ice", (ice, roomID) => {
-      socket.to(roomID).emit("ice", ice);
-    })
+    socket.on('sendID', (id, roomId) => {
+      console.log(id)
+      socket.to(roomId).emit('receiveId',id );
+    });
 
   })
 }

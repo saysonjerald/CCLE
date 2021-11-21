@@ -1,10 +1,10 @@
 import React, { useEffect, useState, useContext, useRef } from 'react';
 import { useHistory } from 'react-router-dom';
+import Peer from 'peerjs';
 import axios from 'axios';
-import { Grid, Snackbar, Fab } from '@mui/material';
+import { Grid, Snackbar, Fab, Button, TextField } from '@mui/material';
 import { io } from 'socket.io-client';
 import { Editor } from '../components/CodeEditor';
-import VideoButtons from '../components/VideoButtons';
 import { Rnd } from 'react-rnd';
 import { UserContext } from '../contexts/UserContext';
 import { Widget, addResponseMessage } from 'react-chat-theme';
@@ -15,24 +15,23 @@ import MicOffIcon from '@mui/icons-material/MicOff';
 import VideocamIcon from '@mui/icons-material/Videocam';
 import VideocamOffSharpIcon from '@mui/icons-material/VideocamOffSharp';
 
-let socket;
 const Session = ({ match }) => {
   const { user, urlAPI } = useContext(UserContext);
   const history = useHistory();
 
   //Video Cam MySelf
-  const myFace = useRef();
-  const peerFace = useRef();
+  const myFace = useRef(null);
+  const peerFace = useRef(null);
+  const peerInstance = useRef(null);
   const myStream = useRef();
-  const myPeerConnection = useRef();
 
-  socket = io(urlAPI);
-  const [roomID, setroomID] = useState();
+  const socket = io(urlAPI);
   const [isValid, setIsValid] = useState(false);
   const [fullname, setFullname] = useState(
     `${user.firstname} ${user.lastname}`
   );
   const [description, setDescription] = useState();
+  const [remotePeerIdValue, setRemotePeerIdValue] = useState('');
 
   const [state, setState] = useState({
     open: false,
@@ -56,108 +55,72 @@ const Session = ({ match }) => {
     setState({ ...state, open: false });
   };
 
-  const getSession = async (socket) => {
-    await axios
-      .get(`http://localhost:3001/session/${match.params.id}`)
-      .then((data) => {
-        if (
-          data.data.session.student === user.id ||
-          data.data.session.teacher === user.id
-        ) {
-          setIsValid(true);
-          return;
-        } else {
-          socket.emit('disconnect');
-          throw 'User not allowed to enter';
-        }
-      })
-      .catch((err) => {
-        console.log('err', err);
-        history.push('/find-tutors');
-      });
-  };
+  // Double Click Video fullscreen
+  // function openFullscreen() {
+  //   if (myFace.current.requestFullscreen) {
+  //     myFace.current.requestFullscreen();
+  //   } else if (myFace.current.webkitRequestFullscreen) {
+  //     /* Safari */
+  //     myFace.current.webkitRequestFullscreen();
+  //   } else if (myFace.current.msRequestFullscreen) {
+  //     /* IE11 */
+  //     myFace.current.msRequestFullscreen();
+  //   }
+  // }
 
-  //Double Click Video fullscreen
-  function openFullscreen() {
-    if (myFace.current.requestFullscreen) {
-      myFace.current.requestFullscreen();
-    } else if (myFace.current.webkitRequestFullscreen) {
-      /* Safari */
-      myFace.current.webkitRequestFullscreen();
-    } else if (myFace.current.msRequestFullscreen) {
-      /* IE11 */
-      myFace.current.msRequestFullscreen();
-    }
-  }
+  // Mute Microphone
+  // const muteMic = () => {
+  //   console.log(myFace);
+  //   console.log(myFace.current);
+  //   // myFace.current
+  //   //   .getAudioTracks()
+  //   //   .forEach((track) => (track.enabled = !track.enabled));
+  //   setIsMuted(!isMuted);
+  // };
 
-  //Mute Microphone
-  const muteMic = () => {
-    myStream.current
-      .getAudioTracks()
-      .forEach((track) => (track.enabled = !track.enabled));
-    setIsMuted(!isMuted);
-  };
+  // Turn of Camera
+  // const turnOffCam = () => {
+  //   myFace.current
+  //     .getVideoTracks()
+  //     .forEach((track) => (track.enabled = !track.enabled));
+  //   setIsCameraOn(!isCameraOn);
+  //   myFace.hidden = !myFace.hidden;
+  // };
 
-  //Turn of Camera
-  const turnOffCam = () => {
-    myStream.current
-      .getVideoTracks()
-      .forEach((track) => (track.enabled = !track.enabled));
-    setIsCameraOn(!isCameraOn);
-    myFace.current.hidden = !myFace.current.hidden;
-  };
-
-  const getMedia = async () => {
-    try {
-      myStream.current = await navigator.mediaDevices.getUserMedia({
-        audio: true,
-        video: true,
-      });
-      myFace.current.srcObject = myStream.current;
-    } catch (err) {
-      console.log(err);
-    }
-  };
-
-  function handleIce(data) {
-    console.log('sent candidate');
-    socket.emit('ice', data.candidate, roomID);
-  }
-
-  function handleAddStream(data) {
-    console.log(myStream.data);
-    console.log(data.stream);
-    peerFace.current.srcObject = data.stream;
-  }
-
-  const makeConnection = () => {
-    myPeerConnection.current = new RTCPeerConnection();
-    myPeerConnection.current.addEventListener('icecandidate', handleIce);
-    myPeerConnection.current.addEventListener('addstream', handleAddStream);
-    myStream.current
-      .getTracks()
-      .forEach((track) =>
-        myPeerConnection.current.addTrack(track, myStream.current)
-      );
-  };
+  const peer = new Peer();
+  const [peerId, setPeerId] = useState();
 
   useEffect(() => {
-    //Socket connection for notification
-    //Fix Camera, !DONT CHANGE SYNTHETIC
-    (async () => {
-      await getSession(socket).then(async () => {
-        const media = await getMedia();
-        makeConnection();
-      });
-    })();
-
-    socket.emit('setName', fullname);
-
-    socket.emit('join_room', match.params.id, (roomId) => {
-      setroomID(roomId);
+    peer.on('open', (id) => {
+      setPeerId(id);
+      socket.emit('sendID', id, match.params.id);
     });
 
-    socket.on('welcome', async (name) => {
+    peer.on('call', (call) => {
+      const getUserMedia =
+        navigator.getUserMedia ||
+        navigator.webkitGetUserMedia ||
+        navigator.mozGetUserMedia;
+
+      getUserMedia({ video: true, audio: true }, (mediaStream) => {
+        console.log(mediaStream);
+        myFace.current.srcObject = mediaStream;
+        myFace.current.play();
+        call.answer(mediaStream);
+        call.on('stream', function (remoteStream) {
+          peerFace.current.srcObject = remoteStream;
+          peerFace.current.play();
+        });
+      });
+    });
+
+    socket.on('receiveId', (id) => {
+      call(id);
+    });
+
+    peerInstance.current = peer;
+
+    socket.on('welcome', (name) => {
       handleOpen({
         vertical: 'buttom',
         horizontal: 'left',
@@ -166,14 +129,34 @@ const Session = ({ match }) => {
       setDescription('joined the room');
     });
 
-    socket.on('offer', async (offer) => {
-      console.log('received the offer');
-      myPeerConnection.current.setRemoteDescription(offer);
-      const answer = await myPeerConnection.current.createAnswer();
-      myPeerConnection.current.setLocalDescription(answer);
-      socket.emit('answer', answer, roomID);
-      console.log('sent the answer');
-    });
+    const getSession = async (socket) => {
+      await axios
+        .get(`http://localhost:3001/session/${match.params.id}`)
+        .then((data) => {
+          if (
+            data.data.session.student === user.id ||
+            data.data.session.teacher === user.id
+          ) {
+            setIsValid(true);
+            console.log('joining room');
+            socket.emit('join_room', match.params.id, user.id, (roomId) => {});
+            return;
+          } else {
+            socket.emit('disconnect');
+            throw 'User not allowed to enter';
+          }
+        })
+        .catch((err) => {
+          console.log('err', err);
+          history.push('/find-tutors');
+        });
+    };
+
+    (async () => {
+      await getSession(socket);
+    })();
+
+    socket.emit('setName', fullname);
 
     socket.on('bye', (name) => {
       handleOpen({
@@ -184,20 +167,28 @@ const Session = ({ match }) => {
       setDescription('has beed disconnected from the room');
     });
 
-    socket.on('answer', (answer) => {
-      console.log('received the answer');
-      myPeerConnection.current.setRemoteDescription(answer);
-    });
-
-    socket.on('ice', (ice) => {
-      console.log('received candidate');
-      myPeerConnection.current.addIceCandidate(ice);
-    });
-
     socket.on('receive_messasge', (message, userId) => {
       if (user.id !== userId) addResponseMessage(message);
     });
   }, []);
+
+  const call = (remotePeerId) => {
+    const getUserMedia =
+      navigator.getUserMedia ||
+      navigator.webkitGetUserMedia ||
+      navigator.mozGetUserMedia;
+
+    getUserMedia({ video: true, audio: true }, (mediaStream) => {
+      myFace.current.srcObject = mediaStream;
+      myFace.current.play();
+
+      var call = peerInstance.current.call(remotePeerId, mediaStream);
+      call.on('stream', (remoteStream) => {
+        peerFace.current.srcObject = remoteStream;
+        peerFace.current.play();
+      });
+    });
+  };
 
   return (
     <div>
@@ -208,10 +199,10 @@ const Session = ({ match }) => {
           position: 'relative',
         }}
       >
-        <Editor roomID={roomID} name={user.firstname} />
+        <Editor roomID={match.params.id} name={user.firstname} />
         <Widget
           handleNewUserMessage={(message) => {
-            socket.emit('send_messasge', message, user.id, roomID);
+            socket.emit('send_messasge', message, user.id, match.params.id);
           }}
           title="Chatbox"
         />
@@ -224,7 +215,7 @@ const Session = ({ match }) => {
         >
           <video
             onDoubleClick={() => {
-              openFullscreen();
+              // openFullscreen();
             }}
             ref={myFace}
             style={{
@@ -242,13 +233,13 @@ const Session = ({ match }) => {
         <Rnd
           style={{ zIndex: 999 }}
           default={{
-            x: 50,
-            y: 400,
+            x: 350,
+            y: 300,
           }}
         >
           <video
             onDoubleClick={() => {
-              openFullscreen();
+              // openFullscreen();
             }}
             ref={peerFace}
             style={{
@@ -273,7 +264,7 @@ const Session = ({ match }) => {
             }
             aria-label="microphone"
             onClick={() => {
-              muteMic();
+              // muteMic();
             }}
           >
             {isMuted ? <MicIcon /> : <MicOffIcon />}
@@ -286,7 +277,7 @@ const Session = ({ match }) => {
             }
             aria-label="camera"
             onClick={() => {
-              turnOffCam();
+              // turnOffCam();
             }}
           >
             {isCameraOn ? <VideocamIcon /> : <VideocamOffSharpIcon />}
