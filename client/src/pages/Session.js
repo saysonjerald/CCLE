@@ -56,27 +56,27 @@ const Session = ({ match }) => {
   };
 
   // Double Click Video fullscreen
-  // function openFullscreen() {
-  //   if (myFace.current.requestFullscreen) {
-  //     myFace.current.requestFullscreen();
-  //   } else if (myFace.current.webkitRequestFullscreen) {
-  //     /* Safari */
-  //     myFace.current.webkitRequestFullscreen();
-  //   } else if (myFace.current.msRequestFullscreen) {
-  //     /* IE11 */
-  //     myFace.current.msRequestFullscreen();
-  //   }
-  // }
+  function openFullscreen() {
+    if (myFace.current.requestFullscreen) {
+      myFace.current.requestFullscreen();
+    } else if (myFace.current.webkitRequestFullscreen) {
+      /* Safari */
+      myFace.current.webkitRequestFullscreen();
+    } else if (myFace.current.msRequestFullscreen) {
+      /* IE11 */
+      myFace.current.msRequestFullscreen();
+    }
+  }
 
   // Mute Microphone
-  // const muteMic = () => {
-  //   console.log(myFace);
-  //   console.log(myFace.current);
-  //   // myFace.current
-  //   //   .getAudioTracks()
-  //   //   .forEach((track) => (track.enabled = !track.enabled));
-  //   setIsMuted(!isMuted);
-  // };
+  const muteMic = () => {
+    console.log(myFace);
+    console.log(myFace.current);
+    // myFace.current
+    //   .getAudioTracks()
+    //   .forEach((track) => (track.enabled = !track.enabled));
+    setIsMuted(!isMuted);
+  };
 
   // Turn of Camera
   // const turnOffCam = () => {
@@ -87,13 +87,23 @@ const Session = ({ match }) => {
   //   myFace.hidden = !myFace.hidden;
   // };
 
+  const [peerId, setPeerId] = useState(null);
   const peer = new Peer();
-  const [peerId, setPeerId] = useState();
 
   useEffect(() => {
     peer.on('open', (id) => {
       setPeerId(id);
       socket.emit('sendID', id, match.params.id);
+
+      const getUserMedia =
+        navigator.getUserMedia ||
+        navigator.webkitGetUserMedia ||
+        navigator.mozGetUserMedia;
+
+      getUserMedia({ video: true, audio: true }, (mediaStream) => {
+        myFace.current.srcObject = mediaStream;
+        myFace.current.play();
+      });
     });
 
     peer.on('call', (call) => {
@@ -103,9 +113,9 @@ const Session = ({ match }) => {
         navigator.mozGetUserMedia;
 
       getUserMedia({ video: true, audio: true }, (mediaStream) => {
-        console.log(mediaStream);
         myFace.current.srcObject = mediaStream;
         myFace.current.play();
+
         call.answer(mediaStream);
         call.on('stream', function (remoteStream) {
           peerFace.current.srcObject = remoteStream;
@@ -187,6 +197,10 @@ const Session = ({ match }) => {
         peerFace.current.srcObject = remoteStream;
         peerFace.current.play();
       });
+
+      call.on('close', () => {
+        peerFace.current.remove();
+      });
     });
   };
 
@@ -215,7 +229,7 @@ const Session = ({ match }) => {
         >
           <video
             onDoubleClick={() => {
-              // openFullscreen();
+              openFullscreen();
             }}
             ref={myFace}
             style={{
@@ -239,7 +253,7 @@ const Session = ({ match }) => {
         >
           <video
             onDoubleClick={() => {
-              // openFullscreen();
+              openFullscreen();
             }}
             ref={peerFace}
             style={{
@@ -264,7 +278,7 @@ const Session = ({ match }) => {
             }
             aria-label="microphone"
             onClick={() => {
-              // muteMic();
+              muteMic();
             }}
           >
             {isMuted ? <MicIcon /> : <MicOffIcon />}

@@ -37,8 +37,7 @@ module.exports = (server) => {
     });
 
     socket.on('sendID', (id, roomId) => {
-      console.log(id)
-      socket.to(roomId).emit('receiveId',id );
+      socket.broadcast.to(roomId).emit('receiveId',id );
     });
 
   })
