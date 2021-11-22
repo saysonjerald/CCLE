@@ -70,22 +70,26 @@ const Session = ({ match }) => {
 
   // Mute Microphone
   const muteMic = () => {
-    console.log(myFace);
-    console.log(myFace.current);
-    // myFace.current
-    //   .getAudioTracks()
-    //   .forEach((track) => (track.enabled = !track.enabled));
+    myStream.current
+      .getAudioTracks()
+      .forEach((track) => (track.enabled = !track.enabled));
     setIsMuted(!isMuted);
   };
 
   // Turn of Camera
-  // const turnOffCam = () => {
-  //   myFace.current
-  //     .getVideoTracks()
-  //     .forEach((track) => (track.enabled = !track.enabled));
-  //   setIsCameraOn(!isCameraOn);
-  //   myFace.hidden = !myFace.hidden;
-  // };
+  const turnOffCam = () => {
+    myStream.current
+      .getVideoTracks()
+      .forEach((track) => (track.enabled = !track.enabled));
+    setIsCameraOn(!isCameraOn);
+    myFace.current.hidden = !myFace.current.hidden;
+    socket.emit(
+      'hidePeerFace',
+      match.params.id,
+      user.id,
+      isCameraOn ? true : false
+    );
+  };
 
   const [peerId, setPeerId] = useState(null);
   const peer = new Peer();
@@ -101,8 +105,9 @@ const Session = ({ match }) => {
         navigator.mozGetUserMedia;
 
       getUserMedia({ video: true, audio: true }, (mediaStream) => {
+        myStream.current = mediaStream;
+        myFace.current.muted = true;
         myFace.current.srcObject = mediaStream;
-        myFace.current.play();
       });
     });
 
@@ -113,19 +118,25 @@ const Session = ({ match }) => {
         navigator.mozGetUserMedia;
 
       getUserMedia({ video: true, audio: true }, (mediaStream) => {
+        myStream.current = mediaStream;
+        myFace.current.muted = true;
         myFace.current.srcObject = mediaStream;
-        myFace.current.play();
 
         call.answer(mediaStream);
         call.on('stream', function (remoteStream) {
           peerFace.current.srcObject = remoteStream;
-          peerFace.current.play();
         });
       });
     });
 
     socket.on('receiveId', (id) => {
       call(id);
+    });
+
+    socket.on('hidePeerFace', (userId, value) => {
+      if (user.id !== userId) {
+        peerFace.current.hidden = value;
+      }
     });
 
     peerInstance.current = peer;
@@ -175,6 +186,8 @@ const Session = ({ match }) => {
       });
       setFullname(`${user.firstname} ${user.lastname}` === name ? 'You' : name);
       setDescription('has beed disconnected from the room');
+
+      socket.emit('leave-room', match.params.id);
     });
 
     socket.on('receive_messasge', (message, userId) => {
@@ -189,13 +202,13 @@ const Session = ({ match }) => {
       navigator.mozGetUserMedia;
 
     getUserMedia({ video: true, audio: true }, (mediaStream) => {
+      myStream.current = mediaStream;
+      myFace.current.muted = true;
       myFace.current.srcObject = mediaStream;
-      myFace.current.play();
 
       var call = peerInstance.current.call(remotePeerId, mediaStream);
       call.on('stream', (remoteStream) => {
         peerFace.current.srcObject = remoteStream;
-        peerFace.current.play();
       });
 
       call.on('close', () => {
@@ -291,7 +304,7 @@ const Session = ({ match }) => {
             }
             aria-label="camera"
             onClick={() => {
-              // turnOffCam();
+              turnOffCam();
             }}
           >
             {isCameraOn ? <VideocamIcon /> : <VideocamOffSharpIcon />}

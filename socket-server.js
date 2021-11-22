@@ -24,7 +24,7 @@ module.exports = (server) => {
 
     socket.on('disconnecting', () => {
       socket.rooms.forEach((room) => {
-        socket.broadcast.to(room).emit('bye', `${socket.name}`)
+        socket.to(room).emit('bye', `${socket.name}`)
       })
     })
 
@@ -38,6 +38,14 @@ module.exports = (server) => {
 
     socket.on('sendID', (id, roomId) => {
       socket.broadcast.to(roomId).emit('receiveId',id );
+    });
+
+    socket.on('leave-room', (id) => {
+      socket.leave(id);
+    })
+
+    socket.on('hidePeerFace', (roomId, userId, value) => {
+      socket.to(roomId).emit('hidePeerFace', userId, value );
     });
 
   })
