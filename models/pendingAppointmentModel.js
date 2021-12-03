@@ -2,14 +2,24 @@ const mongoose = require('mongoose');
 
 const pendingAppointmentSchema = new mongoose.Schema(
   {
-    programmingLanguage: {
-      type: String,
+    student: {
+      type: mongoose.Schema.ObjectId,
+      ref: 'User',
+      required: [true, 'User account is required to set appointment'],
+    },
+    teacher: {
+      type: mongoose.Schema.ObjectId,
+      ref: 'User',
+      required: [true, 'You must set appointment to a user'],
     },
     startingDate: {
       type: Date,
     },
     endingDate: {
       type: Date,
+    },
+    programmingLanguage: {
+      type: String,
     },
     timeSpend: {
       type: Number,
@@ -27,16 +37,6 @@ const pendingAppointmentSchema = new mongoose.Schema(
       type: String,
       default: 'Pending',
       enum: ['Pending', 'Accepted', 'Rejected'],
-    },
-    teacher: {
-      type: mongoose.Schema.ObjectId,
-      ref: 'User',
-      required: [true, 'You must set appointment to a user'],
-    },
-    student: {
-      type: mongoose.Schema.ObjectId,
-      ref: 'User',
-      required: [true, 'User account is required to set appointment'],
     },
   },
   {

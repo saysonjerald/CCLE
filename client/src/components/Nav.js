@@ -1,5 +1,6 @@
-import React, { useContext } from 'react';
+import React, { useContext, useState, useEffect } from 'react';
 import { Link, useHistory } from 'react-router-dom';
+import { Button } from '@mui/material';
 import axios from 'axios';
 import {
   AppBar,
@@ -17,12 +18,30 @@ import { makeStyles } from '@mui/styles';
 
 const Nav = () => {
   const { user, navValue, setNavValue, urlAPI } = useContext(UserContext);
+  const [hideBtns, setHideBtns] = useState(false);
   const history = useHistory();
+
+  useEffect(() => {
+    if (
+      window.location.pathname === '/sign/in' ||
+      window.location.pathname === '/sign/up'
+    ) {
+      setHideBtns(true);
+    } else {
+      setHideBtns(false);
+    }
+  }, []);
 
   const useStyles = makeStyles({
     navHide: {
       padding: '0!important',
       minWidth: '0!important',
+    },
+    buttonTheme: {
+      backgroundColor: '#78FF86',
+      marginLeft: '16px',
+      borderRadius: '0',
+      display: `${hideBtns ? 'none' : 'inlineBlock'}`,
     },
   });
 
@@ -56,30 +75,61 @@ const Nav = () => {
     <>
       <AppBar>
         <Toolbar>
-          <Typography sx={{ flexGrow: 1 }} component="h1" variant="h6">
-            Codelaborate
+          <Typography sx={{ flexGrow: 1 }} component="h1">
+            <Link
+              to={`/`}
+              onClick={() => {
+                setHideBtns(false);
+              }}
+            >
+              COLLABORATIVE CODE LEARNING ENVIRONMENT
+            </Link>
           </Typography>
-          <Tabs textColor="primary" value={navValue}>
-            <Tab
-              label="Home"
-              component={Link}
-              to="/"
-              value="1"
-              onClick={(e) => setNavValue('1')}
-            />
-            <Tab
-              label="Find Tutor"
-              component={Link}
-              to="/find-tutors"
-              value="2"
-              onClick={(e) => setNavValue('2')}
-            />
-            <Tab
-              className={classes.navHide}
-              value="3"
-              onClick={(e) => setNavValue('3')}
-            />
-          </Tabs>
+          {!user && (
+            // <Tabs textColor="primary" value={navValue}>
+            //   <Tab
+            //     label="Login"
+            //     component={Link}
+            //     to="/"
+            //     value="1"
+            //     onClick={(e) => setNavValue('1')}
+            //   />
+            //   <Tab
+            //     label="Register"
+            //     component={Link}
+            //     to="/find-tutors"
+            //     value="2"
+            //     onClick={(e) => setNavValue('2')}
+            //   />
+            //   <Tab
+            //     className={classes.navHide}
+            //     value="3"
+            //     onClick={(e) => setNavValue('3')}
+            //   />
+            // </Tabs>
+            <div>
+              <Button
+                variant="contained"
+                className={classes.buttonTheme}
+                onClick={() => {
+                  history.push(`/sign/in`);
+                  setHideBtns(true);
+                }}
+              >
+                Login
+              </Button>
+              <Button
+                variant="contained"
+                className={classes.buttonTheme}
+                onClick={() => {
+                  history.push(`/sign/up`);
+                  setHideBtns(true);
+                }}
+              >
+                Register
+              </Button>
+            </div>
+          )}
           {user && (
             <div>
               <IconButton

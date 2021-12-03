@@ -1,5 +1,6 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useEffect, useRef } from 'react';
 import axios from 'axios';
+import { useHistory } from 'react-router-dom';
 import {
   Button,
   Card,
@@ -11,10 +12,23 @@ import {
 } from '@mui/material';
 import { UserContext } from '../contexts/UserContext';
 
-const ReviewPost = ({ userURL, setReviewer, match }) => {
+const ReviewPost = ({
+  userURL,
+  reviewer,
+  setReviewer,
+  match,
+  userID,
+  teacherID,
+  endSessionTeacherBtn,
+  endSessionBtn,
+}) => {
   const { urlAPI } = useContext(UserContext);
+  const [reviewID, setReviewID] = useState(0);
   const [review, setReview] = useState('');
-  const [ratings, setRatings] = useState(0.5);
+  const [rating, setRating] = useState(0.5);
+  const [isAlreadyReviewed, setIsAlreadyReviewed] = useState('false');
+  const reviewDataRef = useRef();
+  const history = useHistory();
 
   const postReview = async (e) => {
     e.preventDefault();
@@ -26,14 +40,14 @@ const ReviewPost = ({ userURL, setReviewer, match }) => {
         })
         .post(`${urlAPI}api/v1/users/${userURL}/reviews`, {
           review,
-          rating: ratings,
+          rating: rating,
         });
 
       if (res.data.status === 'success') {
         console.log('Review Posted!');
         setReview('');
-        setRatings(0);
-        await getReviews();
+        setRating(0);
+        // await getReviews();
         return res;
       }
     } catch (err) {
@@ -41,34 +55,66 @@ const ReviewPost = ({ userURL, setReviewer, match }) => {
     }
   };
 
+  const updateReview = async () => {
+    console.log(urlAPI);
+    try {
+      await axios
+        .create({
+          baseURL: urlAPI,
+          withCredentials: true,
+        })
+        .patch(`/api/v1/users/${teacherID}/reviews`, {
+          id: reviewID,
+          review,
+          rating,
+        })
+        .then(() => {
+          history.push(`/user/${teacherID}`);
+          window.location.reload(false);
+        });
+    } catch (err) {}
+  };
+
   const getReviews = async () => {
-    console.log(ratings + ' Hello');
     try {
       await axios
         .create({
           baseURL: 'http://localhost:3001/',
           withCredentials: true, //I read around that you need this for cookies to be sent?
         })
-        .get(`api/v1/users/${match}/reviews`)
+        .get(`/api/v1/users/${userURL}/reviews/${reviewer}`)
         .then((review) => {
-          console.log(review);
-          setReviewer(review.data.reviews);
+          if (review.data.results >= 1) {
+            reviewDataRef.current = review.data.reviews[0];
+            setIsAlreadyReviewed(true);
+            setReviewID(review.data.reviews[0].id);
+            setReview(review.data.reviews[0].review);
+            setRating(review.data.reviews[0].rating * 1);
+          }
         });
     } catch (err) {
       console.log('error', err);
     }
   };
 
+  useEffect(() => {
+    setTimeout(() => {
+      (async () => {
+        await getReviews();
+      })();
+    }, 1500);
+  }, [endSessionTeacherBtn, endSessionBtn]);
+
   return (
     <Card>
       <CardContent style={{ paddingBottom: '0' }}>
         <TextField
           label="Write a review"
-          variant="outlined"
+          variant="filled"
           multiline
           rows={4}
           fullWidth
-          value={review}
+          defaultValue={review}
           inputProps={{ maxLength: 500 }}
           onChange={(e) => setReview(e.target.value)}
         />
@@ -77,17 +123,19 @@ const ReviewPost = ({ userURL, setReviewer, match }) => {
         style={{ display: 'flex', justifyContent: 'end', margin: '0 10px' }}
       >
         <Rating
-          name="read-only"
-          value={ratings}
+          defaultValue={rating}
+          value={rating}
           precision={0.5}
-          onChange={(e) => setRatings(parseFloat(e.target.value))}
+          onChange={(e) => setRating(parseFloat(e.target.value))}
         />
         <Button
           variant="contained"
           style={{ marginLeft: '10px' }}
-          onClick={postReview}
+          onClick={async () => {
+            isAlreadyReviewed ? await updateReview() : await postReview();
+          }}
         >
-          Post
+          {isAlreadyReviewed ? 'Update' : 'Post'}
         </Button>
       </CardActions>
     </Card>

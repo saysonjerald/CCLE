@@ -19,6 +19,9 @@ const VerifyAccount = ({ match }) => {
           .patch(`${urlAPI}api/v1/users/verifyEmail/${match.params.emailToken}`)
           .then(() => {
             history.push(`/me`);
+          })
+          .then(() => {
+            window.location.reload(false);
           });
 
         if (res) {

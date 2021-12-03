@@ -65,7 +65,10 @@ const ProgrammingCard = ({
     },
     card: {
       display: 'flex',
+      position: 'relative',
       margin: '5px',
+      maxWidth: '400px',
+      minWidth: '300px',
       flexDirection: 'column',
       justifyContent: 'space-between',
     },
@@ -175,10 +178,7 @@ const ProgrammingCard = ({
 
   return (
     <>
-      <Card
-        sx={{ position: 'relative', maxWidth: 345 }}
-        className={classes.card}
-      >
+      <Card className={classes.card}>
         <span
           style={{
             position: 'absolute',

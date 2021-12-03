@@ -17,6 +17,12 @@ const GlobalStyle = createGlobalStyle`
     border: 2px solid rgb(43, 43, 43);
 }
 
+*,
+*::after,
+*::before{
+  box-sizing: border-box;
+}
+
 a:link,
 a:visited {
   text-decoration: none;
@@ -138,6 +144,28 @@ video::-webkit-media-controls {
 
 .rcw-messages-container {
   height: 300px;
+}
+
+.react-terminal-wrapper {
+  height: 100%;
+}
+
+.react-terminal {
+  height: 100%;
+  min-width: 600px;
+}
+
+.terminal-hidden-input {
+  opacity: 0;  
+  position: fixed;
+    left: 0%;
+    top: 0%;
+}
+
+
+// Material UI Email Verification Background
+.css-hz1bth-MuiDialog-container {
+  background-color: #ffffff3e;
 }
 
 `;

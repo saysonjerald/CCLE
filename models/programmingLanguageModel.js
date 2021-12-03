@@ -2,6 +2,11 @@ const mongoose = require('mongoose');
 
 const programmingLanguageSchema = new mongoose.Schema(
   {
+    user: {
+      type: mongoose.Schema.ObjectId,
+      ref: 'User',
+      required: [true, 'Review must belong to user'],
+    },
     language: {
       type: String,
       required: [true, 'Programming Language cannot be empty!'],
@@ -165,11 +170,6 @@ const programmingLanguageSchema = new mongoose.Schema(
     ratePerMinute: {
       type: Number,
       require: [true, 'Adding programming language requires rate per minute!'],
-    },
-    user: {
-      type: mongoose.Schema.ObjectId,
-      ref: 'User',
-      required: [true, 'Review must belong to user'],
     },
   },
   {

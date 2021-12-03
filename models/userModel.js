@@ -2,8 +2,8 @@ const crypto = require('crypto');
 const mongoose = require('mongoose');
 const validator = require('validator');
 const bcrypt = require('bcryptjs');
-const slugify = require('slugify');
-const { v4: uuidv4 } = require('uuid');
+// const slugify = require('slugify');
+// const { v4: uuidv4 } = require('uuid');
 
 const userSchema = new mongoose.Schema(
   {
@@ -15,61 +15,18 @@ const userSchema = new mongoose.Schema(
       type: String,
       required: [true, 'Please tell us your last name'],
     },
-    email: {
-      type: String,
-      required: [true, 'Please provide your email'],
-      unique: true,
-      lowercase: true,
-      validate: [validator.isEmail, 'Please provide a valid email'],
-    },
-    emailToken: {
-      type: String,
-    },
-    isVerify: {
-      type: Boolean,
-      default: false,
-    },
-    password: {
-      type: String,
-      required: [true, 'Please provide your password'],
-      minlength: 8,
-      select: false,
-    },
-    passwordConfirm: {
-      type: String,
-      required: [true, 'Please confirm your password'],
-      validate: {
-        //This only works on CREATE and SAVE!
-        validator: function (el) {
-          return el === this.password;
-        },
-        message: 'Passwords are not the same!',
-      },
-    },
-    slug: String,
     profilePic: {
       type: String,
       default: 'default.jpg',
-    },
-    bio: {
-      type: String,
     },
     gender: {
       type: String,
       enum: ['male', 'female'],
       required: [true, 'Please provide your gender'],
     },
-    address: {
+    bio: {
       type: String,
     },
-    userType: {
-      type: String,
-      enum: ['regular', 'admin'],
-      default: 'regular',
-    },
-    // programmingLanguage: {
-    //   type: [String],
-    // },
     spokenLanguage: {
       type: [String],
       enum: [
@@ -179,27 +136,46 @@ const userSchema = new mongoose.Schema(
         'Zulu',
       ],
     },
-    // prices: {
-    //   type: [Number],
-    // },
-    // priceStarting: {
-    //   type: Number,
-    //   default: 1,
-    // },
-    // isTeacher: {
-    //   type: Boolean,
-    //   default: false,
-    // },
-    // isOnline: {
-    //   type: Boolean,
-    //   default: false,
-    // },
+    address: {
+      type: String,
+    },
+    password: {
+      type: String,
+      required: [true, 'Please provide your password'],
+      minlength: 8,
+      select: false,
+    },
+    passwordConfirm: {
+      type: String,
+      required: [true, 'Please confirm your password'],
+      validate: {
+        //This only works on CREATE and SAVE!
+        validator: function (el) {
+          return el === this.password;
+        },
+        message: 'Passwords are not the same!',
+      },
+    },
+    email: {
+      type: String,
+      required: [true, 'Please provide your email'],
+      unique: true,
+      lowercase: true,
+      validate: [validator.isEmail, 'Please provide a valid email'],
+    },
+    emailToken: {
+      type: String,
+    },
+    isVerify: {
+      type: Boolean,
+      default: false,
+    },
     passwordChangedAt: Date,
-    passwordResetToken: String,
-    passwordResetExpires: Date,
+    // passwordResetToken: String,
+    // passwordResetExpires: Date,
     ratingsAverage: {
       type: Number,
-      default: 0,
+      default: 4.5,
       min: [0, 'Rating must be above 1.0'],
       max: [5, 'Rating must be below 5.0'],
       set: (val) => Math.round(val * 10) / 10, // 4.666666, 46.6666, 47, 4.7
@@ -258,12 +234,12 @@ userSchema.pre('save', function (next) {
   next();
 });
 
-userSchema.pre('save', function (next) {
-  this.slug = slugify(`${this.firstname} ${this.lastname} ${uuidv4()}`, {
-    lower: true,
-  });
-  next();
-});
+// userSchema.pre('save', function (next) {
+//   this.slug = slugify(`${this.firstname} ${this.lastname} ${uuidv4()}`, {
+//     lower: true,
+//   });
+//   next();
+// });
 
 userSchema.pre(/^find/, function (next) {
   this.find({ active: { $ne: false } });

@@ -19,12 +19,19 @@ import FindTutors from './pages/FindTutors';
 import Profile from './pages/Profile';
 import Me from './pages/Me';
 import Session from './pages/Session';
+import Homepage from './pages/Homepage';
 
 const theme = createTheme({
   palette: {
     mode: 'dark',
     primary: {
-      main: '#efe',
+      main: '#78FF86',
+    },
+    secondary: {
+      main: '#78FF86',
+    },
+    background: {
+      default: '#2C2C2C',
     },
   },
   typography: {
@@ -51,7 +58,8 @@ function App() {
                     <Toolbar>
                       <Nav />
                     </Toolbar>
-                    <Route exact path="/" component={Home} />
+                    <Route exact path="/" component={Homepage} />
+                    <Route exact path="/sign/:option" component={Home} />
                     <PrivateRoute
                       exact
                       path="/find-tutors"

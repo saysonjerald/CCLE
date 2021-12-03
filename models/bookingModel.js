@@ -2,18 +2,12 @@ const mongoose = require('mongoose');
 
 const bookingSchema = new mongoose.Schema(
   {
-    programmingLanguage: {
-      type: String,
-    },
     startingDate: {
       type: Date,
       unique: true,
     },
     endingDate: {
       type: Date,
-    },
-    timeSpend: {
-      type: Number,
     },
     teacher: {
       type: mongoose.Schema.ObjectId,
@@ -24,6 +18,12 @@ const bookingSchema = new mongoose.Schema(
       type: mongoose.Schema.ObjectId,
       ref: 'User',
       required: [true, 'User account is required to set appointment'],
+    },
+    programmingLanguage: {
+      type: String,
+    },
+    timeSpend: {
+      type: Number,
     },
     session: {
       type: mongoose.Schema.ObjectId,

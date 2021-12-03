@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useHistory } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 import styled from 'styled-components';
 import axios from 'axios';
 import { TextField, Button, Typography } from '@mui/material';
@@ -14,8 +14,19 @@ const LoginSection = ({ isHide, setIsHide, user, setUser }) => {
 
   const useStyles = makeStyles({
     button: {
-      marginTop: '5px',
+      marginTop: '30px',
       marginBottom: '5px',
+      width: '184px',
+      fontFamily: 'Roboto Black',
+    },
+
+    signInText: {
+      fontFamily: 'Roboto Black',
+      borderColor: '#fff',
+    },
+    textInput: {
+      width: '500px',
+      marginBottom: '8px',
     },
   });
 
@@ -58,7 +69,14 @@ const LoginSection = ({ isHide, setIsHide, user, setUser }) => {
       onSubmit={onSubmitHandler}
       autoComplete="off"
     >
-      <Typography component="h4" variant="h5" align="center" gutterBottom>
+      <Typography
+        component="h4"
+        variant="h4"
+        align="center"
+        gutterBottom
+        mb={4}
+        className={classes.signInText}
+      >
         Sign In
       </Typography>
       <TextField
@@ -66,6 +84,7 @@ const LoginSection = ({ isHide, setIsHide, user, setUser }) => {
         type="email"
         required
         onChange={(e) => setEmail(e.target.value)}
+        className={classes.textInput}
       />
       <TextField
         label="Password"
@@ -73,6 +92,7 @@ const LoginSection = ({ isHide, setIsHide, user, setUser }) => {
         margin="normal"
         required
         onChange={(e) => setPassword(e.target.value)}
+        className={classes.textInput}
       />
       <Button
         className={classes.button}
@@ -83,7 +103,7 @@ const LoginSection = ({ isHide, setIsHide, user, setUser }) => {
       >
         Sign In
       </Button>
-      <Button
+      {/* <Button
         className={classes.button}
         variant="outline"
         color="secondary"
@@ -93,7 +113,17 @@ const LoginSection = ({ isHide, setIsHide, user, setUser }) => {
         endIcon={<ArrowForwardIosOutlinedIcon fontSize="small" />}
       >
         Register Now
-      </Button>
+      </Button> */}
+      <Typography
+        className="goToSignUp"
+        onClick={() => {
+          setIsHide(false);
+        }}
+        component="p"
+        variant="a"
+      >
+        Dont have accout? Sign up here.
+      </Typography>
     </Form>
   );
 };
@@ -101,6 +131,18 @@ const LoginSection = ({ isHide, setIsHide, user, setUser }) => {
 const Form = styled.form`
   display: ${(props) => (props.isHide ? 'flex' : 'none')};
   flex-direction: column;
+  align-items: center;
+  width: 684px;
+  padding: 74px;
+  background-color: #383838;
+
+  .goToSignUp {
+    margin-top: 20px;
+  }
+
+  .goToSignUp:hover {
+    cursor: pointer;
+  }
 `;
 
 export default LoginSection;

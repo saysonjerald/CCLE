@@ -238,7 +238,7 @@ export default function SetAppointment({ profileId }) {
               <DateTimePicker
                 label="Starting Date"
                 value={startingDate}
-                minDate={today.setDate(today.getDate() + 1)}
+                // minDate={today.setDate(today.getDate() + 1)}
                 onChange={handleChangeDate}
                 renderInput={(params) => <TextField {...params} />}
               />

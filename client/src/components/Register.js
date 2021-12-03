@@ -32,12 +32,19 @@ const RegisterSection = ({ isHide, setIsHide }) => {
 
   const useStyles = makeStyles({
     button: {
-      marginTop: '5px',
+      marginTop: '16px',
       marginBottom: '5px',
+      width: '184px',
+      fontFamily: 'Roboto Black',
     },
-    inputText: {
-      marginTop: '5px',
-      marginBottom: '5px',
+
+    signInText: {
+      fontFamily: 'Roboto Black',
+      borderColor: '#fff',
+    },
+    textInput: {
+      width: '500px',
+      marginBottom: '12px',
     },
   });
 
@@ -111,11 +118,18 @@ const RegisterSection = ({ isHide, setIsHide }) => {
       onSubmit={onSubmitHandler}
       autoComplete="off"
     >
-      <Typography component="h4" variant="h5" align="center" gutterBottom>
-        Sign Up
+      <Typography
+        component="h4"
+        variant="h4"
+        align="center"
+        gutterBottom
+        mb={4}
+        className={classes.signInText}
+      >
+        Create an account
       </Typography>
       <TextField
-        className={classes.inputText}
+        className={classes.textInput}
         inputProps={{ style: { textTransform: 'capitalize' } }}
         label="First Name"
         type="text"
@@ -123,14 +137,14 @@ const RegisterSection = ({ isHide, setIsHide }) => {
         onChange={(e) => setFirstname(e.target.value)}
       />
       <TextField
-        className={classes.inputText}
+        className={classes.textInput}
         inputProps={{ style: { textTransform: 'capitalize' } }}
         label="Last Name"
         type="text"
         required
         onChange={(e) => setLastname(e.target.value)}
       />
-      <FormControl component="fieldset" className={classes.inputText}>
+      <FormControl component="fieldset" id="genders">
         <FormLabel component="legend">Gender</FormLabel>
         <RadioGroup
           row
@@ -144,21 +158,21 @@ const RegisterSection = ({ isHide, setIsHide }) => {
         </RadioGroup>
       </FormControl>
       <TextField
-        className={classes.inputText}
+        className={classes.textInput}
         label="Email"
         type="email"
         required
         onChange={(e) => setEmail(e.target.value)}
       />
       <TextField
-        className={classes.inputText}
+        className={classes.textInput}
         label="Password"
         type="password"
         required
         onChange={(e) => setPassword(e.target.value)}
       />
       <TextField
-        className={classes.inputText}
+        className={classes.textInput}
         label="Confirm Password"
         type="password"
         required
@@ -169,8 +183,9 @@ const RegisterSection = ({ isHide, setIsHide }) => {
         variant="contained"
         color="secondary"
         endIcon={<ArrowForwardIosOutlinedIcon fontSize="small" />}
+        className={classes.button}
       >
-        Register
+        SIGN UP
       </Button>
       <Button
         variant="outline"
@@ -179,8 +194,9 @@ const RegisterSection = ({ isHide, setIsHide }) => {
           setIsHide(true);
         }}
         startIcon={<ArrowBackIosOutlinedIcon fontSize="small" />}
+        className={classes.button}
       >
-        Sign In?
+        Back to Login
       </Button>
     </Form>
   );
@@ -189,6 +205,15 @@ const RegisterSection = ({ isHide, setIsHide }) => {
 const Form = styled.form`
   display: ${(props) => (!props.isHide ? 'flex' : 'none')};
   flex-direction: column;
+  width: 684px;
+  padding: 74px;
+  background-color: #383838;
+  align-items: center;
+
+  #genders {
+    width: 500px;
+    margin-bottom: '12px';
+  }
 `;
 //#endregion
 

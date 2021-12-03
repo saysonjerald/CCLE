@@ -2,11 +2,14 @@ import React, { useContext, useState, useEffect } from 'react';
 import LoginSection from '../components/Login';
 import RegisterSection from '../components/Register';
 import styled from 'styled-components';
+import { Paper } from '@mui/material';
 import { UserContext } from '../contexts/UserContext';
 
-const Home = () => {
+const Home = ({ match }) => {
   const { user, setUser, setNavValue } = useContext(UserContext);
-  const [isHide, setIsHide] = useState('true');
+  const [isHide, setIsHide] = useState(
+    match.params.option === 'in' ? true : false
+  );
 
   useEffect(() => {
     let unmounted = false;
@@ -22,7 +25,7 @@ const Home = () => {
 
   return (
     <Wrapper>
-      <FormWrapper>
+      <Paper elevation={8}>
         <LoginSection
           isHide={isHide}
           setIsHide={setIsHide}
@@ -30,7 +33,7 @@ const Home = () => {
           setUser={setUser}
         />
         <RegisterSection isHide={isHide} setIsHide={setIsHide} />
-      </FormWrapper>
+      </Paper>
     </Wrapper>
   );
 };
@@ -41,11 +44,6 @@ const Wrapper = styled.div`
   align-items: center;
   height: 100vh;
   width: 100%;
-`;
-
-const FormWrapper = styled.div`
-  background-color: #444;
-  padding: 2rem;
 `;
 
 export default Home;

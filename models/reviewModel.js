@@ -3,6 +3,16 @@ const User = require('./userModel');
 
 const reviewSchema = new mongoose.Schema(
   {
+    user: {
+      type: mongoose.Schema.ObjectId,
+      ref: 'User',
+      required: [true, 'Review must have a reviewer'],
+    },
+    reviewee: {
+      type: mongoose.Schema.ObjectId,
+      ref: 'User',
+      required: [true, 'You must leave a review to a user'],
+    },
     review: {
       type: String,
       required: [true, 'Review cannot be empty!'],
@@ -16,16 +26,6 @@ const reviewSchema = new mongoose.Schema(
     createdAt: {
       type: Date,
       default: Date.now(),
-    },
-    user: {
-      type: mongoose.Schema.ObjectId,
-      ref: 'User',
-      required: [true, 'Review must belong to user'],
-    },
-    reviewee: {
-      type: mongoose.Schema.ObjectId,
-      ref: 'User',
-      required: [true, 'Review must belong to user'],
     },
   },
   {

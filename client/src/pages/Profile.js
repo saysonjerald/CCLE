@@ -3,7 +3,16 @@ import { useHistory } from 'react-router-dom';
 import styled from 'styled-components';
 import axios from 'axios';
 
-import { Grid, Typography, Button, Avatar } from '@mui/material';
+import {
+  Grid,
+  Typography,
+  Button,
+  Avatar,
+  Paper,
+  Chip,
+  Box,
+  Stack,
+} from '@mui/material';
 import { makeStyles } from '@mui/styles';
 
 import { UserContext } from '../contexts/UserContext';
@@ -19,6 +28,7 @@ import PendingCardTeacher from '../components/PendingCardTeacher';
 import PendingCardStudent from '../components/PendingCardStudent';
 import SetAppointment from '../components/SetAppointment';
 import BookingCalendar from '../components/BookingCalendar';
+import IsEmailVerify from '../components/IsEmailVerify';
 
 const Profile = ({ match }) => {
   const history = useHistory();
@@ -155,55 +165,197 @@ const Profile = ({ match }) => {
 
   return (
     <User>
-      <Avatar
-        alt={`${userProfile.firstname} ${userProfile.lastname}`}
-        src={`${urlAPI}img/users/${userProfile.profilePic}`}
-        sx={{ width: 156, height: 156 }}
-      />
-      <h3>
-        {userProfile.firstname} {userProfile.lastname}
-      </h3>
-      <div>
-        {match.params.id !== user.id ? (
-          <SetAppointment profileId={match.params.id} />
-        ) : (
-          <p></p>
-        )}
-      </div>
-      <p>{userProfile.bio}</p>
-      <p>{userProfile.address}</p>
-      <p>{userProfile.programmingLanguage}</p>
-      <p>{userProfile.spokenLanguage}</p>
-      <p>{userProfile.prices}</p>
-      <p>{userProfile.priceStarting}</p>
-      {match.params.id === user.id ? (
-        <>
+      {user && userProfile && (
+        <div>
+          <Stack direction="row" spacing={3}>
+            <UserInfoWrapper elevation={12}>
+              <Avatar
+                alt={`${userProfile.firstname} ${userProfile.lastname}`}
+                src={`${urlAPI}img/users/${userProfile.profilePic}`}
+                sx={{ width: 156, height: 156 }}
+                style={{ marginBottom: '10px' }}
+              />
+              <Typography component="h4" variant="h4">
+                {userProfile.firstname} {userProfile.lastname}
+              </Typography>
+              <Typography component="p">
+                {userProfile.address &&
+                  userProfile.address.split(',').join(', ')}{' '}
+                City
+              </Typography>
+              <Typography component="p">{userProfile.gender}</Typography>
+              <Stack
+                direction="row"
+                spacing={0.5}
+                mt={1}
+                style={{
+                  overflow: 'hidden',
+                  flexWrap: 'wrap',
+                  justifyContent: 'center',
+                }}
+              >
+                {userProfile.spokenLanguage &&
+                  userProfile.spokenLanguage.map((el) => {
+                    return (
+                      <Chip
+                        label={el}
+                        key={el}
+                        style={{ marginBottom: '2.5px' }}
+                      />
+                    );
+                  })}
+              </Stack>
+              <Typography style={{ marginTop: '50px' }} component="p">
+                {userProfile.bio}
+              </Typography>
+            </UserInfoWrapper>
+            <ProgLanguageWrapper elevation={12}>
+              <div
+                style={{
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  marginTop: '16px',
+                }}
+              >
+                {' '}
+                <Typography component="h2" variant="h5">
+                  Programming Languages
+                </Typography>
+                {match.params.id === user.id ? (
+                  <>
+                    <ProgrammingLanguages
+                      match={match.params.id}
+                      language={language}
+                      setLanguage={setLanguage}
+                      topic={topic}
+                      setTopic={setTopic}
+                      description={description}
+                      setDescription={setDescription}
+                      setProgrammingLanguageKnown={setProgrammingLanguageKnown}
+                    />
+                  </>
+                ) : (
+                  <>
+                    <p></p>
+                  </>
+                )}
+              </div>
+              <div
+                style={{
+                  height: '100%',
+                  display: 'flex',
+                  alignItems: 'center',
+                }}
+              >
+                <Stack
+                  direction="row"
+                  spacing={1}
+                  style={{ overflowY: 'hidden' }}
+                >
+                  {programmingLanguageKnown.length ? (
+                    programmingLanguageKnown.map((programmingLang) => {
+                      return (
+                        <ProgrammingCard
+                          match={match.params.id}
+                          key={programmingLang.id}
+                          id={programmingLang.id}
+                          language={programmingLang.language}
+                          choosenTopic={programmingLang.topic}
+                          choosenDescription={programmingLang.description}
+                          ratePerMinute={programmingLang.ratePerMinute}
+                          programmingLanguageKnown={programmingLanguageKnown}
+                          setProgrammingLanguageKnown={
+                            setProgrammingLanguageKnown
+                          }
+                        />
+                      );
+                    })
+                  ) : (
+                    <>
+                      <p>Empty programming language</p>
+                    </>
+                  )}
+                </Stack>
+              </div>
+            </ProgLanguageWrapper>
+          </Stack>
+          <div>
+            {match.params.id !== user.id ? (
+              <SetAppointment profileId={match.params.id} />
+            ) : (
+              <p></p>
+            )}
+          </div>
+          {match.params.id === user.id ? (
+            <>
+              <Typography component="h2" variant="h5">
+                Appointment Request({pendingStudentCounter})
+              </Typography>
+              <Grid container spacing={2}>
+                {pendingAppointmentStudent.length ? (
+                  pendingAppointmentStudent.map((appointment) => {
+                    pendingStudentCounter++;
+                    return appointment.pendingStatus === 'Pending' ? (
+                      <PendingCardStudent
+                        key={appointment.id}
+                        appointmentId={appointment.id}
+                        profilePic={appointment.student.profilePic}
+                        firstname={appointment.student.firstname}
+                        lastname={appointment.student.lastname}
+                        programmingLanguage={appointment.programmingLanguage}
+                        startingDate={appointment.startingDate}
+                        endingDate={appointment.endingDate}
+                        timeSpend={appointment.timeSpend}
+                        grossPay={appointment.grossPay}
+                        commission={appointment.commission}
+                        netPay={appointment.netPay}
+                        setPendingAppointmentStudent={
+                          setPendingAppointmentStudent
+                        }
+                        match={match}
+                      />
+                    ) : (
+                      <div key={appointment.id}></div>
+                    );
+                  })
+                ) : (
+                  <>
+                    <p>There are no request appointments</p>
+                  </>
+                )}
+              </Grid>
+            </>
+          ) : (
+            <>
+              <p></p>
+            </>
+          )}
           <Typography component="h2" variant="h5">
-            Appointment Request({pendingStudentCounter})
+            Booking Request({pendingTeacherCounter})
           </Typography>
           <Grid container spacing={2}>
-            {pendingAppointmentStudent.length ? (
-              pendingAppointmentStudent.map((appointment) => {
-                pendingStudentCounter++;
-                return appointment.pendingStatus === 'Pending' ? (
-                  <PendingCardStudent
+            {pendingAppointmentTeacher.length ? (
+              pendingAppointmentTeacher.map((appointment) => {
+                pendingTeacherCounter++;
+                return (
+                  <PendingCardTeacher
                     key={appointment.id}
                     appointmentId={appointment.id}
-                    profilePic={appointment.student.profilePic}
-                    firstname={appointment.student.firstname}
-                    lastname={appointment.student.lastname}
+                    studentId={appointment.student.id}
+                    teacherId={appointment.teacher.id}
+                    profilePic={appointment.teacher.profilePic}
+                    firstname={appointment.teacher.firstname}
+                    lastname={appointment.teacher.lastname}
                     programmingLanguage={appointment.programmingLanguage}
                     startingDate={appointment.startingDate}
                     endingDate={appointment.endingDate}
+                    pendingStatus={appointment.pendingStatus}
                     timeSpend={appointment.timeSpend}
                     grossPay={appointment.grossPay}
                     commission={appointment.commission}
                     netPay={appointment.netPay}
-                    setPendingAppointmentStudent={setPendingAppointmentStudent}
-                    match={match}
+                    setPendingAppointmentTeacher={setPendingAppointmentTeacher}
                   />
-                ) : (
-                  <div key={appointment.id}></div>
                 );
               })
             ) : (
@@ -212,137 +364,60 @@ const Profile = ({ match }) => {
               </>
             )}
           </Grid>
-        </>
-      ) : (
-        <>
-          <p></p>
-        </>
-      )}
-      <Typography component="h2" variant="h5">
-        Booking Request({pendingTeacherCounter})
-      </Typography>
-      <Grid container spacing={2}>
-        {pendingAppointmentTeacher.length ? (
-          pendingAppointmentTeacher.map((appointment) => {
-            pendingTeacherCounter++;
-            return (
-              <PendingCardTeacher
-                key={appointment.id}
-                appointmentId={appointment.id}
-                studentId={appointment.student.id}
-                teacherId={appointment.teacher.id}
-                profilePic={appointment.teacher.profilePic}
-                firstname={appointment.teacher.firstname}
-                lastname={appointment.teacher.lastname}
-                programmingLanguage={appointment.programmingLanguage}
-                startingDate={appointment.startingDate}
-                endingDate={appointment.endingDate}
-                pendingStatus={appointment.pendingStatus}
-                timeSpend={appointment.timeSpend}
-                grossPay={appointment.grossPay}
-                commission={appointment.commission}
-                netPay={appointment.netPay}
-                setPendingAppointmentTeacher={setPendingAppointmentTeacher}
-              />
-            );
-          })
-        ) : (
-          <>
-            <p>There are no request appointments</p>
-          </>
-        )}
-      </Grid>
-      {match.params.id === user.id ? (
-        <>
           <hr style={{ margin: '40px' }} />
-          <ProgrammingLanguages
-            match={match.params.id}
-            language={language}
-            setLanguage={setLanguage}
-            topic={topic}
-            setTopic={setTopic}
-            description={description}
-            setDescription={setDescription}
-            setProgrammingLanguageKnown={setProgrammingLanguageKnown}
-          />
-        </>
-      ) : (
-        <>
-          <p></p>
-        </>
-      )}
-      <Typography component="h2" variant="h5">
-        Programming Languages
-      </Typography>
-      <Grid className={classes.form}>
-        {programmingLanguageKnown.length ? (
-          programmingLanguageKnown.map((programmingLang) => {
-            return (
-              <ProgrammingCard
-                match={match.params.id}
-                key={programmingLang.id}
-                id={programmingLang.id}
-                language={programmingLang.language}
-                choosenTopic={programmingLang.topic}
-                choosenDescription={programmingLang.description}
-                ratePerMinute={programmingLang.ratePerMinute}
-                programmingLanguageKnown={programmingLanguageKnown}
-                setProgrammingLanguageKnown={setProgrammingLanguageKnown}
-              />
-            );
-          })
-        ) : (
-          <>
-            <p>Empty programming language</p>
-          </>
-        )}
-      </Grid>
-      <hr style={{ margin: '40px' }} />
-      <Typography component="h2" variant="h5">
-        Booked Appointments
-      </Typography>
-      {BookingCalendar && <BookingCalendar match={match} />}
-      {match.params.id !== user.id ? (
-        <ReviewPost
-          userURL={match.params.id}
-          reviewer={reviewer}
-          setReviewer={setReviewer}
-          match={match.params.id}
-        />
-      ) : (
-        <>
-          <p></p>
-        </>
-      )}
-      <Typography component="h2" variant="h5">
-        Reviews({userProfile.ratingsQuantity})
-      </Typography>
-      {reviewer.length ? (
-        reviewer.map((review) => {
-          return (
-            <ReviewCard
-              key={review.id}
-              review={review.review}
-              rating={review.rating}
-              firstname={review.user.firstname}
-              lastname={review.user.lastname}
-              profilePic={review.user.profilePic}
-            />
-          );
-        })
-      ) : (
-        <>
-          <p>There are no reviews</p>
-        </>
+          <Typography component="h2" variant="h5">
+            Booked Appointments
+          </Typography>
+          {BookingCalendar && <BookingCalendar match={match} />}
+          <Typography component="h2" variant="h5">
+            Reviews({userProfile.ratingsQuantity})
+          </Typography>
+          {reviewer.length ? (
+            reviewer.map((review) => {
+              return (
+                <ReviewCard
+                  key={review.id}
+                  review={review.review}
+                  rating={review.rating}
+                  firstname={review.user.firstname}
+                  lastname={review.user.lastname}
+                  profilePic={review.user.profilePic}
+                />
+              );
+            })
+          ) : (
+            <>
+              <p>There are no reviews</p>
+            </>
+          )}
+          <IsEmailVerify />{' '}
+        </div>
       )}
     </User>
   );
 };
 
 const User = styled.div`
-  background-color: #555;
   color: #efe;
   padding: 40px 50px;
+  width: 1300px;
+  margin: 0 auto;
+`;
+
+const UserInfoWrapper = styled(Paper)`
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  background-color: #202020;
+  width: 455px;
+  padding: 30px;
+  text-align: center;
+`;
+
+const ProgLanguageWrapper = styled(Paper)`
+  background-color: #202020;
+  width: 835px;
+  padding: 30px;
 `;
 
 export default Profile;

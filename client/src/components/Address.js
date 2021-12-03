@@ -36,7 +36,7 @@ const Address = ({ address, setAddress }) => {
             {option}
           </li>
         )}
-        style={{ width: 500 }}
+        style={{ width: 500, marginBottom: '16px' }}
         renderInput={(params) => (
           <TextField
             {...params}
@@ -67,7 +67,7 @@ const Address = ({ address, setAddress }) => {
             {option}
           </li>
         )}
-        style={{ width: 500 }}
+        style={{ width: 500, marginBottom: '16px' }}
         renderInput={(params) => (
           <TextField {...params} label="City" placeholder="Add City" required />
         )}

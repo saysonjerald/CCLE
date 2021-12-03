@@ -12,6 +12,7 @@ import {
   Radio,
   ButtonBase,
   Button,
+  capitalize,
 } from '@mui/material';
 import { makeStyles } from '@mui/styles';
 import { styled } from '@mui/material';
@@ -39,12 +40,27 @@ const Me = ({ match }) => {
     form: {
       display: 'flex',
     },
-    margin: {
-      margin: '5px',
+    firstname: {
+      marginRight: '8px',
     },
     wrapper: {
-      width: '1200px',
+      width: '1000px',
       margin: '50px auto',
+      backgroundColor: '#383838',
+      padding: '50px 70px',
+    },
+    title: {
+      marginBottom: '16px',
+      fontWeight: '500',
+    },
+    profilePic: {
+      marginBottom: '24px',
+    },
+    column1: {
+      marginRight: '60px',
+    },
+    controlInput: {
+      marginBottom: '16px',
     },
   });
   const classes = useStyles();
@@ -195,12 +211,24 @@ const Me = ({ match }) => {
     }
   };
 
+  function titleCase(str) {
+    var splitStr = str.toLowerCase().split(' ');
+    for (var i = 0; i < splitStr.length; i++) {
+      // You do not need to check if i is larger than splitStr length, as your for does that for you
+      // Assign it back to the array
+      splitStr[i] =
+        splitStr[i].charAt(0).toUpperCase() + splitStr[i].substring(1);
+    }
+    // Directly return the joined string
+    return splitStr.join(' ');
+  }
+
   const updateData = async (e) => {
     e.preventDefault();
 
     const form = new FormData();
-    form.append('firstname', firstname);
-    form.append('lastname', lastname);
+    form.append('firstname', titleCase(firstname));
+    form.append('lastname', titleCase(lastname));
     form.append('gender', gender);
     form.append('bio', bio);
 
@@ -229,11 +257,11 @@ const Me = ({ match }) => {
   return (
     <div className={classes.wrapper}>
       <div>
-        <Typography component="h1" variant="h5">
+        <Typography component="h1" variant="h5" className={classes.title}>
           Account Setting
         </Typography>
-        <Grid container spacing={2}>
-          <Grid item xs={4}>
+        <Grid container>
+          <Grid item xs={4} className={classes.column1}>
             <Box
               sx={{
                 display: 'flex',
@@ -259,6 +287,7 @@ const Me = ({ match }) => {
                 style={{
                   width: profilePic.width,
                 }}
+                className={classes.profilePic}
               >
                 <ImageSrc
                   style={{ backgroundImage: `url(${profilePic.url})` }}
@@ -282,12 +311,22 @@ const Me = ({ match }) => {
                 </Image>
               </ImageButton>
             </Box>
+            <TextField
+              label="Bio"
+              variant="outlined"
+              multiline
+              rows={4}
+              fullWidth
+              value={bio}
+              onChange={(e) => setBio(e.target.value)}
+              style={{ width: '300px' }}
+            />
           </Grid>
 
           <Grid item xs={4}>
             <Grid container spacing={2}>
               <Box component="form" noValidate autoComplete="off">
-                <FormControl component="fieldset" className={classes.margin}>
+                <FormControl component="fieldset">
                   <FormLabel component="legend">Gender</FormLabel>
                   <RadioGroup
                     row
@@ -316,9 +355,11 @@ const Me = ({ match }) => {
                     variant="outlined"
                     fullWidth
                     margin="normal"
-                    className={classes.margin}
                     value={firstname}
-                    onChange={(e) => setFirstname(e.target.value)}
+                    onChange={(e) => {
+                      setFirstname(titleCase(e.target.value));
+                    }}
+                    className={`${classes.controlInput} ${classes.firstname}`}
                   />
                   <TextField
                     inputProps={{ style: { textTransform: 'capitalize' } }}
@@ -327,12 +368,12 @@ const Me = ({ match }) => {
                     variant="outlined"
                     fullWidth
                     margin="normal"
-                    className={classes.margin}
                     value={lastname}
-                    onChange={(e) => setLastname(e.target.value)}
+                    onChange={(e) => setLastname(titleCase(e.target.value))}
+                    className={classes.controlInput}
                   />
                 </div>
-                <TextField
+                {/* <TextField
                   label="Bio"
                   variant="outlined"
                   multiline
@@ -341,35 +382,37 @@ const Me = ({ match }) => {
                   className={classes.margin}
                   value={bio}
                   onChange={(e) => setBio(e.target.value)}
-                />
-                <div className={classes.margin}>
+                /> */}
+                <div className={classes.controlInput}>
                   <SpokenLanguages
                     spokenLanguage={spokenLanguage}
                     setSpokenLanguage={setSpokenLanguage}
                   />
                 </div>
-                <div className={classes.margin}>
+                <div>
                   <Address address={address} setAddress={setAddress} />
                 </div>
                 <Button
-                  className={classes.margin}
-                  type="submit"
+                  className={classes.controlInput}
                   variant="contained"
                   onClick={updateData}
                 >
                   Update Account
                 </Button>
                 <hr style={{ margin: '40px' }} />
-                <Typography component="h2" variant="h6">
-                  Password Change
+                <Typography
+                  component="h2"
+                  variant="h6"
+                  className={classes.title}
+                >
+                  Change Password
                 </Typography>
                 <TextField
                   label="Current Password"
                   type="password"
                   variant="outlined"
                   fullWidth
-                  margin="normal"
-                  className={classes.margin}
+                  className={classes.controlInput}
                   value={currentPassword}
                   onChange={(e) => setCurrentPassword(e.target.value)}
                 />
@@ -378,8 +421,7 @@ const Me = ({ match }) => {
                   type="password"
                   variant="outlined"
                   fullWidth
-                  margin="normal"
-                  className={classes.margin}
+                  className={classes.controlInput}
                   value={newPassword}
                   onChange={(e) => setNewPassword(e.target.value)}
                 />
@@ -388,13 +430,12 @@ const Me = ({ match }) => {
                   type="password"
                   variant="outlined"
                   fullWidth
-                  margin="normal"
-                  className={classes.margin}
+                  className={classes.controlInput}
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
                 />
                 <Button
-                  className={classes.margin}
+                  className={classes.controlInput}
                   type="submit"
                   variant="contained"
                   onClick={updatePassword}

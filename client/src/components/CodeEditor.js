@@ -6,8 +6,9 @@ import { WebrtcProvider } from 'y-webrtc';
 import './CodeMirrorDependecies/Editor.css';
 import RandomColor from 'randomcolor';
 import './CodeMirrorDependecies/EditorAddons';
+import languageCodeWrapper from './../utils/languageCodeWrapper';
 
-export function Editor({ roomID, name }) {
+export function Editor({ roomID, name, language }) {
   const [EditorRef, setEditorRef] = useState(null);
   const [code, setCode] = useState('');
 
@@ -72,10 +73,11 @@ export function Editor({ roomID, name }) {
       <CodeMirrorEditor
         onChange={(editor, data, value) => {
           setCode(value);
+          // setCodeString(value);
         }}
         autoScroll
         options={{
-          mode: 'text/x-c++src', //this is for c++,  you can visit https://github.com/atharmohammad/Code-N-Collab/blob/master/src/Function/languageMapper.js  for other language types
+          mode: languageCodeWrapper(language),
           theme: 'monokai',
           lineWrapping: true,
           smartIndent: true,
