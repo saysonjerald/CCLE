@@ -373,16 +373,6 @@ const Me = ({ match }) => {
                     className={classes.controlInput}
                   />
                 </div>
-                {/* <TextField
-                  label="Bio"
-                  variant="outlined"
-                  multiline
-                  rows={4}
-                  fullWidth
-                  className={classes.margin}
-                  value={bio}
-                  onChange={(e) => setBio(e.target.value)}
-                /> */}
                 <div className={classes.controlInput}>
                   <SpokenLanguages
                     spokenLanguage={spokenLanguage}

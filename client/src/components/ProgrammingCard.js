@@ -19,6 +19,7 @@ import {
   Slider,
 } from '@mui/material';
 import axios from 'axios';
+import styled from 'styled-components';
 import { v4 as uuidv4 } from 'uuid';
 import CheckBoxOutlineBlankIcon from '@mui/icons-material/CheckBoxOutlineBlank';
 import CheckBoxIcon from '@mui/icons-material/CheckBox';
@@ -74,8 +75,8 @@ const ProgrammingCard = ({
     },
   });
   const classes = useStyles();
-  const color = stringToColour(language);
-  const img_url = `https://singlecolorimage.com/get/${color}/400x140`;
+  // const color = stringToColour(language);
+  // const img_url = `https://singlecolorimage.com/get/${color}/400x140`;
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -190,16 +191,45 @@ const ProgrammingCard = ({
         >
           ${ratePerMinute} per minute
         </span>
-        <CardMedia
+        {/* <CardMedia
           component="img"
           alt={`${language}`}
           height="140"
           image={`https://textoverimage.moesif.com/image?image_url=${img_url}&overlay_color=2c2c2c68&text=${language}&text_size=32&margin=0&y_align=middle&x_align=center`}
-        />
+        /> */}
+        <div
+          style={{
+            width: 'inherit',
+            height: '140px',
+            backgroundColor: `#${stringToColour(language)}`,
+            // position: 'relative',
+          }}
+        >
+          <span
+            className="lang"
+            style={{
+              position: 'absolute',
+              top: '25%',
+              left: '50%',
+              transform: `translate(${-50}%, ${-50}%)`,
+            }}
+          >
+            <Typography component="h3" variant="h4">
+              {language}
+            </Typography>
+          </span>
+        </div>
         <CardContent>
           {topic.length ? (
             topic.map((name) => {
-              return <Chip label={name} size="small" key={uuidv4()} />;
+              return (
+                <Chip
+                  label={name}
+                  size="small"
+                  key={uuidv4()}
+                  style={{ margin: '2px' }}
+                />
+              );
             })
           ) : (
             <>No topics available</>
