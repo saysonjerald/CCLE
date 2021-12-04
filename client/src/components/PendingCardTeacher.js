@@ -114,6 +114,22 @@ export default function PendingCardStudent({
     }
   };
 
+  const deleteAppointment = async (e) => {
+    e.preventDefault();
+    try {
+      await axios
+        .create({
+          baseURL: urlAPI,
+          withCredentials: true, //I read around that you need this for cookies to be sent?
+        })
+        .delete(`${urlAPI}api/v1/users/${user.id}/pendingAppointment/`, {
+          data: { id: appointmentId },
+        });
+    } catch (err) {
+      console.log('error', err.response.data.message);
+    }
+  };
+
   return (
     <>
       <Card className={classes.card}>
@@ -185,7 +201,18 @@ export default function PendingCardStudent({
           </Typography>
         </CardContent>
         <CardActions>
-          <Button size="small" onClick={handleClose}>
+          <Button
+            size="small"
+            onClick={async (e) => {
+              await deleteAppointment(e)
+                .then(() => {
+                  console.log('Appointment Successfuly Deleted');
+                })
+                .catch((err) => {
+                  console.log(err);
+                });
+            }}
+          >
             Cancel
           </Button>
           {pendingStatus === 'Accepted' && (
@@ -219,7 +246,7 @@ export default function PendingCardStudent({
           />
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleClose}>Cancel</Button>
+          <Button>Cancel</Button>
           <Button
             onClick={async (e) => {
               await createBooking()

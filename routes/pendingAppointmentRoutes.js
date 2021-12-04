@@ -11,7 +11,8 @@ router
     authController.protect,
     booking.validate,
     pendingAppointment.createPendingAppointment
-  );
+  )
+  .delete(authController.protect, pendingAppointment.deletePendingAppointment);
 
 router
   .route('/teacher')

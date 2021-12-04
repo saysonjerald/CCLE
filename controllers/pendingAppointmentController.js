@@ -14,6 +14,21 @@ exports.createPendingAppointment = catchAsync(async (req, res) => {
   });
 });
 
+exports.deletePendingAppointment = catchAsync(async (req, res, next) => {
+  const deletedAppointment = await PendingAppointment.findByIdAndDelete(
+    req.body.id
+  );
+
+  if (!deletedAppointment) {
+    return next(new AppError('No Appointment found with that ID', 404));
+  }
+
+  res.status(200).json({
+    status: 'success',
+    data: null,
+  });
+});
+
 exports.getPendingAppointmentTeacher = catchAsync(async (req, res, next) => {
   if (!req.body.teacher) req.body.teacher = req.params.teacher;
   if (!req.body.student) req.body.student = req.user.id;
