@@ -131,7 +131,28 @@ const Nav = () => {
             </div>
           )}
           {user && (
-            <div>
+            <div style={{ display: 'flex', alignItems: 'center' }}>
+              <Tabs textColor="primary" value={navValue}>
+                <Tab
+                  label="Home"
+                  component={Link}
+                  to="/"
+                  value="1"
+                  onClick={(e) => setNavValue('1')}
+                />
+                <Tab
+                  label="Find Tutor"
+                  component={Link}
+                  to="/find-tutors"
+                  value="2"
+                  onClick={(e) => setNavValue('2')}
+                />
+                <Tab
+                  className={classes.navHide}
+                  value="3"
+                  onClick={(e) => setNavValue('3')}
+                />
+              </Tabs>
               <IconButton
                 size="large"
                 aria-label="account of current user"

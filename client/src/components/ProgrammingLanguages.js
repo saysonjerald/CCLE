@@ -46,7 +46,7 @@ const ProgrammingLanguages = ({
       display: 'flex',
     },
     margin: {
-      margin: '5px',
+      margin: '12px',
     },
     wrapper: {
       width: '1200px',
@@ -136,8 +136,10 @@ const ProgrammingLanguages = ({
         Add Language
       </Button>
       <Dialog open={open} onClose={handleClose}>
-        <DialogTitle>What's your programming language?</DialogTitle>
-        <DialogContent>
+        <DialogTitle style={{ textAlign: 'center' }}>
+          What's your programming language?
+        </DialogTitle>
+        <DialogContent style={{ textAlign: 'center' }}>
           <Autocomplete
             className={classes.margin}
             id="chooseprogrammingLanguages"
@@ -206,6 +208,7 @@ const ProgrammingLanguages = ({
             variant="outlined"
             multiline
             rows={4}
+            style={{ width: '95%' }}
             fullWidth
             value={description}
             onChange={(e) => setDescription(e.target.value)}
@@ -213,7 +216,9 @@ const ProgrammingLanguages = ({
           <Divider>
             <Chip label="Pricing" />
           </Divider>
-          <Typography id="non-linear-slider">Rate per minute</Typography>
+          <Typography id="non-linear-slider" style={{ marginTop: '12px' }}>
+            Rate per minute
+          </Typography>
           <span>$</span>
           <Input
             value={ratePerMinute}
@@ -222,13 +227,13 @@ const ProgrammingLanguages = ({
             onBlur={handleBlur}
             inputProps={{
               step: 0.01,
-              min: 0,
-              max: maxRate,
+              min: 0.01,
+              // max: maxRate,
               type: 'number',
               'aria-labelledby': 'input-slider',
             }}
           />
-          <Slider
+          {/* <Slider
             value={typeof ratePerMinute === 'number' ? ratePerMinute : 0}
             onChange={handleSliderChange}
             aria-labelledby="input-slider"
@@ -239,7 +244,7 @@ const ProgrammingLanguages = ({
             step={0.01}
             min={0.01}
             max={30}
-          />
+          /> */}
         </DialogContent>
         <DialogActions>
           <Button onClick={handleClose}>Cancel</Button>

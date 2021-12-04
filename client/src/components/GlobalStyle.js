@@ -164,9 +164,9 @@ video::-webkit-media-controls {
 
 
 // Material UI Email Verification Background
-.css-hz1bth-MuiDialog-container {
+/* .css-hz1bth-MuiDialog-container {
   background-color: #ffffff3e;
-}
+} */
 
 `;
 export default GlobalStyle;

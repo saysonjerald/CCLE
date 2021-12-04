@@ -186,10 +186,11 @@ export default function SetAppointment({ profileId }) {
 
   return (
     <div>
-      <Button variant="contained" color="success" onClick={handleClickOpen}>
+      <Button variant="contained" onClick={handleClickOpen}>
         Set Appointment
       </Button>
       <Dialog
+        id="isVerified"
         open={open}
         TransitionComponent={Transition}
         keepMounted
@@ -197,105 +198,112 @@ export default function SetAppointment({ profileId }) {
         aria-describedby="alert-dialog-slide-description"
         style={{ textAlign: 'center' }}
       >
-        <DialogTitle>{'Make an Appointment'}</DialogTitle>
-        <DialogContent>
-          <LocalizationProvider dateAdapter={AdapterDateFns}>
-            <br />
-            <Stack spacing={3}>
-              <Autocomplete
-                id="programmingLanguages"
-                options={
-                  programmingLanguageKnown.length
-                    ? programmingLanguageKnown.map((el) => el.language)
-                    : []
-                }
-                onChange={(event, value) => {
-                  handleChangeLanguage(value);
-                }}
-                isOptionEqualToValue={(option, value) =>
-                  option.language === value.language
-                }
-                getOptionLabel={(option) => option}
-                renderOption={(props, option, { selected }) => (
-                  <li {...props}>
-                    <Checkbox
-                      icon={icon}
-                      checkedIcon={checkedIcon}
-                      style={{ marginRight: 8, backgroundColor: '#333' }}
+        <div style={{ padding: '20px' }}>
+          <DialogTitle>{'Make an Appointment'}</DialogTitle>
+          <DialogContent>
+            <LocalizationProvider dateAdapter={AdapterDateFns}>
+              <br />
+              <Stack spacing={3}>
+                <Autocomplete
+                  id="programmingLanguages"
+                  options={
+                    programmingLanguageKnown.length
+                      ? programmingLanguageKnown.map((el) => el.language)
+                      : []
+                  }
+                  onChange={(event, value) => {
+                    handleChangeLanguage(value);
+                  }}
+                  isOptionEqualToValue={(option, value) =>
+                    option.language === value.language
+                  }
+                  getOptionLabel={(option) => option}
+                  renderOption={(props, option, { selected }) => (
+                    <li {...props}>
+                      <Checkbox
+                        icon={icon}
+                        checkedIcon={checkedIcon}
+                        style={{ marginRight: 8, backgroundColor: '#333' }}
+                      />
+                      {option}
+                    </li>
+                  )}
+                  style={{ width: 500 }}
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      label="Programming langauge you want to discuss/learn"
+                      placeholder="Add programming language"
                     />
-                    {option}
-                  </li>
-                )}
-                style={{ width: 500 }}
-                renderInput={(params) => (
-                  <TextField
-                    {...params}
-                    label="Programming langauge you want to discuss/learn"
-                    placeholder="Add programming language"
-                  />
-                )}
-              />
-              <DateTimePicker
-                label="Starting Date"
-                value={startingDate}
-                // minDate={today.setDate(today.getDate() + 1)}
-                onChange={handleChangeDate}
-                renderInput={(params) => <TextField {...params} />}
-              />
-              <Typography id="track-false-slider" style={{ margin: '20px' }}>
-                Time you want to spend
-              </Typography>
-              <Slider
-                value={timeSpend ? timeSpend : 30}
-                aria-labelledby="track-false-slider"
-                getAriaValueText={valueLabelFormat}
-                valueLabelFormat={valueLabelFormat}
-                onChange={handleChangeTimeWillSpend}
-                defaultValue={30}
-                min={30}
-                max={720}
-                marks={marks}
-                valueLabelDisplay="on"
-                style={{ marginBottom: '20px' }}
-              />
-              <p>
-                Appointment ends on{' '}
-                {endingDate ? endingDate.toLocaleString() : 'Not set'}
-              </p>
-              <Divider>
-                <Chip label="Breakdown" />
-              </Divider>
-              <p>
-                Rate per minute: {currencyConvert(ratePerMinute)}
-                <br /> Total Rate: {currencyConvert(totalRate)}
-                <br /> Commission per minute: {currencyConvert(commission)}
-                <br /> Total Commission: {currencyConvert(totalCommission)}
-              </p>
-              <Divider>
-                <Chip label="Amount to Pay" />
-              </Divider>
-              <Typography component="h4" variant="h3">
-                {currencyConvert(total)}
-              </Typography>
-            </Stack>
-          </LocalizationProvider>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleClose}>Disagree</Button>
-          <Button
-            onClick={async (e) => {
-              await addPendingAppointment(e)
-                .then(() => {
-                  handleClose();
-                })
-                .catch((err) => {
-                  handleClose();
-                });
-            }}
-          >
-            Agree
-          </Button>
-        </DialogActions>
+                  )}
+                />
+                <DateTimePicker
+                  label="Starting Date"
+                  value={startingDate}
+                  // minDate={today.setDate(today.getDate() + 1)}
+                  onChange={handleChangeDate}
+                  renderInput={(params) => <TextField {...params} />}
+                />
+                <Typography id="track-false-slider" style={{ margin: '20px' }}>
+                  Time you want to spend
+                </Typography>
+                <Slider
+                  value={timeSpend ? timeSpend : 30}
+                  aria-labelledby="track-false-slider"
+                  getAriaValueText={valueLabelFormat}
+                  valueLabelFormat={valueLabelFormat}
+                  onChange={handleChangeTimeWillSpend}
+                  defaultValue={30}
+                  min={30}
+                  max={720}
+                  marks={marks}
+                  valueLabelDisplay="on"
+                  style={{ marginBottom: '20px' }}
+                />
+                <p>
+                  {endingDate ? `Appointment ends on ` : ``}
+
+                  {endingDate ? endingDate.toLocaleString() : ''}
+                </p>
+                <Divider>
+                  <Chip label="Breakdown" />
+                </Divider>
+                <p>
+                  Rate per minute: {currencyConvert(ratePerMinute)}
+                  <br /> Total Rate: {currencyConvert(totalRate)}
+                  <br /> Commission per minute: {currencyConvert(commission)}
+                  <br /> Total Commission: {currencyConvert(totalCommission)}
+                </p>
+                <Divider>
+                  <Chip label="Amount to Pay" />
+                </Divider>
+                <Typography
+                  component="h4"
+                  variant="h2"
+                  style={{ color: '#78FF86', fontWeight: 'bold' }}
+                >
+                  {currencyConvert(total)}
+                </Typography>
+              </Stack>
+            </LocalizationProvider>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={handleClose}>Disagree</Button>
+            <Button
+              onClick={async (e) => {
+                await addPendingAppointment(e)
+                  .then(() => {
+                    handleClose();
+                  })
+                  .catch((err) => {
+                    handleClose();
+                  });
+              }}
+            >
+              Agree
+            </Button>
+          </DialogActions>
+        </div>
       </Dialog>
     </div>
   );

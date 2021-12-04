@@ -58,7 +58,7 @@ const ProgrammingCard = ({
       display: 'flex',
     },
     margin: {
-      margin: '5px',
+      margin: '12px',
     },
     wrapper: {
       width: '1200px',
@@ -256,7 +256,7 @@ const ProgrammingCard = ({
         </CardActions>
       </Card>
 
-      <Dialog open={open} onClose={handleClose}>
+      <Dialog open={open} onClose={handleClose} style={{ textAlign: 'center' }}>
         <DialogTitle>What's your programming language?</DialogTitle>
         <DialogContent>
           <Autocomplete
@@ -328,14 +328,16 @@ const ProgrammingCard = ({
             variant="outlined"
             multiline
             rows={4}
-            fullWidth
+            style={{ width: '95%' }}
             defaultValue={choosenDescription}
             onChange={(e) => setInitDescription(e.target.value)}
           />
           <Divider>
             <Chip label="Pricing" />
           </Divider>
-          <Typography id="non-linear-slider">Rate per minute</Typography>
+          <Typography id="non-linear-slider" style={{ marginTop: '12px' }}>
+            Rate per minute
+          </Typography>
           <span>$</span>
           <Input
             value={initRatePerMinute ? initRatePerMinute : ratePerMinute}
@@ -344,13 +346,13 @@ const ProgrammingCard = ({
             onBlur={handleBlur}
             inputProps={{
               step: 0.01,
-              min: 0,
-              max: maxRate,
+              min: 0.01,
+              // max: maxRate,
               type: 'number',
               'aria-labelledby': 'input-slider',
             }}
           />
-          <Slider
+          {/* <Slider
             value={
               typeof initRatePerMinute === 'number'
                 ? initRatePerMinute
@@ -364,7 +366,7 @@ const ProgrammingCard = ({
             step={0.01}
             min={0.01}
             max={30}
-          />
+          /> */}
         </DialogContent>
         <DialogActions>
           <Button onClick={handleClose}>Cancel</Button>

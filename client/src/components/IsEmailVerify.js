@@ -61,7 +61,7 @@ export default function IsEmailVerify() {
       >
         <div className={classes.dialogWrapper}>
           <DialogTitle mb={2}>
-            {'⛔ Your account is not verified yet!'}
+            {'🔔 Your account is not verified yet!'}
           </DialogTitle>
           <DialogContent>
             <DialogContentText id="alert-dialog-slide-description">

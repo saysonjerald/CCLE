@@ -205,9 +205,16 @@ const Profile = ({ match }) => {
                     );
                   })}
               </Stack>
-              <Typography style={{ marginTop: '50px' }} component="p">
+              <Typography style={{ marginTop: '5px' }} component="p">
                 {userProfile.bio}
               </Typography>
+              <div style={{ marginTop: '15px' }}>
+                {match.params.id !== user.id ? (
+                  <SetAppointment profileId={match.params.id} />
+                ) : (
+                  <p></p>
+                )}
+              </div>
             </UserInfoWrapper>
             <ProgLanguageWrapper elevation={12}>
               <div
@@ -272,7 +279,7 @@ const Profile = ({ match }) => {
                     })
                   ) : (
                     <>
-                      <p>Empty programming language</p>
+                      <p>User didn't set programming language yet</p>
                     </>
                   )}
                 </Stack>
@@ -303,8 +310,8 @@ const Profile = ({ match }) => {
               </>
             )}
           </ReviewWrapper>
-          <AppointmentWrapper elevation={12}>
-            {match.params.id === user.id ? (
+          {match.params.id === user.id ? (
+            <AppointmentWrapper elevation={12}>
               <>
                 <Typography component="h2" variant="h5">
                   Appointment Request
@@ -345,12 +352,12 @@ const Profile = ({ match }) => {
                   )}
                 </Grid>
               </>
-            ) : (
-              <>
-                <p></p>
-              </>
-            )}
-          </AppointmentWrapper>
+            </AppointmentWrapper>
+          ) : (
+            <>
+              <p></p>
+            </>
+          )}
           <BookingWrapper elevation={12}>
             <Typography component="h2" variant="h5">
               Booking Request
@@ -391,13 +398,6 @@ const Profile = ({ match }) => {
               )}
             </Grid>
           </BookingWrapper>
-          <div>
-            {match.params.id !== user.id ? (
-              <SetAppointment profileId={match.params.id} />
-            ) : (
-              <p></p>
-            )}
-          </div>
           <hr style={{ margin: '40px' }} />
           <Typography component="h2" variant="h5">
             Booked Appointments

@@ -114,6 +114,10 @@ export default function PendingCardTeacher({
             <Typography variant="h5" component="div">
               {firstname + ' ' + lastname}
             </Typography>
+            <Typography component="p">
+              Want to learn: {programmingLanguage}
+            </Typography>
+            <br />
             <Typography variant="body2">
               Starting Date: <br />
               {new Date(startingDate).toLocaleString([], {
@@ -133,9 +137,6 @@ export default function PendingCardTeacher({
                 hour: '2-digit',
                 minute: '2-digit',
               })}
-            </Typography>
-            <Typography component="p">
-              Want to learn: {programmingLanguage}
             </Typography>
             <Typography component="p">
               Session: {time_convert(timeSpend)}
