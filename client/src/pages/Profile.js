@@ -279,6 +279,118 @@ const Profile = ({ match }) => {
               </div>
             </ProgLanguageWrapper>
           </Stack>
+          <ReviewWrapper elevation={12}>
+            <Typography component="h2" variant="h5" gutterBottom>
+              Reviews({userProfile.ratingsQuantity})
+            </Typography>
+            {reviewer.length ? (
+              reviewer.map((review) => {
+                return (
+                  <ReviewCard
+                    key={review.id}
+                    review={review.review}
+                    rating={review.rating}
+                    createdAt={review.createdAt}
+                    firstname={review.user.firstname}
+                    lastname={review.user.lastname}
+                    profilePic={review.user.profilePic}
+                  />
+                );
+              })
+            ) : (
+              <>
+                <p>There are no reviews</p>
+              </>
+            )}
+          </ReviewWrapper>
+          <AppointmentWrapper elevation={12}>
+            {match.params.id === user.id ? (
+              <>
+                <Typography component="h2" variant="h5">
+                  Appointment Request
+                </Typography>
+                <Grid container spacing={2}>
+                  {pendingAppointmentStudent.length ? (
+                    pendingAppointmentStudent.map((appointment) => {
+                      pendingStudentCounter++;
+                      return appointment.pendingStatus === 'Pending' ? (
+                        <PendingCardStudent
+                          key={appointment.id}
+                          appointmentId={appointment.id}
+                          profilePic={appointment.student.profilePic}
+                          firstname={appointment.student.firstname}
+                          lastname={appointment.student.lastname}
+                          programmingLanguage={appointment.programmingLanguage}
+                          startingDate={appointment.startingDate}
+                          endingDate={appointment.endingDate}
+                          timeSpend={appointment.timeSpend}
+                          grossPay={appointment.grossPay}
+                          commission={appointment.commission}
+                          netPay={appointment.netPay}
+                          setPendingAppointmentStudent={
+                            setPendingAppointmentStudent
+                          }
+                          match={match}
+                        />
+                      ) : (
+                        <div key={appointment.id}></div>
+                      );
+                    })
+                  ) : (
+                    <>
+                      <p style={{ marginLeft: '16px', marginTop: '15px' }}>
+                        There's no appointments request
+                      </p>
+                    </>
+                  )}
+                </Grid>
+              </>
+            ) : (
+              <>
+                <p></p>
+              </>
+            )}
+          </AppointmentWrapper>
+          <BookingWrapper elevation={12}>
+            <Typography component="h2" variant="h5">
+              Booking Request
+            </Typography>
+            <Grid container spacing={2}>
+              {pendingAppointmentTeacher.length ? (
+                pendingAppointmentTeacher.map((appointment) => {
+                  pendingTeacherCounter++;
+                  return (
+                    <PendingCardTeacher
+                      key={appointment.id}
+                      appointmentId={appointment.id}
+                      studentId={appointment.student.id}
+                      teacherId={appointment.teacher.id}
+                      profilePic={appointment.teacher.profilePic}
+                      firstname={appointment.teacher.firstname}
+                      lastname={appointment.teacher.lastname}
+                      programmingLanguage={appointment.programmingLanguage}
+                      startingDate={appointment.startingDate}
+                      endingDate={appointment.endingDate}
+                      pendingStatus={appointment.pendingStatus}
+                      timeSpend={appointment.timeSpend}
+                      grossPay={appointment.grossPay}
+                      commission={appointment.commission}
+                      netPay={appointment.netPay}
+                      setPendingAppointmentTeacher={
+                        setPendingAppointmentTeacher
+                      }
+                    />
+                  );
+                })
+              ) : (
+                <>
+                  <p style={{ marginLeft: '16px', marginTop: '15px' }}>
+                    No available bookings so far.
+                  </p>
+                </>
+              )}
+            </Grid>
+          </BookingWrapper>
           <div>
             {match.params.id !== user.id ? (
               <SetAppointment profileId={match.params.id} />
@@ -286,110 +398,11 @@ const Profile = ({ match }) => {
               <p></p>
             )}
           </div>
-          {match.params.id === user.id ? (
-            <>
-              <Typography component="h2" variant="h5">
-                Appointment Request({pendingStudentCounter})
-              </Typography>
-              <Grid container spacing={2}>
-                {pendingAppointmentStudent.length ? (
-                  pendingAppointmentStudent.map((appointment) => {
-                    pendingStudentCounter++;
-                    return appointment.pendingStatus === 'Pending' ? (
-                      <PendingCardStudent
-                        key={appointment.id}
-                        appointmentId={appointment.id}
-                        profilePic={appointment.student.profilePic}
-                        firstname={appointment.student.firstname}
-                        lastname={appointment.student.lastname}
-                        programmingLanguage={appointment.programmingLanguage}
-                        startingDate={appointment.startingDate}
-                        endingDate={appointment.endingDate}
-                        timeSpend={appointment.timeSpend}
-                        grossPay={appointment.grossPay}
-                        commission={appointment.commission}
-                        netPay={appointment.netPay}
-                        setPendingAppointmentStudent={
-                          setPendingAppointmentStudent
-                        }
-                        match={match}
-                      />
-                    ) : (
-                      <div key={appointment.id}></div>
-                    );
-                  })
-                ) : (
-                  <>
-                    <p>There are no request appointments</p>
-                  </>
-                )}
-              </Grid>
-            </>
-          ) : (
-            <>
-              <p></p>
-            </>
-          )}
-          <Typography component="h2" variant="h5">
-            Booking Request({pendingTeacherCounter})
-          </Typography>
-          <Grid container spacing={2}>
-            {pendingAppointmentTeacher.length ? (
-              pendingAppointmentTeacher.map((appointment) => {
-                pendingTeacherCounter++;
-                return (
-                  <PendingCardTeacher
-                    key={appointment.id}
-                    appointmentId={appointment.id}
-                    studentId={appointment.student.id}
-                    teacherId={appointment.teacher.id}
-                    profilePic={appointment.teacher.profilePic}
-                    firstname={appointment.teacher.firstname}
-                    lastname={appointment.teacher.lastname}
-                    programmingLanguage={appointment.programmingLanguage}
-                    startingDate={appointment.startingDate}
-                    endingDate={appointment.endingDate}
-                    pendingStatus={appointment.pendingStatus}
-                    timeSpend={appointment.timeSpend}
-                    grossPay={appointment.grossPay}
-                    commission={appointment.commission}
-                    netPay={appointment.netPay}
-                    setPendingAppointmentTeacher={setPendingAppointmentTeacher}
-                  />
-                );
-              })
-            ) : (
-              <>
-                <p>There are no request appointments</p>
-              </>
-            )}
-          </Grid>
           <hr style={{ margin: '40px' }} />
           <Typography component="h2" variant="h5">
             Booked Appointments
           </Typography>
           {BookingCalendar && <BookingCalendar match={match} />}
-          <Typography component="h2" variant="h5">
-            Reviews({userProfile.ratingsQuantity})
-          </Typography>
-          {reviewer.length ? (
-            reviewer.map((review) => {
-              return (
-                <ReviewCard
-                  key={review.id}
-                  review={review.review}
-                  rating={review.rating}
-                  firstname={review.user.firstname}
-                  lastname={review.user.lastname}
-                  profilePic={review.user.profilePic}
-                />
-              );
-            })
-          ) : (
-            <>
-              <p>There are no reviews</p>
-            </>
-          )}
           <IsEmailVerify />{' '}
         </div>
       )}
@@ -417,6 +430,27 @@ const UserInfoWrapper = styled(Paper)`
 const ProgLanguageWrapper = styled(Paper)`
   background-color: #202020;
   width: 835px;
+  padding: 30px;
+`;
+
+const ReviewWrapper = styled(Paper)`
+  background-color: #202020;
+  width: 100%;
+  margin-top: 25px;
+  padding: 30px;
+`;
+
+const AppointmentWrapper = styled(Paper)`
+  background-color: #202020;
+  width: 100%;
+  margin-top: 25px;
+  padding: 30px;
+`;
+
+const BookingWrapper = styled(Paper)`
+  background-color: #202020;
+  width: 100%;
+  margin-top: 25px;
   padding: 30px;
 `;
 

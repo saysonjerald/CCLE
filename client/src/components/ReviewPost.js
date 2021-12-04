@@ -85,6 +85,7 @@ const ReviewPost = ({
         .get(`/api/v1/users/${userURL}/reviews/${reviewer}`)
         .then((review) => {
           if (review.data.results >= 1) {
+            console.log(review.data.results);
             reviewDataRef.current = review.data.reviews[0];
             setIsAlreadyReviewed(true);
             setReviewID(review.data.reviews[0].id);
@@ -131,11 +132,11 @@ const ReviewPost = ({
         <Button
           variant="contained"
           style={{ marginLeft: '10px' }}
-          onClick={async () => {
-            isAlreadyReviewed ? await updateReview() : await postReview();
+          onClick={async (e) => {
+            !isAlreadyReviewed ? await updateReview() : await postReview(e);
           }}
         >
-          {isAlreadyReviewed ? 'Update' : 'Post'}
+          {!isAlreadyReviewed ? 'Update' : 'Post'}
         </Button>
       </CardActions>
     </Card>

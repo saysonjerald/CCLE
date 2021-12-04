@@ -13,10 +13,17 @@ import {
 
 import { UserContext } from '../contexts/UserContext';
 
-const Review = ({ review, rating, firstname, lastname, profilePic }) => {
+const Review = ({
+  review,
+  rating,
+  firstname,
+  lastname,
+  profilePic,
+  createdAt,
+}) => {
   const { urlAPI } = useContext(UserContext);
   return (
-    <Card>
+    <Card style={{ marginBottom: '3px' }}>
       <Box container sx={{ display: 'flex', alignItems: 'center' }}>
         <CardContent>
           <Avatar
@@ -26,10 +33,29 @@ const Review = ({ review, rating, firstname, lastname, profilePic }) => {
           />
         </CardContent>
         <CardContent>
-          <Typography component="h3" variant="h6">
-            {`${firstname} ${lastname}`}
+          <Typography variant="body2" color="text.secondary">
+            {`${new Date(createdAt).toLocaleString([], {
+              year: 'numeric',
+              month: '2-digit',
+              day: '2-digit',
+              hour: '2-digit',
+              minute: '2-digit',
+            })}`}
           </Typography>
-          <Rating name="read-only" precision={0.5} value={rating} readOnly />
+          <Typography
+            component="h3"
+            variant="h6"
+            style={{ display: 'flex', alignItems: 'center' }}
+          >
+            {`${firstname} ${lastname} `}
+            <Rating
+              name="read-only"
+              precision={0.5}
+              value={rating}
+              readOnly
+              style={{ marginLeft: '7px' }}
+            />
+          </Typography>
           <Divider />
           <Typography variant="body2" color="text.secondary">
             {`${review}`}
