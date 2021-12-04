@@ -14,6 +14,7 @@ import {
   DialogContentText,
   DialogActions,
 } from '@mui/material';
+import { makeStyles } from '@mui/styles';
 import { UserContext } from '../contexts/UserContext';
 
 function time_convert(num) {
@@ -46,9 +47,10 @@ export default function PendingCardTeacher({
   startingDate,
   endingDate,
   timeSpend,
-  grossPay,
-  commission,
-  netPay,
+  ratePerMinute,
+  totalRate,
+  totalCommission,
+  totalAmount,
   setPendingAppointmentStudent,
   match,
 }) {
@@ -65,6 +67,14 @@ export default function PendingCardTeacher({
   const handleClose = () => {
     setOpen(false);
   };
+
+  const useStyles = makeStyles({
+    card: {
+      maxWidth: '350px',
+      minWidth: '250px',
+    },
+  });
+  const classes = useStyles();
 
   const updateAppointment = async (status) => {
     try {
@@ -104,18 +114,26 @@ export default function PendingCardTeacher({
 
   return (
     <>
-      <Grid item>
-        <Card sx={{ maxWidth: 275 }}>
-          <CardContent>
+      <Card className={classes.card}>
+        <CardContent>
+          <div style={{ display: 'flex', alignItems: 'center' }}>
             <Avatar
               alt={`${firstname} ${lastname}`}
               src={`${urlAPI}/img/users/${profilePic}`}
             />
-            <Typography variant="h5" component="div">
-              {firstname + ' ' + lastname}
-            </Typography>
+            <div style={{ marginLeft: '10px' }}>
+              <Typography variant="h5" component="div">
+                {firstname + ' ' + lastname}
+              </Typography>
+              <Typography component="p">
+                Want to learn: {programmingLanguage}
+              </Typography>
+            </div>
+          </div>
+          <br />
+          <div>
             <Typography component="p">
-              Want to learn: {programmingLanguage}
+              Session: {time_convert(timeSpend)}
             </Typography>
             <br />
             <Typography variant="body2">
@@ -138,40 +156,40 @@ export default function PendingCardTeacher({
                 minute: '2-digit',
               })}
             </Typography>
-            <Typography component="p">
-              Session: {time_convert(timeSpend)}
-            </Typography>
             <br />
-            <Typography component="p">
-              Gross Pay: {currencyConvert(grossPay)}
+            <Typography variant="body2">
+              Rate per minute: {currencyConvert(ratePerMinute)}
             </Typography>
-            <Typography component="p">
-              System Commission: {currencyConvert(commission)}
+            <Typography variant="body2">
+              Total Rate: {currencyConvert(totalRate)}
             </Typography>
-            <Typography component="p">
-              Net Pay: {currencyConvert(netPay)}
+            <Typography variant="body2">
+              System Commission: {currencyConvert(totalCommission)}
             </Typography>
-          </CardContent>
-          <CardActions>
-            <Button
-              size="small"
-              onClick={() => {
-                handleClickOpen('accept');
-              }}
-            >
-              Accept
-            </Button>
-            <Button
-              size="small"
-              onClick={() => {
-                handleClickOpen('reject');
-              }}
-            >
-              Reject
-            </Button>
-          </CardActions>
-        </Card>
-      </Grid>
+            <Typography variant="body2">
+              Total: {currencyConvert(totalAmount)}
+            </Typography>
+          </div>
+        </CardContent>
+        <CardActions>
+          <Button
+            size="small"
+            onClick={() => {
+              handleClickOpen('accept');
+            }}
+          >
+            Accept
+          </Button>
+          <Button
+            size="small"
+            onClick={() => {
+              handleClickOpen('reject');
+            }}
+          >
+            Reject
+          </Button>
+        </CardActions>
+      </Card>
       <Dialog
         open={open}
         onClose={handleClose}

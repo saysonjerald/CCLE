@@ -24,6 +24,9 @@ const pendingAppointmentSchema = new mongoose.Schema(
     timeSpend: {
       type: Number,
     },
+    ratePerMinute: {
+      type: Number,
+    },
     totalRate: {
       type: Number,
     },

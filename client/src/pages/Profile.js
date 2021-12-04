@@ -313,10 +313,14 @@ const Profile = ({ match }) => {
           {match.params.id === user.id ? (
             <AppointmentWrapper elevation={12}>
               <>
-                <Typography component="h2" variant="h5">
+                <Typography component="h2" variant="h5" gutterBottom>
                   Appointment Request
                 </Typography>
-                <Grid container spacing={2}>
+                <Stack
+                  spacing={1}
+                  direction="row"
+                  style={{ overflowY: 'hidden' }}
+                >
                   {pendingAppointmentStudent.length ? (
                     pendingAppointmentStudent.map((appointment) => {
                       pendingStudentCounter++;
@@ -331,16 +335,20 @@ const Profile = ({ match }) => {
                           startingDate={appointment.startingDate}
                           endingDate={appointment.endingDate}
                           timeSpend={appointment.timeSpend}
-                          grossPay={appointment.grossPay}
-                          commission={appointment.commission}
-                          netPay={appointment.netPay}
+                          ratePerMinute={appointment.ratePerMinute}
+                          totalRate={appointment.totalRate}
+                          totalCommission={appointment.totalCommission}
+                          totalAmount={appointment.totalAmount}
                           setPendingAppointmentStudent={
                             setPendingAppointmentStudent
                           }
                           match={match}
                         />
                       ) : (
-                        <div key={appointment.id}></div>
+                        <div
+                          key={appointment.id}
+                          style={{ display: 'none' }}
+                        ></div>
                       );
                     })
                   ) : (
@@ -350,7 +358,7 @@ const Profile = ({ match }) => {
                       </p>
                     </>
                   )}
-                </Grid>
+                </Stack>
               </>
             </AppointmentWrapper>
           ) : (
@@ -362,7 +370,7 @@ const Profile = ({ match }) => {
             <Typography component="h2" variant="h5">
               Booking Request
             </Typography>
-            <Grid container spacing={2}>
+            <Stack spacing={1} direction="row" style={{ overflowY: 'hidden' }}>
               {pendingAppointmentTeacher.length ? (
                 pendingAppointmentTeacher.map((appointment) => {
                   pendingTeacherCounter++;
@@ -380,9 +388,10 @@ const Profile = ({ match }) => {
                       endingDate={appointment.endingDate}
                       pendingStatus={appointment.pendingStatus}
                       timeSpend={appointment.timeSpend}
-                      grossPay={appointment.grossPay}
-                      commission={appointment.commission}
-                      netPay={appointment.netPay}
+                      ratePerMinute={appointment.ratePerMinute}
+                      totalRate={appointment.totalRate}
+                      totalCommission={appointment.totalCommission}
+                      totalAmount={appointment.totalAmount}
                       setPendingAppointmentTeacher={
                         setPendingAppointmentTeacher
                       }
@@ -396,7 +405,7 @@ const Profile = ({ match }) => {
                   </p>
                 </>
               )}
-            </Grid>
+            </Stack>
           </BookingWrapper>
           <hr style={{ margin: '40px' }} />
           <Typography component="h2" variant="h5">

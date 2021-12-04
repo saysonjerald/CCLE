@@ -143,7 +143,6 @@ const programmingLanguageSchema = new mongoose.Schema(
         'YAML frontmatter',
         'Z80',
       ],
-      unique: true,
     },
     topic: {
       type: [String],

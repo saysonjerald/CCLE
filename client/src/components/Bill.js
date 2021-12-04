@@ -1,7 +1,38 @@
 import React from 'react';
 import styled from 'styled-components';
 
-const Bill = () => {
+const Bill = ({
+  ratePerMinute,
+  timeSpend,
+  totalRate,
+  totalCommission,
+  totalAmount,
+  programmingLanguage,
+  startingDate,
+  endingDate,
+  teacher,
+  student,
+}) => {
+  function currencyConvert(value) {
+    let formatter = new Intl.NumberFormat('en-US', {
+      style: 'currency',
+      currency: 'USD',
+    });
+
+    return formatter.format(value);
+  }
+
+  function time_convert(num) {
+    let hours = Math.floor(num / 60);
+    let minutes = num % 60;
+    return `${
+      num < 60
+        ? minutes + 'min'
+        : num % 60 === 0
+        ? hours + ' hour'
+        : hours + ' hr' + ' : ' + minutes + 'min'
+    }`;
+  }
   return (
     <>
       <BillWrapper>
@@ -160,8 +191,9 @@ const Bill = () => {
                         <p style={{ margin: 0 }}>
                           Here is the summary of your bill. Your session will
                           start on
-                          <b> 11/12/2021 12:00PM</b> and ends on{' '}
-                          <b> 11/12/2021 1:30PM</b>.<br />
+                          <b>{new Date(startingDate).toLocaleString()}</b> and
+                          ends on <b>{new Date(endingDate).toLocaleString()}</b>
+                          .<br />
                           <br />
                           We will send you a Session Link into your email once
                           you pay this bill or you can check it out in your
@@ -216,7 +248,7 @@ const Bill = () => {
                                   lineHeight: '24px',
                                 }}
                               >
-                                <strong>JavaScript</strong>
+                                <strong>{programmingLanguage}</strong>
                               </td>
                             </tr>
                             <tr>
@@ -244,7 +276,7 @@ const Bill = () => {
                                   lineHeight: '24px',
                                 }}
                               >
-                                $0.05
+                                {currencyConvert(ratePerMinute)}
                               </td>
                             </tr>
                             <tr>
@@ -272,7 +304,35 @@ const Bill = () => {
                                   lineHeight: '24px',
                                 }}
                               >
-                                1h: 30min
+                                {time_convert(timeSpend)}
+                              </td>
+                            </tr>
+                            <tr>
+                              <td
+                                align="left"
+                                width="75%"
+                                style={{
+                                  padding: '6px 12px',
+                                  fontFamily:
+                                    '"Source Sans Pro", Helvetica, Arial, sans-serif',
+                                  fontSize: '16px',
+                                  lineHeight: '24px',
+                                }}
+                              >
+                                Total Commission
+                              </td>
+                              <td
+                                align="left"
+                                width="25%"
+                                style={{
+                                  padding: '6px 12px',
+                                  fontFamily:
+                                    '"Source Sans Pro", Helvetica, Arial, sans-serif',
+                                  fontSize: '16px',
+                                  lineHeight: '24px',
+                                }}
+                              >
+                                {currencyConvert(totalCommission)}
                               </td>
                             </tr>
                             <tr>
@@ -289,7 +349,7 @@ const Bill = () => {
                                   borderBottom: '2px dashed #6EBB4E',
                                 }}
                               >
-                                <strong>Total</strong>
+                                <strong>Amount to pay</strong>
                               </td>
                               <td
                                 align="left"
@@ -304,7 +364,7 @@ const Bill = () => {
                                   borderBottom: '2px dashed #6EBB4E',
                                 }}
                               >
-                                <strong>$54.00</strong>
+                                <strong>{currencyConvert(totalAmount)}</strong>
                               </td>
                             </tr>
                           </tbody>
@@ -386,7 +446,7 @@ const Bill = () => {
                                   }}
                                 >
                                   <p>
-                                    <strong>Marie Sayson</strong>
+                                    <strong>{student}</strong>
                                   </p>
                                   <p>Student</p>
                                 </td>
@@ -430,7 +490,7 @@ const Bill = () => {
                                   }}
                                 >
                                   <p>
-                                    <strong>Jearld M. Sayson</strong>
+                                    <strong>{teacher}</strong>
                                   </p>
                                   <p>Teacher</p>
                                 </td>

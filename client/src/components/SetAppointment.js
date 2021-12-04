@@ -163,9 +163,10 @@ export default function SetAppointment({ profileId }) {
           startingDate: startingDate,
           endingDate: endingDate,
           timeSpend,
-          grossPay: totalRate,
-          commission: totalCommission,
-          netPay: total,
+          ratePerMinute,
+          totalRate,
+          totalCommission,
+          totalAmount: total,
         });
 
       if (res.data.status === 'success') {

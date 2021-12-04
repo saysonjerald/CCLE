@@ -15,6 +15,7 @@ import {
   DialogContentText,
   DialogActions,
 } from '@mui/material';
+import { makeStyles } from '@mui/styles';
 import { UserContext } from '../contexts/UserContext';
 import Bill from './Bill';
 
@@ -30,9 +31,10 @@ export default function PendingCardStudent({
   endingDate,
   pendingStatus,
   timeSpend,
-  grossPay,
-  commission,
-  netPay,
+  ratePerMinute,
+  totalRate,
+  totalCommission,
+  totalAmount,
   setPendingAppointmentTeacher,
 }) {
   const { user, urlAPI } = useContext(UserContext);
@@ -46,6 +48,35 @@ export default function PendingCardStudent({
   const handleClose = () => {
     setOpen(false);
   };
+
+  const useStyles = makeStyles({
+    card: {
+      maxWidth: '350px',
+      minWidth: '250px',
+    },
+  });
+  const classes = useStyles();
+
+  function currencyConvert(value) {
+    let formatter = new Intl.NumberFormat('en-US', {
+      style: 'currency',
+      currency: 'USD',
+    });
+
+    return formatter.format(value);
+  }
+
+  function time_convert(num) {
+    let hours = Math.floor(num / 60);
+    let minutes = num % 60;
+    return `${
+      num < 60
+        ? minutes + 'min'
+        : num % 60 === 0
+        ? hours + ' hour'
+        : hours + ' hr' + ' : ' + minutes + 'min'
+    }`;
+  }
 
   const createBooking = async () => {
     try {
@@ -63,9 +94,9 @@ export default function PendingCardStudent({
           endingDate,
           expireDate: endingDate,
           timeSpend,
-          grossPay,
-          commission,
-          netPay,
+          totalRate,
+          totalCommission,
+          totalAmount,
         })
         .then(async () => {
           await axios
@@ -85,44 +116,85 @@ export default function PendingCardStudent({
 
   return (
     <>
-      <Grid item>
-        <Card sx={{ maxWidth: 275 }}>
-          <CardContent>
-            <Typography
-              sx={{ fontSize: 14 }}
-              color="text.secondary"
-              gutterBottom
+      <Card className={classes.card}>
+        <CardContent>
+          <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
+            Status:{' '}
+            <span
+              style={
+                pendingStatus === 'Accepted'
+                  ? {
+                      backgroundColor: '#27e03084',
+                      color: '#fff',
+                      padding: '2px',
+                      borderRadius: '3px',
+                    }
+                  : pendingStatus === 'Rejected'
+                  ? {
+                      backgroundColor: '#e03d2784',
+                      color: '#fff',
+                      padding: '2px',
+                      borderRadius: '3px',
+                    }
+                  : {
+                      backgroundColor: '#dde02784',
+                      color: '#fff',
+                      padding: '2px',
+                      borderRadius: '3px',
+                    }
+              }
             >
-              Status: {pendingStatus}
-            </Typography>
+              {pendingStatus}
+            </span>
+          </Typography>
+          <div style={{ display: 'flex', alignItems: 'center' }}>
             <Avatar
               alt={`${firstname} ${lastname}`}
               src={`${urlAPI}/img/users/${profilePic}`}
             />
-            <Typography variant="h5" component="div">
-              {firstname + ' ' + lastname}
-            </Typography>
-            <Typography variant="body2">
-              Starting Date: <br />
-              {new Date(startingDate).toLocaleString()}
-              <br />
-              <br />
-              End Date: <br />
-              {new Date(endingDate).toLocaleString()}
-            </Typography>
-          </CardContent>
-          <CardActions>
-            <Button size="small" onClick={handleClose}>
-              Cancel
+            <div style={{ marginLeft: '10px' }}>
+              <Typography variant="h5" component="div">
+                {firstname + ' ' + lastname}
+              </Typography>
+              <Typography variant="body2">
+                Session: {time_convert(timeSpend)}
+              </Typography>
+            </div>
+          </div>
+          <br />
+          <Typography variant="body2">
+            Starting Date: <br />
+            {new Date(startingDate).toLocaleString()}
+            <br />
+            <br />
+            End Date: <br />
+            {new Date(endingDate).toLocaleString()}
+          </Typography>
+          <br />
+          <Typography variant="body2">
+            Rate per Minute: {currencyConvert(ratePerMinute)}
+          </Typography>
+          <Typography variant="body2">
+            Total Rate: {currencyConvert(totalRate)}
+          </Typography>
+          <Typography variant="body2">
+            System Commission: {currencyConvert(totalCommission)}
+          </Typography>
+          <Typography variant="body2">
+            Total: {currencyConvert(totalAmount)}
+          </Typography>
+        </CardContent>
+        <CardActions>
+          <Button size="small" onClick={handleClose}>
+            Cancel
+          </Button>
+          {pendingStatus === 'Accepted' && (
+            <Button size="small" onClick={handleClickOpen}>
+              Pay Now
             </Button>
-            {pendingStatus === 'Accepted' && (
-              <Button size="small" onClick={handleClickOpen}>
-                Pay Now
-              </Button>
-            )}
-          </CardActions>
-        </Card>
-      </Grid>
+          )}
+        </CardActions>
+      </Card>
       <Dialog
         open={open}
         onClose={handleClose}
@@ -133,7 +205,18 @@ export default function PendingCardStudent({
           ❗ Payment Confirmation
         </DialogTitle>
         <DialogContent>
-          <Bill />
+          <Bill
+            ratePerMinute={ratePerMinute}
+            timeSpend={timeSpend}
+            totalRate={totalRate}
+            totalCommission={totalCommission}
+            totalAmount={totalAmount}
+            programmingLanguage={programmingLanguage}
+            startingDate={startingDate}
+            endingDate={endingDate}
+            teacher={`${firstname} ${lastname}`}
+            student={`${user.firstname} ${user.lastname}`}
+          />
         </DialogContent>
         <DialogActions>
           <Button onClick={handleClose}>Cancel</Button>
