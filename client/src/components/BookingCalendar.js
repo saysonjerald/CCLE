@@ -111,6 +111,7 @@ const BookingCalendar = ({ match }) => {
         return data;
       })
       .then((data) => {
+        console.log(data);
         setLink(
           `${urlAPIFrontEnd}session/${data.data.bookedbyDate[0].session.id}`
         );

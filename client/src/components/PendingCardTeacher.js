@@ -81,6 +81,8 @@ export default function PendingCardStudent({
   }
 
   const createBooking = async () => {
+    const startingDate0s = new Date(startingDate).setSeconds(0);
+    const endingDate0s = new Date(endingDate).setSeconds(0);
     try {
       await axios
         .create({
@@ -92,9 +94,9 @@ export default function PendingCardStudent({
           programmingLanguage,
           student: studentId,
           teacher: teacherId,
-          startingDate,
-          endingDate,
-          expireDate: endingDate,
+          startingDate: new Date(startingDate0s).toISOString(),
+          endingDate: new Date(endingDate0s).toISOString(),
+          expireDate: new Date(endingDate0s).toISOString(),
           timeSpend,
           totalRate,
           totalCommission,
