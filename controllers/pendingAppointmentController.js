@@ -16,7 +16,7 @@ exports.createPendingAppointment = catchAsync(async (req, res) => {
 
 exports.deletePendingAppointment = catchAsync(async (req, res, next) => {
   const deletedAppointment = await PendingAppointment.findByIdAndDelete(
-    req.body.id
+    req.body._id
   );
 
   if (!deletedAppointment) {
@@ -98,24 +98,26 @@ exports.updatePendingStatus = catchAsync(async (req, res, next) => {
 });
 
 exports.validate = catchAsync(async (req, res, next) => {
-  if (!req.body.teacher) req.body.teacher = req.params.teacher;
-  const endingDateType = new Date(req.body.endingDate);
-  const startingDateType = new Date(req.body.startingDate);
+  if (req.body.pendingStatus !== 'Rejected') {
+    if (!req.body.teacher) req.body.teacher = req.params.teacher;
+    const endingDateType = new Date(req.body.endingDate);
+    const startingDateType = new Date(req.body.startingDate);
 
-  const existingAppointment = await PendingAppointment.find({
-    teacher: req.body.teacher,
-    pendingStatus: 'Accepted',
-    startingDate: { $lt: endingDateType },
-    endingDate: { $gt: startingDateType },
-  });
+    const existingAppointment = await PendingAppointment.find({
+      teacher: req.body.teacher,
+      pendingStatus: 'Accepted',
+      startingDate: { $lt: endingDateType },
+      endingDate: { $gt: startingDateType },
+    });
 
-  if (existingAppointment.length !== 0) {
-    return next(
-      new AppError(
-        `This timeframe is already occupied by the other user under your accepted appointment. Plese choose another timeframe.`,
-        404
-      )
-    );
+    if (existingAppointment.length !== 0) {
+      return next(
+        new AppError(
+          `This timeframe is already occupied by the other user under your accepted appointment. Plese choose another timeframe.`,
+          404
+        )
+      );
+    }
   }
 
   next();

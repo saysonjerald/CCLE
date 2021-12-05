@@ -30,4 +30,8 @@ router
     pendingAppointment.updatePendingStatus
   );
 
+router
+  .route('/teacher/update')
+  .patch(authController.protect, pendingAppointment.updatePendingStatus);
+
 module.exports = router;

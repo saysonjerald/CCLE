@@ -210,7 +210,11 @@ const Profile = ({ match }) => {
               </Typography>
               <div style={{ marginTop: '15px' }}>
                 {match.params.id !== user.id ? (
-                  <SetAppointment profileId={match.params.id} />
+                  <SetAppointment
+                    profileId={match.params.id}
+                    setPendingAppointmentTeacher={setPendingAppointmentTeacher}
+                    match={match}
+                  />
                 ) : (
                   <p></p>
                 )}
@@ -395,6 +399,8 @@ const Profile = ({ match }) => {
                       setPendingAppointmentTeacher={
                         setPendingAppointmentTeacher
                       }
+                      setBookedList={setBookedList}
+                      match={match}
                     />
                   );
                 })

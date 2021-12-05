@@ -34,7 +34,11 @@ const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
 
-export default function SetAppointment({ profileId }) {
+export default function SetAppointment({
+  profileId,
+  setPendingAppointmentTeacher,
+  match,
+}) {
   const { user, urlAPI } = useContext(UserContext);
   const { programmingLanguageKnown } = useContext(ProrammingLanguageContext);
 
@@ -167,6 +171,17 @@ export default function SetAppointment({ profileId }) {
           totalRate,
           totalCommission,
           totalAmount: total,
+        })
+        .then(async () => {
+          await axios
+            .create({
+              baseURL: urlAPI,
+              withCredentials: true, //I read around that you need this for cookies to be sent?
+            })
+            .get(`api/v1/users/${match.params.id}/pendingAppointment/teacher`)
+            .then((data) => {
+              setPendingAppointmentTeacher(data.data.pendingAppointmentTeacher);
+            });
         });
 
       if (res.data.status === 'success') {

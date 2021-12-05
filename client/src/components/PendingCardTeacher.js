@@ -36,6 +36,8 @@ export default function PendingCardStudent({
   totalCommission,
   totalAmount,
   setPendingAppointmentTeacher,
+  setBookedList,
+  match,
 }) {
   const { user, urlAPI } = useContext(UserContext);
 
@@ -106,6 +108,7 @@ export default function PendingCardStudent({
             })
             .get(`api/v1/users/${user.id}/pendingAppointment/teacher`)
             .then((data) => {
+              console.log(data.data.pendingAppointmentTeacher);
               setPendingAppointmentTeacher(data.data.pendingAppointmentTeacher);
             });
         });
@@ -123,10 +126,42 @@ export default function PendingCardStudent({
           withCredentials: true, //I read around that you need this for cookies to be sent?
         })
         .delete(`${urlAPI}api/v1/users/${user.id}/pendingAppointment/`, {
-          data: { id: appointmentId },
+          data: { _id: appointmentId },
         });
     } catch (err) {
       console.log('error', err.response.data.message);
+    }
+  };
+
+  const updateStatus = async () => {
+    try {
+      await axios
+        .create({
+          baseURL: urlAPI,
+          withCredentials: true, //I read around that you need this for cookies to be sent?
+        })
+        .patch(
+          `${urlAPI}api/v1/users/${match.params.id}/pendingAppointment/teacher/update`,
+          { appointmentId, pendingStatus: 'Paid' }
+        );
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const refreshBooking = async () => {
+    try {
+      await axios
+        .create({
+          baseURL: 'http://localhost:3001/',
+          withCredentials: true, //I read around that you need this for cookies to be sent?
+        })
+        .get(`api/v1/users/${match.params.id}/booking/`)
+        .then((data) => {
+          setBookedList(data.data.Booked);
+        });
+    } catch (err) {
+      console.log(err);
     }
   };
 
@@ -138,7 +173,7 @@ export default function PendingCardStudent({
             Status:{' '}
             <span
               style={
-                pendingStatus === 'Accepted'
+                pendingStatus === 'Accepted' || pendingStatus === 'Paid'
                   ? {
                       backgroundColor: '#27e03084',
                       color: '#fff',
@@ -208,6 +243,21 @@ export default function PendingCardStudent({
                 .then(() => {
                   console.log('Appointment Successfuly Deleted');
                 })
+                .then(async () => {
+                  await axios
+                    .create({
+                      baseURL: urlAPI,
+                      withCredentials: true, //I read around that you need this for cookies to be sent?
+                    })
+                    .get(
+                      `api/v1/users/${match.params.id}/pendingAppointment/teacher`
+                    )
+                    .then((data) => {
+                      setPendingAppointmentTeacher(
+                        data.data.pendingAppointmentTeacher
+                      );
+                    });
+                })
                 .catch((err) => {
                   console.log(err);
                 });
@@ -246,10 +296,31 @@ export default function PendingCardStudent({
           />
         </DialogContent>
         <DialogActions>
-          <Button>Cancel</Button>
+          <Button onClick={handleClose}>Cancel</Button>
           <Button
             onClick={async (e) => {
               await createBooking()
+                .then(async () => {
+                  await updateStatus();
+                })
+                .then(async () => {
+                  await refreshBooking();
+                })
+                .then(async () => {
+                  await axios
+                    .create({
+                      baseURL: urlAPI,
+                      withCredentials: true, //I read around that you need this for cookies to be sent?
+                    })
+                    .get(
+                      `api/v1/users/${match.params.id}/pendingAppointment/teacher`
+                    )
+                    .then((data) => {
+                      setPendingAppointmentTeacher(
+                        data.data.pendingAppointmentTeacher
+                      );
+                    });
+                })
                 .then(() => {
                   handleClose();
                 })

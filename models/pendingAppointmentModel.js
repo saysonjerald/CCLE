@@ -39,7 +39,7 @@ const pendingAppointmentSchema = new mongoose.Schema(
     pendingStatus: {
       type: String,
       default: 'Pending',
-      enum: ['Pending', 'Accepted', 'Rejected'],
+      enum: ['Pending', 'Accepted', 'Rejected', 'Paid'],
     },
   },
   {
