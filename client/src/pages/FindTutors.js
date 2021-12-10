@@ -1,4 +1,13 @@
 import React, { useState, useEffect, useContext } from 'react';
+import {
+  Paper,
+  Typography,
+  Select,
+  MenuItem,
+  FormControl,
+  InputLabel,
+  Stack,
+} from '@mui/material';
 import TutorCards from '../components/TutorCards';
 import { UserContext } from '../contexts/UserContext';
 import styled from 'styled-components';
@@ -7,7 +16,13 @@ import axios from 'axios';
 const FindTutors = () => {
   const [users, setUsers] = useState([]);
   const [stopper, setStopper] = useState(0);
+  const [progLangauge, setProgLanguage] = useState('');
+  const [topics, setTopics] = useState([]);
   const { setNavValue } = useContext(UserContext);
+
+  const [pageNumber, setPageNumber] = useState(1);
+  const [numberOfPages, setNumberOfPages] = useState(0);
+  const pages = new Array(numberOfPages).fill(null).map((v, i) => i);
 
   const getUsers = () => {
     return new Promise(async (resolve, reject) => {
@@ -16,9 +31,11 @@ const FindTutors = () => {
           baseURL: 'http://localhost:3001/api/v1/',
           withCredentials: true, //I read around that you need this for cookies to be sent?
         })
-        .get('/users')
+        .get(`/users?page=${pageNumber}`)
         .then((user) => {
-          resolve(setUsers(user.data.users));
+          console.log(user.data.users.docs);
+          resolve(setUsers(user.data.users.docs));
+          setNumberOfPages(user.data.users.totalPages);
           setNavValue('2');
         })
         .catch((err) => {
@@ -27,18 +44,142 @@ const FindTutors = () => {
     });
   };
 
+  const gotoPrevious = () => {
+    setPageNumber(Math.max(1, pageNumber - 1));
+  };
+
+  const gotoNext = () => {
+    setPageNumber(Math.min(numberOfPages, pageNumber + 1));
+  };
+
   useEffect(() => {
-    getUsers();
-  }, [stopper]);
+    (async () => {
+      await getUsers();
+    })();
+  }, [stopper, pageNumber]);
 
   return users.length ? (
-    <Wrapper>
-      <Filter></Filter>
+    <Wrapper elevation={12}>
       <Teachers>
-        <h1>Available Teachers</h1>
-        {users.map((user) => {
-          return <TutorCards user={user} key={user._id} />;
-        })}
+        <div
+          style={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            marginBottom: '20px',
+          }}
+        >
+          <Typography component="h3" variant="h5" style={{ fontWeight: '500' }}>
+            Available Teachers
+          </Typography>
+          <div style={{ display: 'flex', width: '500px' }}>
+            <FormControl fullWidth style={{ marginRight: '10px' }}>
+              <InputLabel
+                id="progLanguage"
+                style={{
+                  color: '#222',
+                  fontWeight: '500',
+                  backgroundColor: '#78FF86',
+                  padding: '3px',
+                  borderRadius: '10px',
+                }}
+              >
+                Programming Languages
+              </InputLabel>
+              <Select
+                labelId="progLanguage"
+                value={progLangauge}
+                label="Programming Language"
+                onChange={(e) => setProgLanguage(e.target.value)}
+                style={{
+                  backgroundColor: '#78FF86',
+                  color: '#222',
+                  fontWeight: '500',
+                }}
+              >
+                <MenuItem value={'All'}>All</MenuItem>
+                <MenuItem value={'C#'}>C#</MenuItem>
+                <MenuItem value={'C++'}>C++</MenuItem>
+                <MenuItem value={'Go'}>Go</MenuItem>
+                <MenuItem value={'Java'}>Java</MenuItem>
+                <MenuItem value={'Kotlin'}>Kotlin</MenuItem>
+                <MenuItem value={'Lua'}>Lua</MenuItem>
+                <MenuItem value={'JavaScript'}>JavaScript</MenuItem>
+                <MenuItem value={'Pascal'}>Pascal</MenuItem>
+                <MenuItem value={'Perl'}>Perl</MenuItem>
+                <MenuItem value={'Php'}>Php</MenuItem>
+                <MenuItem value={'Python3'}>Phython3</MenuItem>
+                <MenuItem value={'R'}>R</MenuItem>
+                <MenuItem value={'Ruby'}>Ruby</MenuItem>
+                <MenuItem value={'Shell'}>Shell</MenuItem>
+                <MenuItem value={'SQL'}>SQL</MenuItem>
+                <MenuItem value={'Swift'}>Swift</MenuItem>
+                <MenuItem value={''}></MenuItem>
+              </Select>
+            </FormControl>
+
+            <FormControl style={{ marginRight: '10px', width: '300px' }}>
+              <InputLabel
+                id="topics"
+                style={{
+                  color: '#222',
+                  fontWeight: '500',
+                  backgroundColor: '#78FF86',
+                  padding: '3px',
+                  borderRadius: '10px',
+                }}
+              >
+                Select Topics
+              </InputLabel>
+              <Select
+                labelId="topics"
+                value={topics}
+                label="Topics"
+                multiple
+                onChange={(e) => setTopics(e.target.value)}
+                style={{
+                  backgroundColor: '#78FF86',
+                  color: '#222',
+                  fontWeight: '500',
+                }}
+              >
+                <MenuItem value={'syntax'}>Syntax</MenuItem>
+                <MenuItem value={'dataTypes'}>Data Types</MenuItem>
+                <MenuItem value={'variables'}>Variables</MenuItem>
+                <MenuItem value={'keywords'}>Keywords</MenuItem>
+                <MenuItem value={'basicOperations'}>Basic Operations</MenuItem>
+                <MenuItem value={'loops'}>Loops</MenuItem>
+                <MenuItem value={'numbers'}>Numbers</MenuItem>
+                <MenuItem value={'characters'}>Characters</MenuItem>
+                <MenuItem value={'arrays'}>Arrays</MenuItem>
+                <MenuItem value={'strings'}>Strings</MenuItem>
+                <MenuItem value={'functions'}>Functions</MenuItem>
+                <MenuItem value={'others'}>Others</MenuItem>
+                <MenuItem value={'all'} style={{ visibility: 'hidden' }}>
+                  Select Topics
+                </MenuItem>
+              </Select>
+            </FormControl>
+          </div>
+        </div>
+        <Stack spacing={1}>
+          {users.map((user) => {
+            return <TutorCards user={user} key={user._id._id} />;
+          })}
+        </Stack>
+        <PageButtonWrapper>
+          <button onClick={gotoPrevious}>Previous</button>
+          {pages.map((pageIndex) => (
+            <button
+              key={pageIndex}
+              onClick={() => setPageNumber(pageIndex + 1)}
+            >
+              {pageIndex + 1}
+            </button>
+          ))}
+          <button onClick={gotoNext}>Next</button>
+        </PageButtonWrapper>
+        <h3>Page of {pageNumber}</h3>
       </Teachers>
     </Wrapper>
   ) : (
@@ -48,13 +189,20 @@ const FindTutors = () => {
   );
 };
 
-const Wrapper = styled.div`
+const Wrapper = styled(Paper)`
   display: flex;
+  width: 1200px;
+  margin: 1% auto;
+  padding: 3%;
+
+  & .css-1wu7ecg-MuiSvgIcon-root-MuiSelect-icon {
+    color: #222;
+  }
 `;
 
 const Teachers = styled.div`
   display: flex;
-  width: 80%;
+  width: 100%;
   flex-direction: column;
 
   h1 {
@@ -63,11 +211,8 @@ const Teachers = styled.div`
   }
 `;
 
-const Filter = styled.div`
-  width: 20%;
-  height: 200px;
-  background-color: #222;
-  margin: 83px 10px 0 10px;
+const PageButtonWrapper = styled.div`
+  display: flex;
 `;
 
 export default FindTutors;

@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const aggregatePaginate = require('mongoose-aggregate-paginate-v2');
 
 const programmingLanguageSchema = new mongoose.Schema(
   {
@@ -176,6 +177,8 @@ const programmingLanguageSchema = new mongoose.Schema(
     toObject: { virtuals: true },
   }
 );
+
+programmingLanguageSchema.plugin(aggregatePaginate);
 
 const ProgrammingLanguage = mongoose.model(
   'ProgrammingLanguage',

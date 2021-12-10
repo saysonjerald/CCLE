@@ -12,7 +12,7 @@ const setMode = (lang) => {
       return 'text/x-kotlin';
     case 'Lua':
       return 'text/x-lua';
-    case 'NodeJs':
+    case 'JavaScript':
       return 'text/javascript';
     case 'Pascal':
       return 'text/x-pascal';

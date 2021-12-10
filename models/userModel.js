@@ -2,6 +2,7 @@ const crypto = require('crypto');
 const mongoose = require('mongoose');
 const validator = require('validator');
 const bcrypt = require('bcryptjs');
+
 // const slugify = require('slugify');
 // const { v4: uuidv4 } = require('uuid');
 
@@ -175,8 +176,8 @@ const userSchema = new mongoose.Schema(
     // passwordResetExpires: Date,
     ratingsAverage: {
       type: Number,
-      default: 4.5,
-      min: [0, 'Rating must be above 1.0'],
+      default: 0,
+      min: [0, 'Rating must be above 0'],
       max: [5, 'Rating must be below 5.0'],
       set: (val) => Math.round(val * 10) / 10, // 4.666666, 46.6666, 47, 4.7
     },

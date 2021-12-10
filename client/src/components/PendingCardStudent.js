@@ -197,7 +197,7 @@ export default function PendingCardTeacher({
         aria-describedby="alert-dialog-description"
       >
         <DialogTitle id="alert-dialog-title">
-          ❗ Appointment Confirmation
+          🔔 Appointment Confirmation
         </DialogTitle>
         <DialogContent>
           <DialogContentText id="alert-dialog-description">

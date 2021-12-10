@@ -12,7 +12,6 @@ import {
   Radio,
   ButtonBase,
   Button,
-  capitalize,
 } from '@mui/material';
 import { makeStyles } from '@mui/styles';
 import { styled } from '@mui/material';
@@ -25,16 +24,38 @@ import { UserContext } from '../contexts/UserContext';
 
 const Me = ({ match }) => {
   const { user, setUser, setNavValue, urlAPI } = useContext(UserContext);
-  const [firstname, setFirstname] = useState(user.firstname);
-  const [lastname, setLastname] = useState(user.lastname);
-  const [gender, setGender] = useState(user.gender);
-  const [bio, setBio] = useState(user.bio);
-  const [spokenLanguage, setSpokenLanguage] = useState(user.spokenLanguage);
-  const [address, setAddress] = useState(user.address);
   const [currentPassword, setCurrentPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   let photoUploaded;
+
+  const getUserDate = async () => {
+    try {
+      await axios
+        .get(`http://localhost:3001/api/v1/users/${user.id}`)
+        .then((data) => {
+          setUser(...user, data.data.user);
+        });
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  useEffect(() => {
+    let unmounted = false;
+    setNavValue('3');
+    (async () => {
+      await getUserDate();
+    })();
+
+    if (!unmounted) {
+      setNavValue('3');
+    }
+
+    return () => {
+      unmounted = true;
+    };
+  }, []);
 
   const useStyles = makeStyles({
     form: {
@@ -227,32 +248,20 @@ const Me = ({ match }) => {
     e.preventDefault();
 
     const form = new FormData();
-    form.append('firstname', titleCase(firstname));
-    form.append('lastname', titleCase(lastname));
-    form.append('gender', gender);
-    form.append('bio', bio);
+    form.append('firstname', titleCase(user.firstname));
+    form.append('lastname', titleCase(user.lastname));
+    form.append('gender', user.gender);
+    form.append('bio', user.bio);
 
-    for (var i = 0; i < spokenLanguage.length; i++) {
-      form.append('spokenLanguage', spokenLanguage[i]);
+    for (var i = 0; i < user.spokenLanguage.length; i++) {
+      form.append('spokenLanguage', user.spokenLanguage[i]);
     }
 
-    form.append('address', address);
+    form.append('address', user.address);
 
     await updateSettings(form, 'data');
   };
   //#endregion
-
-  useEffect(() => {
-    let unmounted = false;
-
-    if (!unmounted) {
-      setNavValue('3');
-    }
-
-    return () => {
-      unmounted = true;
-    };
-  }, []);
 
   return (
     <div className={classes.wrapper}>
@@ -317,8 +326,8 @@ const Me = ({ match }) => {
               multiline
               rows={4}
               fullWidth
-              value={bio}
-              onChange={(e) => setBio(e.target.value)}
+              value={user.bio}
+              onChange={(e) => setUser({ ...user, bio: e.target.value })}
               style={{ width: '300px' }}
             />
           </Grid>
@@ -332,8 +341,10 @@ const Me = ({ match }) => {
                     row
                     aria-label="gender"
                     name="row-radio-buttons-group"
-                    value={gender ? gender : ''}
-                    onClick={(e) => setGender(e.target.value)}
+                    value={user.gender ? user.gender : ''}
+                    onClick={(e) =>
+                      setUser({ ...user, gender: e.target.value })
+                    }
                   >
                     <FormControlLabel
                       value="male"
@@ -355,9 +366,13 @@ const Me = ({ match }) => {
                     variant="outlined"
                     fullWidth
                     margin="normal"
-                    value={firstname}
+                    value={user.firstname}
                     onChange={(e) => {
-                      setFirstname(titleCase(e.target.value));
+                      // setFirstname(titleCase(e.target.value));
+                      setUser({
+                        ...user,
+                        firstname: titleCase(e.target.value),
+                      });
                     }}
                     className={`${classes.controlInput} ${classes.firstname}`}
                   />
@@ -368,19 +383,18 @@ const Me = ({ match }) => {
                     variant="outlined"
                     fullWidth
                     margin="normal"
-                    value={lastname}
-                    onChange={(e) => setLastname(titleCase(e.target.value))}
+                    value={user.lastname}
+                    onChange={(e) =>
+                      setUser({ ...user, lastname: titleCase(e.target.value) })
+                    }
                     className={classes.controlInput}
                   />
                 </div>
                 <div className={classes.controlInput}>
-                  <SpokenLanguages
-                    spokenLanguage={spokenLanguage}
-                    setSpokenLanguage={setSpokenLanguage}
-                  />
+                  <SpokenLanguages user={user} setUser={setUser} />
                 </div>
                 <div>
-                  <Address address={address} setAddress={setAddress} />
+                  <Address user={user} setUser={setUser} />
                 </div>
                 <Button
                   className={classes.controlInput}

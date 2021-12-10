@@ -304,7 +304,7 @@ export default function SetAppointment({
             </LocalizationProvider>
           </DialogContent>
           <DialogActions>
-            <Button onClick={handleClose}>Disagree</Button>
+            <Button onClick={handleClose}>Cancel</Button>
             <Button
               onClick={async (e) => {
                 await addPendingAppointment(e)
@@ -316,7 +316,7 @@ export default function SetAppointment({
                   });
               }}
             >
-              Agree
+              Confirm
             </Button>
           </DialogActions>
         </div>

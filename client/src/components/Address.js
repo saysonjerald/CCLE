@@ -9,8 +9,8 @@ import CheckBoxIcon from '@mui/icons-material/CheckBox';
 const icon = <CheckBoxOutlineBlankIcon fontSize="small" />;
 const checkedIcon = <CheckBoxIcon fontSize="small" />;
 
-const Address = ({ address, setAddress }) => {
-  let add = address ? address.split(',') : ['', ''];
+const Address = ({ user, setUser }) => {
+  let add = user.address ? user.address.split(',') : ['', ''];
   const countryList = getAddress.getCountries();
   const [country, setCountry] = useState(add[0]);
   const [city, setCity] = useState(add[1]);
@@ -54,7 +54,7 @@ const Address = ({ address, setAddress }) => {
         getOptionLabel={(option) => option}
         onChange={(event, value) => {
           setCity(value);
-          setAddress(`${country},${value}`);
+          setUser({ ...user, address: `${country},${value}` });
         }}
         renderOption={(props, option, { selected }) => (
           <li {...props}>

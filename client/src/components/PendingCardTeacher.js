@@ -281,7 +281,7 @@ export default function PendingCardStudent({
         aria-describedby="alert-dialog-description"
       >
         <DialogTitle id="alert-dialog-title">
-          ❗ Payment Confirmation
+          🔔 Payment Confirmation
         </DialogTitle>
         <DialogContent>
           <Bill

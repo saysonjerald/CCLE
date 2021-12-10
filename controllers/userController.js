@@ -1,6 +1,7 @@
 const multer = require('multer');
 const sharp = require('sharp');
 const User = require('../models/userModel');
+const ProgrammingLanguage = require('../models/programmingLanguageModel');
 const AppError = require('../utils/appError');
 const catchAsync = require('../utils/catchAsync');
 
@@ -54,11 +55,69 @@ const filterObj = (obj, ...allowedFields) => {
 };
 
 exports.getAllUsers = catchAsync(async (req, res, next) => {
-  const users = await User.find();
+  // const pageSize = 3;
+  const paging = req.query.page * 1 || 1;
+  // const langauge = req.query.language;
+  // const topics = req.query.topics;
+
+  // const totalUsers = await User.countDocuments({});
+  // const users = await User.find({})
+  //   .populate(['programmingLanguages'])
+  //   .limit(pageSize)
+  //   .skip(pageSize * page);
+
+  const data = ProgrammingLanguage.aggregate([
+    {
+      $match: {},
+    },
+    {
+      $lookup: {
+        from: 'users',
+        localField: 'user',
+        foreignField: '_id',
+        as: 'user',
+      },
+    },
+    {
+      $unwind: {
+        path: '$user',
+      },
+    },
+    {
+      $project: {
+        _id: 0,
+        __v: 0,
+      },
+    },
+    {
+      $group: {
+        _id: '$user',
+        language: {
+          $push: '$language',
+        },
+      },
+    },
+    {
+      $project: {
+        id: 0,
+      },
+    },
+    {
+      $sort: {
+        ratingsAverage: 1,
+        ratingsQuantity: 1,
+        _id: 1,
+      },
+    },
+  ]);
+
+  const users = await ProgrammingLanguage.aggregatePaginate(data, {
+    page: paging,
+    limit: 3,
+  });
 
   res.status(200).json({
     status: 'success',
-    results: users.length,
     users,
   });
 });

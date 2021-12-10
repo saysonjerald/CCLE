@@ -67,7 +67,8 @@ export default function IsEmailVerify() {
             <DialogContentText id="alert-dialog-slide-description">
               We have sent you an email. Please check your email to verify your
               account! <br />
-              <br />⭕ This message will be remove automatically once you are
+              <br />
+              🟢 This message will be remove automatically once you are
               verified.
             </DialogContentText>
           </DialogContent>

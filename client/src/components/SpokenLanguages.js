@@ -8,17 +8,17 @@ import CheckBoxIcon from '@mui/icons-material/CheckBox';
 const icon = <CheckBoxOutlineBlankIcon fontSize="small" />;
 const checkedIcon = <CheckBoxIcon fontSize="small" />;
 
-const CheckBoxsesTags = ({ spokenLanguage, setSpokenLanguage }) => {
+const CheckBoxsesTags = ({ user, setUser }) => {
   return (
     <Autocomplete
       multiple
       id="spokenLanguages"
       options={spokenLanguages}
       onChange={(event, value) => {
-        setSpokenLanguage(value);
+        setUser({ ...user, spokenLanguage: value });
       }}
       disableCloseOnSelect
-      value={spokenLanguage.map((value) => value)}
+      value={user.spokenLanguage.map((value) => value)}
       getOptionLabel={(option) => option}
       renderOption={(props, option, { selected }) => (
         <li {...props}>

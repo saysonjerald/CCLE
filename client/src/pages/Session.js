@@ -70,8 +70,6 @@ const Session = ({ match }) => {
   const [expireDate, setExpireDate] = useState();
   const [startingDate, setStartingDate] = useState();
 
-  // const [codeString, setCodeString] = useState();
-
   //Button Video Chat
   const [isMuted, setIsMuted] = useState(true);
   const [isCameraOn, setIsCameraOn] = useState(true);
@@ -277,44 +275,44 @@ const Session = ({ match }) => {
       setDescription('joined the room');
     });
 
-    // const getSession = async (socket) => {
-    //   await axios
-    //     .get(`http://localhost:3001/session/${match.params.id}`)
-    //     .then((data) => {
-    //       if (
-    //         data.data.session.student === user.id ||
-    //         data.data.session.teacher === user.id
-    //         // &&
-    //         //   new Date(Date.now()) >=
-    //         //     new Date(data.data.session.startingDate) &&
-    //         //   new Date(Date.now()) <= new Date(data.data.session.expireDate)
-    //       ) {
-    //         setIsValid(true);
-    //         setTeacherID(data.data.session.teacher);
-    //         setStartingDate(data.data.session.startingDate);
-    //         setExpireDate(data.data.session.expireDate);
-    //         console.log('joining room');
-    //         socket.emit('join_room', match.params.id, user.id, (roomId) => {});
-    //         return;
-    //       } else {
-    //         socket.emit('disconnect');
-    //         throw 'User not allowed to enter';
-    //       }
-    //     })
-    //     .catch((err) => {
-    //       console.log('err', err);
-    //       history.push('/find-tutors');
-    //       window.location.reload(false);
-    //     });
-    // };
+    const getSession = async (socket) => {
+      await axios
+        .get(`http://localhost:3001/session/${match.params.id}`)
+        .then((data) => {
+          if (
+            data.data.session.student === user.id ||
+            data.data.session.teacher === user.id
+            // &&
+            //   new Date(Date.now()) >=
+            //     new Date(data.data.session.startingDate) &&
+            //   new Date(Date.now()) <= new Date(data.data.session.expireDate)
+          ) {
+            setIsValid(true);
+            setTeacherID(data.data.session.teacher);
+            setStartingDate(data.data.session.startingDate);
+            setExpireDate(data.data.session.expireDate);
+            console.log('joining room');
+            socket.emit('join_room', match.params.id, user.id, (roomId) => {});
+            return;
+          } else {
+            socket.emit('disconnect');
+            throw 'User not allowed to enter';
+          }
+        })
+        .catch((err) => {
+          console.log('err', err);
+          history.push('/find-tutors');
+          window.location.reload(false);
+        });
+    };
 
-    // (async () => {
-    //   await getSession(socket);
-    // })();
+    (async () => {
+      await getSession(socket);
+    })();
 
-    // (async () => {
-    //   await getTeacher();
-    // })();
+    (async () => {
+      await getTeacher();
+    })();
 
     socket.emit('setName', fullname);
 

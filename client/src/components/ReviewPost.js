@@ -136,7 +136,7 @@ const ReviewPost = ({
             !isAlreadyReviewed ? await updateReview() : await postReview(e);
           }}
         >
-          {!isAlreadyReviewed ? 'Update' : 'Post'}
+          {!isAlreadyReviewed ? 'Submit' : 'Submit'}
         </Button>
       </CardActions>
     </Card>
