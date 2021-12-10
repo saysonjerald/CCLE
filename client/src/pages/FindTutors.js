@@ -7,6 +7,7 @@ import {
   FormControl,
   InputLabel,
   Stack,
+  Button,
 } from '@mui/material';
 import TutorCards from '../components/TutorCards';
 import { UserContext } from '../contexts/UserContext';
@@ -35,7 +36,6 @@ const FindTutors = () => {
           `/users?page=${pageNumber}&language=${progLanguage}&topics=${topics}`
         )
         .then((user) => {
-          console.log(user.data.users.docs);
           resolve(setUsers(user.data.users.docs));
           setNumberOfPages(user.data.users.totalPages);
           setNavValue('2');
@@ -171,19 +171,37 @@ const FindTutors = () => {
             return <TutorCards user={user} key={user._id._id} />;
           })}
         </Stack>
-        <PageButtonWrapper>
-          <button onClick={gotoPrevious}>Previous</button>
-          {pages.map((pageIndex) => (
-            <button
-              key={pageIndex}
-              onClick={() => setPageNumber(pageIndex + 1)}
+        <div
+          style={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+          }}
+        >
+          <h3>Page of {pageNumber}</h3>
+          <PageButtonWrapper>
+            <Button
+              onClick={gotoPrevious}
+              variant="contained"
+              style={{ marginRight: '10px' }}
             >
-              {pageIndex + 1}
-            </button>
-          ))}
-          <button onClick={gotoNext}>Next</button>
-        </PageButtonWrapper>
-        <h3>Page of {pageNumber}</h3>
+              Previous
+            </Button>
+            {pages.map((pageIndex) => (
+              <Button
+                variant="contained"
+                key={pageIndex}
+                onClick={() => setPageNumber(pageIndex + 1)}
+                style={{ marginRight: '10px' }}
+              >
+                {pageIndex + 1}
+              </Button>
+            ))}
+            <Button onClick={gotoNext} variant="contained">
+              Next
+            </Button>
+          </PageButtonWrapper>
+        </div>
       </Teachers>
     </Wrapper>
   );
