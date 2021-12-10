@@ -57,6 +57,7 @@ const filterObj = (obj, ...allowedFields) => {
 exports.getAllUsers = catchAsync(async (req, res, next) => {
   // const pageSize = 3;
   const paging = req.query.page * 1 || 1;
+  const { language, topics } = req.query;
   // const langauge = req.query.language;
   // const topics = req.query.topics;
 
@@ -66,9 +67,22 @@ exports.getAllUsers = catchAsync(async (req, res, next) => {
   //   .limit(pageSize)
   //   .skip(pageSize * page);
 
+  const evaluateLanguage = () => {
+    if ((!language || language === 'All') && (!topics || topics === ['All']))
+      return {};
+    if (language && (!topics || topics === ['All']))
+      return { language: language };
+    if ((!language || language === 'All') && topics)
+      return { topic: { $in: [topics] } };
+    if (language && topics)
+      return { language: language, topic: { $in: [topics] } };
+  };
+
+  console.log(evaluateLanguage());
+
   const data = ProgrammingLanguage.aggregate([
     {
-      $match: {},
+      $match: evaluateLanguage(),
     },
     {
       $lookup: {

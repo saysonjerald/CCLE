@@ -16,7 +16,7 @@ import axios from 'axios';
 const FindTutors = () => {
   const [users, setUsers] = useState([]);
   const [stopper, setStopper] = useState(0);
-  const [progLangauge, setProgLanguage] = useState('');
+  const [progLanguage, setProgLanguage] = useState('');
   const [topics, setTopics] = useState([]);
   const { setNavValue } = useContext(UserContext);
 
@@ -31,7 +31,9 @@ const FindTutors = () => {
           baseURL: 'http://localhost:3001/api/v1/',
           withCredentials: true, //I read around that you need this for cookies to be sent?
         })
-        .get(`/users?page=${pageNumber}`)
+        .get(
+          `/users?page=${pageNumber}&language=${progLanguage}&topics=${topics}`
+        )
         .then((user) => {
           console.log(user.data.users.docs);
           resolve(setUsers(user.data.users.docs));
@@ -56,9 +58,9 @@ const FindTutors = () => {
     (async () => {
       await getUsers();
     })();
-  }, [stopper, pageNumber]);
+  }, [stopper, pageNumber, progLanguage, topics]);
 
-  return users.length ? (
+  return (
     <Wrapper elevation={12}>
       <Teachers>
         <div
@@ -88,7 +90,7 @@ const FindTutors = () => {
               </InputLabel>
               <Select
                 labelId="progLanguage"
-                value={progLangauge}
+                value={progLanguage}
                 label="Programming Language"
                 onChange={(e) => setProgLanguage(e.target.value)}
                 style={{
@@ -114,6 +116,8 @@ const FindTutors = () => {
                 <MenuItem value={'Shell'}>Shell</MenuItem>
                 <MenuItem value={'SQL'}>SQL</MenuItem>
                 <MenuItem value={'Swift'}>Swift</MenuItem>
+                <MenuItem value={'Dart'}>Dart</MenuItem>
+                <MenuItem value={'DTD'}>DTD</MenuItem>
                 <MenuItem value={''}></MenuItem>
               </Select>
             </FormControl>
@@ -143,19 +147,19 @@ const FindTutors = () => {
                   fontWeight: '500',
                 }}
               >
-                <MenuItem value={'syntax'}>Syntax</MenuItem>
-                <MenuItem value={'dataTypes'}>Data Types</MenuItem>
-                <MenuItem value={'variables'}>Variables</MenuItem>
-                <MenuItem value={'keywords'}>Keywords</MenuItem>
-                <MenuItem value={'basicOperations'}>Basic Operations</MenuItem>
-                <MenuItem value={'loops'}>Loops</MenuItem>
-                <MenuItem value={'numbers'}>Numbers</MenuItem>
-                <MenuItem value={'characters'}>Characters</MenuItem>
-                <MenuItem value={'arrays'}>Arrays</MenuItem>
-                <MenuItem value={'strings'}>Strings</MenuItem>
-                <MenuItem value={'functions'}>Functions</MenuItem>
-                <MenuItem value={'others'}>Others</MenuItem>
-                <MenuItem value={'all'} style={{ visibility: 'hidden' }}>
+                <MenuItem value={'Syntax'}>Syntax</MenuItem>
+                <MenuItem value={'Data Types'}>Data Types</MenuItem>
+                <MenuItem value={'Variables'}>Variables</MenuItem>
+                <MenuItem value={'Keywords'}>Keywords</MenuItem>
+                <MenuItem value={'Basic Operations'}>Basic Operations</MenuItem>
+                <MenuItem value={'Loops'}>Loops</MenuItem>
+                <MenuItem value={'Numbers'}>Numbers</MenuItem>
+                <MenuItem value={'Characters'}>Characters</MenuItem>
+                <MenuItem value={'Arrays'}>Arrays</MenuItem>
+                <MenuItem value={'Strings'}>Strings</MenuItem>
+                <MenuItem value={'Functions'}>Functions</MenuItem>
+                <MenuItem value={'Others'}>Others</MenuItem>
+                <MenuItem value={'All'} style={{ visibility: 'hidden' }}>
                   Select Topics
                 </MenuItem>
               </Select>
@@ -182,10 +186,6 @@ const FindTutors = () => {
         <h3>Page of {pageNumber}</h3>
       </Teachers>
     </Wrapper>
-  ) : (
-    <>
-      <h1>There are no users</h1>
-    </>
   );
 };
 
