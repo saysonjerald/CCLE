@@ -2,6 +2,7 @@ import React from 'react';
 import { Switch, Route } from 'react-router-dom';
 import { CssBaseline, Toolbar } from '@mui/material';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
+import { SnackbarProvider } from 'notistack';
 
 import Nav from './components/Nav';
 import GlobalStyle from './components/GlobalStyle';
@@ -46,39 +47,41 @@ const theme = createTheme({
 function App() {
   return (
     <>
-      <ThemeProvider theme={theme}>
-        <GlobalStyle />
-        <UserContextProvider>
-          <ProgrammingLanguageProvider>
-            <ReviewProvider>
-              <BookingProvider>
-                <Switch>
-                  <PrivateRoute path="/session/:id" component={Session} />
-                  <>
-                    <Toolbar>
-                      <Nav />
-                    </Toolbar>
-                    <Route exact path="/" component={Homepage} />
-                    <Route exact path="/sign/:option" component={Home} />
-                    <PrivateRoute
-                      exact
-                      path="/find-tutors"
-                      component={FindTutors}
-                    />
-                    <PrivateRoute path="/user/:id" component={Profile} />
-                    <PrivateRoute exact path="/me" component={Me} />
-                    <Route
-                      path="/verifyAccount/:emailToken"
-                      component={VerifyAccount}
-                    />
-                  </>
-                </Switch>
-              </BookingProvider>
-            </ReviewProvider>
-          </ProgrammingLanguageProvider>
-        </UserContextProvider>
-        <CssBaseline />
-      </ThemeProvider>
+      <SnackbarProvider>
+        <ThemeProvider theme={theme}>
+          <GlobalStyle />
+          <UserContextProvider>
+            <ProgrammingLanguageProvider>
+              <ReviewProvider>
+                <BookingProvider>
+                  <Switch>
+                    <PrivateRoute path="/session/:id" component={Session} />
+                    <>
+                      <Toolbar>
+                        <Nav />
+                      </Toolbar>
+                      <Route exact path="/" component={Homepage} />
+                      <Route exact path="/sign/:option" component={Home} />
+                      <PrivateRoute
+                        exact
+                        path="/find-tutors"
+                        component={FindTutors}
+                      />
+                      <PrivateRoute path="/user/:id" component={Profile} />
+                      <PrivateRoute exact path="/me" component={Me} />
+                      <Route
+                        path="/verifyAccount/:emailToken"
+                        component={VerifyAccount}
+                      />
+                    </>
+                  </Switch>
+                </BookingProvider>
+              </ReviewProvider>
+            </ProgrammingLanguageProvider>
+          </UserContextProvider>
+          <CssBaseline />
+        </ThemeProvider>
+      </SnackbarProvider>
     </>
   );
 }

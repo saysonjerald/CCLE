@@ -16,10 +16,12 @@ import {
 import ArrowForwardIosOutlinedIcon from '@mui/icons-material/ArrowForwardIosOutlined';
 import ArrowBackIosOutlinedIcon from '@mui/icons-material/ArrowBackIosOutlined';
 import { makeStyles } from '@mui/styles';
+import { useSnackbar } from 'notistack';
 
 //#region Testing
 const RegisterSection = ({ isHide, setIsHide }) => {
   const { setUser } = useContext(UserContext);
+  const { enqueueSnackbar } = useSnackbar();
 
   const [firstname, setFirstname] = useState();
   const [lastname, setLastname] = useState();
@@ -81,7 +83,9 @@ const RegisterSection = ({ isHide, setIsHide }) => {
           login(email, password);
         });
     } catch (err) {
-      console.log(err);
+      enqueueSnackbar(`Email already exist!`, {
+        variant: 'error',
+      });
     }
   };
 

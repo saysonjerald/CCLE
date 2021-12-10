@@ -5,8 +5,10 @@ import axios from 'axios';
 import { TextField, Button, Typography } from '@mui/material';
 import { makeStyles } from '@mui/styles';
 import ArrowForwardIosOutlinedIcon from '@mui/icons-material/ArrowForwardIosOutlined';
+import { useSnackbar } from 'notistack';
 
 const LoginSection = ({ isHide, setIsHide, user, setUser }) => {
+  const { enqueueSnackbar } = useSnackbar();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
@@ -50,10 +52,18 @@ const LoginSection = ({ isHide, setIsHide, user, setUser }) => {
         .then((user) => {
           if (user) {
             history.push(`/user/${user._id}`);
+            enqueueSnackbar(`Hi ${user.firstname}, Welcome to CCLE`, {
+              variant: 'success',
+            });
           }
         });
     } catch (err) {
-      console.log(err);
+      enqueueSnackbar(
+        `The email or password were incorrect. Please try again`,
+        {
+          variant: 'error',
+        }
+      );
     }
   };
 
