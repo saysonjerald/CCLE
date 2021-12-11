@@ -78,8 +78,6 @@ exports.getAllUsers = catchAsync(async (req, res, next) => {
       return { language: language, topic: { $in: [topics] } };
   };
 
-  console.log(evaluateLanguage());
-
   const data = ProgrammingLanguage.aggregate([
     {
       $match: evaluateLanguage(),

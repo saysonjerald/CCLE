@@ -52,18 +52,15 @@ const LoginSection = ({ isHide, setIsHide, user, setUser }) => {
         .then((user) => {
           if (user) {
             history.push(`/user/${user._id}`);
-            enqueueSnackbar(`Hi ${user.firstname}, Welcome to CCLE`, {
+            enqueueSnackbar(`Hi ${user.firstname}, Welcome back to CCLE`, {
               variant: 'success',
             });
           }
         });
     } catch (err) {
-      enqueueSnackbar(
-        `The email or password were incorrect. Please try again`,
-        {
-          variant: 'error',
-        }
-      );
+      enqueueSnackbar(`${err.response.data.message}`, {
+        variant: 'error',
+      });
     }
   };
 

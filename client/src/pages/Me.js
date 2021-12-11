@@ -21,8 +21,10 @@ import IsEmailVerify from '../components/IsEmailVerify';
 import SpokenLanguages from '../components/SpokenLanguages';
 import Address from '../components/Address';
 import { UserContext } from '../contexts/UserContext';
+import { useSnackbar } from 'notistack';
 
 const Me = ({ match }) => {
+  const { enqueueSnackbar } = useSnackbar();
   const { user, setUser, setNavValue, urlAPI } = useContext(UserContext);
   const [currentPassword, setCurrentPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
@@ -201,11 +203,16 @@ const Me = ({ match }) => {
       });
 
       if (res.data.status === 'success') {
-        console.log('success', `${type.toUpperCase()} updated successfully!`);
+        // console.log('success', `${type.toUpperCase()} updated successfully!`);
+        enqueueSnackbar(`Account Updated Successfully`, {
+          variant: 'success',
+        });
         return res;
       }
     } catch (err) {
-      console.log('error', err.response.data.message);
+      enqueueSnackbar(`${err.response.data.message}`, {
+        variant: 'error',
+      });
     }
   };
 
@@ -224,11 +231,16 @@ const Me = ({ match }) => {
         });
 
       if (res.data.status === 'success') {
-        console.log('success updated successfully!');
+        // console.log('success updated successfully!');
+        enqueueSnackbar(`Password Updated`, {
+          variant: 'success',
+        });
         return res;
       }
     } catch (err) {
-      console.log('error', err.response.data.message);
+      enqueueSnackbar(`${err.response.data.message}`, {
+        variant: 'error',
+      });
     }
   };
 
@@ -360,7 +372,12 @@ const Me = ({ match }) => {
                 </FormControl>
                 <div className={classes.form}>
                   <TextField
-                    inputProps={{ style: { textTransform: 'capitalize' } }}
+                    inputProps={{
+                      pattern: '[a-zA-Z_ ]',
+                      style: {
+                        textTransform: 'capitalize',
+                      },
+                    }}
                     label="First Name"
                     type="text"
                     variant="outlined"

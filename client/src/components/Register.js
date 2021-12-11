@@ -83,7 +83,7 @@ const RegisterSection = ({ isHide, setIsHide }) => {
           login(email, password);
         });
     } catch (err) {
-      enqueueSnackbar(`Email already exist!`, {
+      enqueueSnackbar(`${err.response.data.message}`, {
         variant: 'error',
       });
     }
@@ -111,7 +111,9 @@ const RegisterSection = ({ isHide, setIsHide }) => {
             });
         });
     } catch (err) {
-      console.log(err);
+      enqueueSnackbar(`${err.response.data.message}`, {
+        variant: 'error',
+      });
     }
   };
 
@@ -176,8 +178,13 @@ const RegisterSection = ({ isHide, setIsHide }) => {
         onChange={(e) => setPassword(e.target.value)}
       />
       <TextField
+        error={password === passwordConfirm ? false : true}
         className={classes.textInput}
-        label="Confirm Password"
+        label={
+          password === passwordConfirm
+            ? 'Confirm Password'
+            : `Password didn't match! Retype your password here`
+        }
         type="password"
         required
         onChange={(e) => setPasswordConfirm(e.target.value)}

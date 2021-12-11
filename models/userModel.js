@@ -11,10 +11,12 @@ const userSchema = new mongoose.Schema(
     firstname: {
       type: String,
       required: [true, 'Please tell us your first name'],
+      validate: [validator.isAlpha, 'Please input a valid name'],
     },
     lastname: {
       type: String,
       required: [true, 'Please tell us your last name'],
+      validate: [validator.isAlpha, 'Please input a valid name'],
     },
     profilePic: {
       type: String,

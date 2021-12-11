@@ -6,7 +6,7 @@
     "server": "nodemon server.js",
     "client": "npm start --prefix client",
     "dev": "npm-run-all --parallel server client",
-    "start:prod": "SET NODE_ENV=production& nodemon server.js client"
+    "start:prod": "SET NODE_ENV=production& npm-run-all --parallel server client"
   },
   "author": "",
   "license": "ISC",

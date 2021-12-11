@@ -19,7 +19,7 @@ const bookingRoutes = require('./routes/bookingRoutes');
 
 const app = express();
 
-app.set('view engine');
+// app.set('view engine', 'ejs');
 
 // Allow CORS
 app.use(cors({ origin: true, credentials: true }));
