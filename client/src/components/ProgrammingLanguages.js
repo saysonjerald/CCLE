@@ -21,6 +21,7 @@ import CheckBoxIcon from '@mui/icons-material/CheckBox';
 import { makeStyles } from '@mui/styles';
 
 import { UserContext } from '../contexts/UserContext';
+import { useSnackbar } from 'notistack';
 
 const icon = <CheckBoxOutlineBlankIcon fontSize="small" />;
 const checkedIcon = <CheckBoxIcon fontSize="small" />;
@@ -35,6 +36,7 @@ const ProgrammingLanguages = ({
   setDescription,
   setProgrammingLanguageKnown,
 }) => {
+  const { enqueueSnackbar } = useSnackbar();
   const { user, urlAPI } = useContext(UserContext);
 
   const [open, setOpen] = useState(false);
@@ -117,16 +119,24 @@ const ProgrammingLanguages = ({
         });
 
       if (res.data.status === 'success') {
-        await getProgrammingLanguage();
+        const lang = res.data.programmingLanguage.language;
+        await getProgrammingLanguage().then(() => {
+          enqueueSnackbar(`${lang} added from the list`, {
+            variant: 'success',
+          });
+        });
         console.log('success updated successfully!');
         setLanguage('');
         setTopic([]);
         setDescription('');
         ratePerMinute(0.05);
+
         return res;
       }
     } catch (err) {
-      console.log('error', err.response.data.message);
+      enqueueSnackbar(`${err.response.data.message}`, {
+        variant: 'error',
+      });
     }
   };
 

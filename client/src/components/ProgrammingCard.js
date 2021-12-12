@@ -24,6 +24,7 @@ import { v4 as uuidv4 } from 'uuid';
 import CheckBoxOutlineBlankIcon from '@mui/icons-material/CheckBoxOutlineBlank';
 import CheckBoxIcon from '@mui/icons-material/CheckBox';
 import { UserContext } from '../contexts/UserContext';
+import { useSnackbar } from 'notistack';
 
 import { makeStyles } from '@mui/styles';
 import { stringToColour } from '../utils/stringToColor';
@@ -41,6 +42,7 @@ const ProgrammingCard = ({
   programmingLanguageKnown,
   setProgrammingLanguageKnown,
 }) => {
+  const { enqueueSnackbar } = useSnackbar();
   const { user, urlAPI } = useContext(UserContext);
   const [open, setOpen] = useState(false);
 
@@ -140,11 +142,16 @@ const ProgrammingCard = ({
         })
         .then(async (data) => {
           setProgrammingLanguageKnown(data.data.programmingLang);
-          await getProgrammingLanguage();
+          await getProgrammingLanguage().then(() => {
+            enqueueSnackbar(`Updated successfully`, {
+              variant: 'success',
+            });
+          });
         });
 
       if (res.data.status === 'success') {
         console.log('success updated successfully!');
+
         setProgrammingLanguage('');
         setTopic([]);
         setDescription('');
@@ -152,7 +159,9 @@ const ProgrammingCard = ({
         return res;
       }
     } catch (err) {
-      console.log('error', err.response.data.message);
+      enqueueSnackbar(`${err.response.data.message}`, {
+        variant: 'error',
+      });
     }
   };
 
@@ -166,10 +175,16 @@ const ProgrammingCard = ({
         })
         .delete(`${urlAPI}api/v1/users/${user.id}/programmingLanguage/${id}`)
         .then(async () => {
-          await getProgrammingLanguage();
+          await getProgrammingLanguage().then(() => {
+            enqueueSnackbar(`Delete successfully`, {
+              variant: 'success',
+            });
+          });
         });
     } catch (err) {
-      console.log('error', err.response.data.message);
+      enqueueSnackbar(`${err.response.data.message}`, {
+        variant: 'error',
+      });
     }
   };
 

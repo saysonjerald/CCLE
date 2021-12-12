@@ -55,7 +55,7 @@ const BookingCalendar = ({ match }) => {
   const [title, setTitle] = useState();
   const [dateSched, setDateSched] = useState();
   const [bookedByDate, setBookedByDate] = useState();
-  const [link, setLink] = useState();
+  const [link, setLink] = useState('');
 
   const useStyles = makeStyles({
     bg: {
@@ -96,26 +96,31 @@ const BookingCalendar = ({ match }) => {
   const classes = useStyles();
 
   const bookedUser = async (startingDate) => {
-    await axios
-      .create({
-        baseURL: 'http://localhost:3001/',
-        withCredentials: true, //I read around that you need this for cookies to be sent?
-      })
-      .get(
-        `api/v1/users/${match.params.id}/booking/${new Date(
-          startingDate
-        ).toISOString()}`
-      )
-      .then((data) => {
-        setBookedByDate(data.data.bookedbyDate[0]);
-        return data;
-      })
-      .then((data) => {
-        console.log(data);
-        setLink(
-          `${urlAPIFrontEnd}session/${data.data.bookedbyDate[0].session.id}`
-        );
-      });
+    console.log(startingDate);
+    try {
+      await axios
+        .create({
+          baseURL: 'http://localhost:3001/',
+          withCredentials: true, //I read around that you need this for cookies to be sent?
+        })
+        .get(
+          `api/v1/users/${match.params.id}/booking/${new Date(
+            startingDate
+          ).toISOString()}`
+        )
+        .then((data) => {
+          setBookedByDate(data.data.bookedbyDate[0]);
+          return data;
+        })
+        .then((data) => {
+          console.log(data);
+          setLink(
+            `${urlAPIFrontEnd}session/${data.data.bookedbyDate[0].session.id}`
+          );
+        });
+    } catch (err) {
+      console.log(err);
+    }
   };
 
   const clickNewTab = () => {

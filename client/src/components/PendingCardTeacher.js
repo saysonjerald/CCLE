@@ -15,6 +15,7 @@ import {
   DialogContentText,
   DialogActions,
 } from '@mui/material';
+import { useSnackbar } from 'notistack';
 import { makeStyles } from '@mui/styles';
 import { UserContext } from '../contexts/UserContext';
 import Bill from './Bill';
@@ -40,6 +41,7 @@ export default function PendingCardStudent({
   match,
 }) {
   const { user, urlAPI } = useContext(UserContext);
+  const { enqueueSnackbar } = useSnackbar();
 
   const [open, setOpen] = useState(false);
 
@@ -83,6 +85,7 @@ export default function PendingCardStudent({
   const createBooking = async () => {
     const startingDate0s = new Date(startingDate).setSeconds(0);
     const endingDate0s = new Date(endingDate).setSeconds(0);
+
     try {
       await axios
         .create({
@@ -112,10 +115,17 @@ export default function PendingCardStudent({
             .then((data) => {
               console.log(data.data.pendingAppointmentTeacher);
               setPendingAppointmentTeacher(data.data.pendingAppointmentTeacher);
+            })
+            .then(() => {
+              enqueueSnackbar(`Successfully Paid, You are now booked`, {
+                variant: 'success',
+              });
             });
         });
     } catch (err) {
-      console.log('error', err.response.data.message);
+      enqueueSnackbar(`${err.response.data.message}`, {
+        variant: 'error',
+      });
     }
   };
 
@@ -129,9 +139,16 @@ export default function PendingCardStudent({
         })
         .delete(`${urlAPI}api/v1/users/${user.id}/pendingAppointment/`, {
           data: { _id: appointmentId },
+        })
+        .then(() => {
+          enqueueSnackbar(`Appointment deleted!`, {
+            variant: 'success',
+          });
         });
     } catch (err) {
-      console.log('error', err.response.data.message);
+      enqueueSnackbar(`${err.response.data.message}`, {
+        variant: 'error',
+      });
     }
   };
 

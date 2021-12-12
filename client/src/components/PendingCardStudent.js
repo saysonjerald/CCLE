@@ -16,6 +16,7 @@ import {
 } from '@mui/material';
 import { makeStyles } from '@mui/styles';
 import { UserContext } from '../contexts/UserContext';
+import { useSnackbar } from 'notistack';
 
 function time_convert(num) {
   let hours = Math.floor(num / 60);
@@ -54,6 +55,7 @@ export default function PendingCardTeacher({
   setPendingAppointmentStudent,
   match,
 }) {
+  const { enqueueSnackbar } = useSnackbar();
   const { user, urlAPI } = useContext(UserContext);
 
   const [open, setOpen] = React.useState(false);
@@ -101,6 +103,11 @@ export default function PendingCardTeacher({
             .get(`api/v1/users/${match.params.id}/pendingAppointment/student`)
             .then((data) => {
               setPendingAppointmentStudent(data.data.pendingAppointmentStudent);
+            })
+            .then(() => {
+              enqueueSnackbar(`Appointment status to ${status}!`, {
+                variant: 'success',
+              });
             });
         });
 
@@ -108,7 +115,9 @@ export default function PendingCardTeacher({
         console.log('Success: Pending Status Updated');
       }
     } catch (err) {
-      console.log('error', err.response.data.message);
+      enqueueSnackbar(`${err.response.data.message}`, {
+        variant: 'error',
+      });
     }
   };
 
