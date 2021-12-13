@@ -1,6 +1,8 @@
 const PendingAppointment = require('../models/pendingAppointmentModel');
+const User = require('../models/userModel');
 const AppError = require('../utils/appError');
 const catchAsync = require('../utils/catchAsync');
+const Email = require('../utils/email');
 
 exports.createPendingAppointment = catchAsync(async (req, res) => {
   if (!req.body.teacher) req.body.teacher = req.params.teacher;
@@ -90,6 +92,17 @@ exports.updatePendingStatus = catchAsync(async (req, res, next) => {
 
   if (!pendingStatus)
     return next(new AppError('Failed to reject pending status', 404));
+
+  const user = await User.findById(pendingStatus.student.id);
+  const url = `${req.protocol}://localhost:3000/user/${pendingStatus.teacher.id}`;
+
+  if (!user) {
+    return next(new AppError('User not found', 404));
+  }
+
+  await new Email(user, url).sendAppointmentStatusRequest(
+    req.body.pendingStatus
+  );
 
   res.status(200).json({
     status: 'success',

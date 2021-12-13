@@ -125,26 +125,34 @@ const Session = ({ match }) => {
   }
 
   // Mute Microphone
-  const muteMic = () => {
-    myStream.current
-      .getAudioTracks()
-      .forEach((track) => (track.enabled = !track.enabled));
-    setIsMuted(!isMuted);
+  const muteMic = async () => {
+    try {
+      await myStream.current
+        .getAudioTracks()
+        .forEach((track) => (track.enabled = !track.enabled));
+      setIsMuted(!isMuted);
+    } catch (err) {
+      console.log(err);
+    }
   };
 
   // Turn of Camera
-  const turnOffCam = () => {
-    myStream.current
-      .getVideoTracks()
-      .forEach((track) => (track.enabled = !track.enabled));
-    setIsCameraOn(!isCameraOn);
-    myFace.current.hidden = !myFace.current.hidden;
-    socket.emit(
-      'hidePeerFace',
-      match.params.id,
-      user.id,
-      isCameraOn ? true : false
-    );
+  const turnOffCam = async () => {
+    try {
+      await myStream.current
+        .getVideoTracks()
+        .forEach((track) => (track.enabled = !track.enabled));
+      setIsCameraOn(!isCameraOn);
+      myFace.current.hidden = !myFace.current.hidden;
+      socket.emit(
+        'hidePeerFace',
+        match.params.id,
+        user.id,
+        isCameraOn ? true : false
+      );
+    } catch (err) {
+      console.log(err);
+    }
   };
 
   // const handleCodeCompile = async (language) => {

@@ -7,20 +7,20 @@ module.exports = class Email {
     this.to = user.email;
     this.firstname = user.firstname;
     this.url = url;
-    this.from = `Jonas Schmedtmann <${process.env.EMAIL_FROM}>`;
+    this.from = `CCLE <${process.env.EMAIL_FROM}>`;
   }
 
   newTransport() {
-    if (process.env.NODE_ENV === 'production') {
-      // Sendgrid
-      return nodemailer.createTransport({
-        service: 'SendGrid',
-        auth: {
-          user: process.env.SENDGRID_USERNAME,
-          pass: process.env.SENDGRID_PASSWORD,
-        },
-      });
-    }
+    // if (process.env.NODE_ENV === 'production') {
+    //   // Sendgrid
+    //   return nodemailer.createTransport({
+    //     service: 'SendGrid',
+    //     auth: {
+    //       user: process.env.SENDGRID_USERNAME,
+    //       pass: process.env.SENDGRID_PASSWORD,
+    //     },
+    //   });
+    // }
 
     return nodemailer.createTransport({
       host: process.env.EMAIL_HOST,
@@ -34,13 +34,18 @@ module.exports = class Email {
 
   // Send the actual email
   async send(template, subject) {
-    // 1) Render HTML based on a ejs template
+    let status = '';
+
+    if (subject.includes('Accepted')) status = 'Accepted';
+    if (subject.includes('Rejected')) status = 'Rejected';
+
     const html = await ejs.renderFile(
       `${__dirname}/../views/emails/${template}.ejs`,
       {
         firstname: this.firstname,
         url: this.url,
         subject,
+        status,
       }
     );
 
@@ -68,6 +73,13 @@ module.exports = class Email {
     await this.send(
       'passwordReset',
       'Your password reset token (valid for only 10 minutes)'
+    );
+  }
+
+  async sendAppointmentStatusRequest(status) {
+    await this.send(
+      'appointmentStatusRequest',
+      `CCLE: Your appointment has been ${status}`
     );
   }
 };

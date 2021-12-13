@@ -47,7 +47,7 @@ const ReviewPost = ({
         console.log('Review Posted!');
         setReview('');
         setRating(0);
-        // await getReviews();
+        await getReviews();
         return res;
       }
     } catch (err) {
@@ -82,8 +82,9 @@ const ReviewPost = ({
           baseURL: 'http://localhost:3001/',
           withCredentials: true, //I read around that you need this for cookies to be sent?
         })
-        .get(`/api/v1/users/${userURL}/reviews/${reviewer}`)
+        .get(`/api/v1/users/${teacherID}/reviews/${userID}`)
         .then((review) => {
+          console.log(review);
           if (review.data.results >= 1) {
             console.log(review.data.results);
             reviewDataRef.current = review.data.reviews[0];
@@ -133,10 +134,14 @@ const ReviewPost = ({
           variant="contained"
           style={{ marginLeft: '10px' }}
           onClick={async (e) => {
-            !isAlreadyReviewed ? await updateReview() : await postReview(e);
+            try {
+              isAlreadyReviewed ? await updateReview() : await postReview(e);
+            } catch (err) {
+              console.log(err);
+            }
           }}
         >
-          {!isAlreadyReviewed ? 'Submit' : 'Submit'}
+          {isAlreadyReviewed ? 'Update' : 'Submit'}
         </Button>
       </CardActions>
     </Card>

@@ -7,6 +7,7 @@ const xss = require('xss-clean');
 const hpp = require('hpp');
 const cors = require('cors');
 const cookieParser = require('cookie-parser');
+// const ejs = require('ejs');
 
 const AppError = require('./utils/appError');
 const globalErrorHandler = require('./controllers/errorController');
@@ -18,6 +19,8 @@ const pendingAppointmentRoutes = require('./routes/pendingAppointmentRoutes');
 const bookingRoutes = require('./routes/bookingRoutes');
 
 const app = express();
+
+app.set('view engine', 'ejs');
 
 // app.set('view engine', 'ejs');
 
