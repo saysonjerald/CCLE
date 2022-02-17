@@ -53,7 +53,7 @@ export function Editor({ roomID, name, language }) {
       }
       return () => {
         if (provider) {
-          provider.disconnect(); //We destroy doc we created and disconnect
+          provider.disconnect(); //We destroy d         2222222222222222222222222222222222222222222222222222222222oc we created and disconnect
           ydoc.destroy(); //the provider to stop propagting changes if user leaves editor
         }
       };

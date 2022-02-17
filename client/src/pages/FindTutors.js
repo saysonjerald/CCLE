@@ -116,8 +116,6 @@ const FindTutors = () => {
                 <MenuItem value={'Shell'}>Shell</MenuItem>
                 <MenuItem value={'SQL'}>SQL</MenuItem>
                 <MenuItem value={'Swift'}>Swift</MenuItem>
-                <MenuItem value={'Dart'}>Dart</MenuItem>
-                <MenuItem value={'DTD'}>DTD</MenuItem>
                 <MenuItem value={''}></MenuItem>
               </Select>
             </FormControl>

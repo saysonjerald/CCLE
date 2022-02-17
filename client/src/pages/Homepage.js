@@ -20,11 +20,10 @@ const Homepage = () => {
   return (
     <HomepageWrapper>
       <Typography component="h1" variant="h3" className={classes.title}>
-        Where teams build faster, together
+        Where you solve faster, together
       </Typography>
       <Typography component="h2">
-        Create, share, and get feedback with collaborative sandboxes for rapid
-        web development.
+        Get live feedback and solution on your code related problems
       </Typography>
       <Stack direction="row" spacing={8} mt={8}>
         <img

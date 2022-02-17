@@ -39,7 +39,7 @@ import WebAssetIcon from '@mui/icons-material/WebAsset';
 import CallEndIcon from '@mui/icons-material/CallEnd';
 
 const Session = ({ match }) => {
-  const { user, urlAPI } = useContext(UserContext);
+  const { user, urlAPI, urlAPIFrontEnd } = useContext(UserContext);
   const history = useHistory();
   const { reviewer, setReviewer } = useContext(ReviewContext);
 
@@ -181,7 +181,7 @@ const Session = ({ match }) => {
     return new Promise(async (resolve, reject) => {
       await axios.all([
         await axios
-          .get(`http://localhost:3001/session/${match.params.id}`)
+          .get(`${urlAPI}session/${match.params.id}`)
           .then((data) => {
             if (
               (data.data.session.student === user.id ||
@@ -285,15 +285,14 @@ const Session = ({ match }) => {
 
     const getSession = async (socket) => {
       await axios
-        .get(`http://localhost:3001/session/${match.params.id}`)
+        .get(`${urlAPI}session/${match.params.id}`)
         .then((data) => {
           if (
             data.data.session.student === user.id ||
-            data.data.session.teacher === user.id
-            // &&
-            //   new Date(Date.now()) >=
-            //     new Date(data.data.session.startingDate) &&
-            //   new Date(Date.now()) <= new Date(data.data.session.expireDate)
+            (data.data.session.teacher === user.id &&
+              new Date(Date.now()) >=
+                new Date(data.data.session.startingDate) &&
+              new Date(Date.now()) <= new Date(data.data.session.expireDate))
           ) {
             setIsValid(true);
             setTeacherID(data.data.session.teacher);
@@ -569,7 +568,7 @@ const Session = ({ match }) => {
             >
               <Avatar
                 alt={`${teacher.firstname} ${teacher.lastname}`}
-                src={`${urlAPI}/img/users/${teacher.profilePic}`}
+                src={`${urlAPI}img/users/${teacher.profilePic}`}
                 style={{ marginRight: '15px' }}
               />
               <div>

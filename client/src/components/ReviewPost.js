@@ -41,6 +41,10 @@ const ReviewPost = ({
         .post(`${urlAPI}api/v1/users/${userURL}/reviews`, {
           review,
           rating: rating,
+        })
+        .then(() => {
+          history.push(`/user/${teacherID}`);
+          window.location.reload(false);
         });
 
       if (res.data.status === 'success') {
@@ -85,13 +89,15 @@ const ReviewPost = ({
         .get(`/api/v1/users/${teacherID}/reviews/${userID}`)
         .then((review) => {
           console.log(review);
-          if (review.data.results >= 1) {
+          if (review.data.results === 1) {
             console.log(review.data.results);
             reviewDataRef.current = review.data.reviews[0];
             setIsAlreadyReviewed(true);
             setReviewID(review.data.reviews[0].id);
             setReview(review.data.reviews[0].review);
             setRating(review.data.reviews[0].rating * 1);
+          } else {
+            setIsAlreadyReviewed(false);
           }
         });
     } catch (err) {

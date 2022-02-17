@@ -233,14 +233,27 @@
                             margin-bottom: 15px;
                           "
                         >
-                        <% if (status === 'Accepted') { %>
-                            We are happy to announce that your appointment request on this
-                            <a href="<%= url %>" style="text-decoration: underline; color: #3498db">user</a> has been accepted but
-                            you are book yet. In order to be book, you need to pay your bill by clicking the 'Pay now' button on
-                            Booking Request list.
-                            <%} else { %>
-                            <p> Not Allowed </p>
-                            <% } %>
+                          <% if (status === 'Accepted') { %> We are happy to
+                          announce that your appointment request on this
+                          <a
+                            href="<%= url %>"
+                            style="text-decoration: underline; color: #3498db"
+                            >user</a
+                          >
+                          has been accepted but you are book yet. In order to be
+                          book, you need to pay your bill by clicking the 'Pay
+                          now' button on Booking Request list. <% } %> <% if
+                          (status === 'Rejected') { %> We're very sorry 😥, your
+                          appointment on this
+                          <a
+                            href="<%= url %>"
+                            style="text-decoration: underline; color: #3498db"
+                            >user</a
+                          >
+                          has been rejected <% } %> <% if (status === 'Paid') {
+                          %> Congratulations, your booking is already been paid
+                          :) Please check your booking appoint calendar your
+                          profile. <%} %>
                         </p>
                         <table
                           role="presentation"
